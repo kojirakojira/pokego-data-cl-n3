@@ -1,0 +1,12 @@
+diff --git a/node_modules/vue-router/dist/vue-router.esm-browser.js b/node_modules/vue-router/dist/vue-router.esm-browser.js
+index 321fc5d..18a965c 100644
+--- a/node_modules/vue-router/dist/vue-router.esm-browser.js
++++ b/node_modules/vue-router/dist/vue-router.esm-browser.js
+@@ -555,6 +555,7 @@ function useHistoryStateNavigation(base) {
+                 `history.replaceState(history.state, '', url)\n\n` +
+                 `You can find more information at https://next.router.vuejs.org/guide/migration/#usage-of-history-state.`);
+         }
++        console.log(currentState)
+         changeLocation(currentState.current, currentState, true);
+         const state = assign({}, buildState(currentLocation.value, to, null), { position: currentState.position + 1 }, data);
+         changeLocation(to, state, false);

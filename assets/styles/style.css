@@ -1,0 +1,185 @@
+.error-message-text {
+  color: red;
+  padding-left: 12px;
+}
+.manage-title-line {
+  background-color: red;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  color: white;
+}
+.title-line {
+  background-color: #1E1E1E;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  color: white;
+}
+.link {
+  color: #1976D2 !important;
+  /* transition: all 1s ease 0s !important; */
+}
+.link:hover {
+  text-decoration: underline !important;
+}
+.link:visited {
+  color: #551a8b !important;
+}
+.col-title {
+  font-weight: bold;
+}
+.v-dialog.dialog-height-100 {
+  height: 100%;
+}
+.back-brain-icon-e {
+  background-image: url('~/public/img/brain-juice-e.png');
+  background-size: contain;
+  background-position-x: 98%;
+  background-color: #1E1E1E;
+  color: white;
+  font-weight: bold;
+}
+.h2-title {
+  font-weight: bold;
+  background-color: #1E1E1E;
+  color: white;
+  border-bottom: 3px ridge skyblue;
+  text-align: center;
+  padding: 10px;
+  border-radius: 20px;
+}
+.type {
+  display: inline-block;
+  vertical-align: top;
+  color: white;
+  font-weight: bold;
+  padding: 1px 3px;
+  font-size: 80%;
+  border-radius: 4px;
+  white-space: nowrap;
+  display: inline-table; 
+}
+.widget-item {
+  border: 1px solid #333; 
+  border-radius: 20px 20px 10px 10px;
+}
+.required-mark {
+  display: inline-flex;
+  background-color: #ff4500;
+  padding: 0px 4px;
+  border-radius: 6px;
+  color: white;
+  font-weight: bold;
+  font-size: 14px;
+  align-items: center;
+}
+.optional-mark {
+  display: inline-flex;
+  background-color: grey;
+  padding: 0px 4px;
+  border-radius: 6px;
+  color: white;
+  font-weight: bold;
+  font-size: 14px;
+  align-items: center;
+}
+.searched-items {
+  margin-left: auto;
+  margin-right: auto;
+}
+.searched-items .searched-params-title {
+  font-weight: bold;
+  font-size: 0.875rem;
+  text-align: center;
+  background-color: lightskyblue;
+}
+.searched-items .searched-param {
+  border-top: dashed 1.5px grey;
+}
+
+/* Vuetify2互換のためのStyle */
+
+.v-application .display-4 {
+  font-size: 6rem !important;
+  font-weight: 300;
+  line-height: 6rem;
+  letter-spacing: -0.015625em !important;
+  font-family: "Roboto", sans-serif !important;
+}
+.v-application .display-3 {
+  font-size: 3.75rem !important;
+  font-weight: 300;
+  line-height: 3.75rem;
+  letter-spacing: -0.0083333333em !important;
+  font-family: "Roboto", sans-serif !important;
+}
+.v-application .display-2 {
+  font-size: 3rem !important;
+  font-weight: 400;
+  line-height: 3.125rem;
+  letter-spacing: normal !important;
+  font-family: "Roboto", sans-serif !important;
+}
+.v-application .display-1 {
+  font-size: 2.125rem !important;
+  font-weight: 400;
+  line-height: 2.5rem;
+  letter-spacing: 0.0073529412em !important;
+  font-family: "Roboto", sans-serif !important;
+}
+.v-application .headline {
+  font-size: 1.5rem !important;
+  font-weight: 400;
+  line-height: 2rem;
+  letter-spacing: normal !important;
+  font-family: "Roboto", sans-serif !important;
+}
+.v-application .title {
+  font-size: 1.25rem !important;
+  font-weight: 500;
+  line-height: 2rem;
+  letter-spacing: 0.0125em !important;
+  font-family: "Roboto", sans-serif !important;
+}
+.v-application .subtitle-2 {
+  font-size: 0.875rem !important;
+  font-weight: 500;
+  letter-spacing: 0.0071428571em !important;
+  line-height: 1.375rem;
+  font-family: "Roboto", sans-serif !important;
+}
+.v-application .subtitle-1 {
+  font-size: 1rem !important;
+  font-weight: normal;
+  letter-spacing: 0.009375em !important;
+  line-height: 1.75rem;
+  font-family: "Roboto", sans-serif !important;
+}
+.v-application .body-2 {
+  font-size: 0.875rem !important;
+  font-weight: 400;
+  letter-spacing: 0.0178571429em !important;
+  line-height: 1.25rem;
+  font-family: "Roboto", sans-serif !important;
+}
+.v-application .body-1 {
+  font-size: 1rem !important;
+  font-weight: 400;
+  letter-spacing: 0.03125em !important;
+  line-height: 1.5rem;
+  font-family: "Roboto", sans-serif !important;
+}
+.v-application .caption {
+  font-size: 0.75rem !important;
+  font-weight: 400;
+  letter-spacing: 0.0333333333em !important;
+  line-height: 1.25rem;
+  font-family: "Roboto", sans-serif !important;
+}
+.v-application .overline {
+  font-size: 0.75rem !important;
+  font-weight: 500;
+  letter-spacing: 0.1666666667em !important;
+  line-height: 2rem;
+  text-transform: uppercase;
+  font-family: "Roboto", sans-serif !important;
+}

@@ -1,0 +1,72 @@
+h3 {
+    position: relative;
+    border: 2px solid #ccc;
+    border-radius: 30px;
+    padding: 4px 12px;
+    margin: 24px 0px 16px;
+    overflow: hidden;
+    text-align: center;
+  
+    &::after {
+      position: absolute;
+      background-image: url(https://static.brainjuice.jp/pokego/peri.gif);
+      background-size: 36px;
+      content: "";
+      padding: 18px;
+      top: 0px;
+      right: -10%;
+    }
+  
+    &:hover::after {
+      transform: translateX(-100%);
+      transition-duration: 5s;
+      right: 100%
+    }
+  }
+  h4 {
+    position: relative;
+    border-bottom: 2px solid #ccc;
+    border-radius: 30px;
+    padding: 1px 0px;
+    margin: 24px 0px 12px;
+    overflow: hidden;
+    text-align: center;
+    background-color: #f9f9f9;
+  
+    &::after {
+      position: absolute;
+      background-image: url(https://static.brainjuice.jp/pokego/peri.gif);
+      background-size: 24px;
+      content: "";
+      padding: 18px;
+      top: 0px;
+      left: -10%;
+    }
+  
+    &:hover::after {
+      transform: translateX(100%);
+      transition-duration: 5s;
+      left: 100%
+    }
+  }
+  
+.basic-info-table {    
+  border: medium solid grey;
+  border-radius: 10px;
+  overflow: hidden;
+  .row {
+    /** "見出し列"だけに指定 */
+    .col:first-child {
+      color: white;
+      font-weight: bold;
+      word-wrap: break-word;
+
+    }
+  }
+  /** 最後の行以外の"見出し列"だけに指定 */
+  .row:not(:last-child) {
+    .col:first-child {
+      border-bottom: thin solid black;
+    }
+  }
+}
