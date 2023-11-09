@@ -29,14 +29,6 @@
                       {{ editUtils().appendRemarks(cDtoItem.resData.name, cDtoItem.resData.remarks) }}
                     </v-col>
                   </v-row>
-                  <v-row v-if="cDtoItem.resData.shadow" class="searched-param">
-                    <v-col cols="7" md="6" lg="6" xl="6" class="pa-1">
-                      シャドウ
-                    </v-col>
-                    <v-col cols="5" md="6" lg="6" xl="6" class="pa-1">
-                      シャドウとして算出
-                    </v-col>
-                  </v-row>
                 </v-container>
               </v-card-text>
             </v-card>
@@ -63,20 +55,6 @@
             {{ `${cDtoItem.resData.minCp} ～ ${cDtoItem.resData.maxCp}` }}
           </v-col>
         </v-row>
-        <v-row>
-          <v-col
-            cols="12"
-            md="6"
-            lg="6"
-            xl="6"
-            class="col-title"
-          >
-            天候ブースト時CP
-          </v-col>
-          <v-col cols="12" md="6" lg="6" xl="6">
-            {{ `${cDtoItem.resData.wbMinCp} ～ ${cDtoItem.resData.wbMaxCp}` }}
-          </v-col>
-        </v-row>
       </v-container>
     </div>
     <div v-else>
@@ -87,25 +65,24 @@
 
 <script setup lang="ts">
 import { RouteLocationNormalizedLoaded } from 'vue-router'
-const searchPattern = 'raid'
+const searchPattern = 'eggs'
 // current dto item
 const cDtoItem = ref<ResultDtoItem>({
   searchParams: {
-    pid: '',
-    shadow: false
+    pid: ''
   },
   resData: {}
 })
 const dto: any = useAttrs().dto
 dto.params = cDtoItem
+
 const isLoading = ref<boolean>(true)
 
 // APIアクセス用get関数
 const get = async (): Promise<Record<string, any>> => {
-  const res = await fetchCommon('/api/raid', 'GET', {
+  const res = await fetchCommon('/api/eggs', 'GET', {
     query: {
-      id: cDtoItem.value.searchParams.pid,
-      shadow: cDtoItem.value.searchParams.shadow
+      id: cDtoItem.value.searchParams.pid
     }
   })
   const rd: Record<string, any> = res.data || {}
@@ -121,7 +98,7 @@ const get = async (): Promise<Record<string, any>> => {
 const route: RouteLocationNormalizedLoaded = useRoute()
 cDtoItem.value.searchParams = {
   pid: route.query.pid ? route.query.pid.toString() : '',
-  shadow: route.query.shadow === 'true'
+  shadow: !!route.query.shadow
 }
 // dtoStoreからresDataを復元
 const rd: Record<string, any> | null = searchCommon().restoreResData()
@@ -139,13 +116,13 @@ isLoading.value = !cDtoItem.value.resData
 const ogpName = cDtoItem.value.resData.name
 const ogpImage = cDtoItem.value.resData.image || '/pokego/peripper-eyes.png'
 useHead({
-  title: `${ogpName}のレイドCP`,
+  title: `${ogpName}のタマゴCP`,
   meta: [
     { property: 'og:type', content: 'article' },
-    { property: 'og:title', content: `${ogpName}のレイドCP - ペリずかん` },
+    { property: 'og:title', content: `${ogpName}のタマゴCP - ペリずかん` },
     { property: 'og:url', content: useRuntimeConfig().public.url + useRoute().path },
     { property: 'og:site_name', content: 'ペリずかん' },
-    { property: 'og:description', content: `${cDtoItem.value.resData.name}のレイドCPを確認できます。` },
+    { property: 'og:description', content: `タマゴから孵化した${cDtoItem.value.resData.name}のCPを確認できます。` },
     { property: 'og:image', content: useRuntimeConfig().public.staticUrl + ogpImage }
   ]
 })

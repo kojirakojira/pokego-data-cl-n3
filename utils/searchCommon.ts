@@ -261,11 +261,12 @@ export default () => {
    */
   const clickRowResultList = (
     pid: string | null | undefined,
-    searchPattern: string
+    searchPattern: string,
+    searchParams: Record<string, any>
   ): void => {
     if (!pid) { return }
     // 遷移後の画面のqueryを作成する
-    const query = makeQuery(pid)
+    const query = makeQuery(pid, searchParams)
     // 遷移
     useRouter().push({
       name: `search-result-${searchPattern}Result`,
@@ -293,10 +294,9 @@ export default () => {
    * 遷移前の画面のクエリからnameを削除。pidを追加して返却する。
    *
    */
-  const makeQuery = (pid: string) => {
+  const makeQuery = (pid: string, searchParams: Record<string, any>) => {
     const query: Record<string, any> = {}
-    const urlSearchParams = new URLSearchParams(location.search)
-    for (const [k, v] of urlSearchParams.entries()) {
+    for (const [k, v] of Object.entries(searchParams)) {
       if (query[k]) {
         // queryパラメータにキーが重複している場合は、配列を表現している。
         if (Array.isArray(query[k])) {

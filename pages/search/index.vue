@@ -1,59 +1,64 @@
 <template>
   <div>
-    <v-container>
-      <p />
-      <h2 class="display-1">
-        <v-row>
-          <v-col>
-            <div class="home">
-              <div class="peripper2" />
-              <span class="home-text">ホーム</span>
-              <div class="peripper" />
-            </div>
-          </v-col>
-        </v-row>
-      </h2>
-    </v-container>
-    <v-container>
-      <v-row>
-        <v-col class="subtitle-2">
-          ペリずかんは、ポケモンGOの個体値を検索したり、種族値を比較したりするためのサイトです。研究目的の使用、豆知識の蓄積に便利です。（多分）
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col cols="12" sm="6" md="7" lg="8" xl="8">
+    <div v-if="!isLoading">
+      <v-container>
+        <p />
+        <h2 class="display-1">
           <v-row>
             <v-col>
-              <div v-for="(largeScale, index) in searchCommon().searchPatternNames" :key="index">
-                <h3 style="background: #1E1E1E; color: white;">
-                  {{ largeScale.name }}
-                </h3>
-                <v-list>
-                  <v-list-item
-                    v-for="(value, key) in largeScale.patternNames"
-                    :key="key"
-                    class="px-0"
-                    :to="key === 'raid' ? {name: `search-${key}`} : undefined"
-                  >
-                    <v-list-item-title>
-                      <v-icon large>
-                        mdi-pokemon-go
-                      </v-icon>
-                      {{ value }}
-                    </v-list-item-title>
-                  </v-list-item>
-                </v-list>
+              <div class="home">
+                <div class="peripper2" />
+                <span class="home-text">ホーム</span>
+                <div class="peripper" />
               </div>
             </v-col>
           </v-row>
-        </v-col>
+        </h2>
+      </v-container>
+      <v-container>
+        <v-row>
+          <v-col class="subtitle-2">
+            ペリずかんは、ポケモンGOの個体値を検索したり、種族値を比較したりするためのサイトです。研究目的の使用、豆知識の蓄積に便利です。（多分）
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col cols="12" sm="6" md="7" lg="8" xl="8">
+            <v-row>
+              <v-col>
+                <div v-for="(largeScale, index) in searchCommon().searchPatternNames" :key="index">
+                  <h3 style="background: #1E1E1E; color: white;">
+                    {{ largeScale.name }}
+                  </h3>
+                  <v-list>
+                    <v-list-item
+                      v-for="(value, key) in largeScale.patternNames"
+                      :key="key"
+                      class="px-0"
+                      :to="toSelector(key)"
+                    >
+                      <v-list-item-title>
+                        <v-icon large>
+                          mdi-pokemon-go
+                        </v-icon>
+                        {{ value }}
+                      </v-list-item-title>
+                    </v-list-item>
+                  </v-list>
+                </div>
+              </v-col>
+            </v-row>
+          </v-col>
         <!-- <v-col cols="12" sm="6" md="5" lg="4" xl="4">
           <TopicPage class="my-2" />
           <TopicPokemon class="my-2" />
           <Archive class="my-2 pb-6" />
         </v-col> -->
-      </v-row>
-    </v-container>
+        </v-row>
+      </v-container>
+    </div>
+    <div v-else>
+      <Loading full-page />
+    </div>
   </div>
 </template>
 
@@ -62,6 +67,37 @@ const cDtoItem = ref<Record<string, any>>({})
 const dto: any = useAttrs().dto
 dto.params = cDtoItem
 
+const isLoading = ref<boolean>(true)
+onMounted(() => {
+  isLoading.value = false
+})
+
+const toSelector = (key: string) => {
+  if (key === 'searchAll' ||
+    key === 'filterAll' ||
+    key === 'race' ||
+    key === 'raceDiff' ||
+    key === 'scpRank' ||
+    key === 'scpRankList' ||
+    key === 'scpRankMaxMin' ||
+    key === 'afterEvoScpRank' ||
+    key === 'afterEvoCp' ||
+    key === 'threeGalarBirds' ||
+    key === 'cpIv' ||
+    key === 'cp' ||
+    key === 'plList' ||
+    key === 'cpRank' ||
+    key === 'cpRankList' ||
+    key === 'typeScore' ||
+    key === 'xType' ||
+    key === 'iroiroTypeRank' ||
+    key === 'unimplPokemon' ||
+    key === 'evoCost' ||
+    key === 'evolution') {
+    return undefined
+  }
+  return { name: `search-${key}` }
+}
 useHead({
   title: 'ホーム',
   meta: [
@@ -73,7 +109,6 @@ useHead({
     { property: 'og:image', content: useRuntimeConfig().public.staticUrl + '/pokego/peripper-eyes.png' }
   ]
 })
-
 </script>
 
 <style scoped>

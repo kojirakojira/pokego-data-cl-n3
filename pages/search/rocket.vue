@@ -28,16 +28,16 @@
       </v-row>
       <v-row>
         <v-col cols="4" md="4" lg="4" xl="4" class="col-title">
-          シャドウ
+          サカキ戦
         </v-col>
         <v-col cols="8" md="8" lg="8" xl="8">
           <ClientOnly>
             <v-switch
-              v-model="cDtoItem.searchParams.shadow"
+              v-model="cDtoItem.searchParams.sakaki"
               inset
               dense
               hide-details
-              :label="cDtoItem.searchParams.shadow ? 'シャドウとして算出' : ''"
+              :label="cDtoItem.searchParams.sakaki ? 'サカキ戦勝利ボーナスとして算出' : ''"
               style="margin-top: 0px;"
             />
           </ClientOnly>
@@ -66,11 +66,11 @@
 </template>
 
 <script setup lang="ts">
-const searchPattern = 'raid'
+const searchPattern = 'rocket'
 // current dto item
 const cDtoItem = ref<OnePokeDtoItem>({
   searchParams: {
-    shadow: false,
+    sakaki: false,
     name: ''
   },
   psr: {
@@ -104,7 +104,7 @@ const check = () => {
 }
 
 const get = async () => {
-  return await fetchCommon('/api/raid', 'GET', { query: cDtoItem.value.searchParams })
+  return await fetchCommon('/api/rocket', 'GET', { query: cDtoItem.value.searchParams })
 }
 
 /**
@@ -125,13 +125,13 @@ const handleApiResult = (res: Record<string, any>) => {
       cDtoItem.value.resData = rd
       cDtoItem.value.psr = { goPokedexList: [], maybe: false }
       useRouter().push({
-        name: 'search-result-raidResult',
+        name: 'search-result-rocketResult',
         query: searchCommon().makeQuery(rd.pokedexId, cDtoItem.value.searchParams)
       })
     } else {
       // 複数件 or 0件ヒットした場合
       useRouter().replace({
-        name: 'search-raid'
+        name: 'search-rocket'
       })
       cDtoItem.value.psr = rd.pokemonSearchResult
       isSearchBtnClick.value = false
@@ -146,7 +146,7 @@ useHead({
     { property: 'og:title', content: `${searchCommon().getSearchPatternName(searchPattern)} - ペリずかん` },
     { property: 'og:url', content: useRuntimeConfig().public.url + useRoute().path },
     { property: 'og:site_name', content: 'ペリずかん' },
-    { property: 'og:description', content: 'レイドバトル後にゲットできるポケモンのCPの振れ幅を確認できます。' },
+    { property: 'og:description', content: 'ロケット団を倒した後にゲットできるポケモンのCPの振れ幅を確認できます。' },
     { property: 'og:image', content: useRuntimeConfig().public.staticUrl + '/pokego/peripper-eyes.png' }
   ]
 })
