@@ -28,6 +28,9 @@
       </v-row>
       <v-row>
         <v-col cols="4" md="4" lg="4" xl="4" class="col-title">
+          <v-icon>
+            mdi-pen
+          </v-icon>
           サカキ戦
         </v-col>
         <v-col cols="8" md="8" lg="8" xl="8">
@@ -35,10 +38,8 @@
             <v-switch
               v-model="cDtoItem.searchParams.sakaki"
               inset
-              dense
-              hide-details
               :label="cDtoItem.searchParams.sakaki ? 'サカキ戦勝利ボーナスとして算出' : ''"
-              style="margin-top: 0px;"
+              color="purple"
             />
           </ClientOnly>
         </v-col>
