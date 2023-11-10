@@ -17,6 +17,7 @@
     "@pinia-plugin-persistedstate/nuxt": "^1.1.2",
     "@pinia/nuxt": "^0.4.4",
     "cross-env": "^7.0.3",
+    "moment": "^2.29.4",
     "nuxt": "^3.7.4",
     "pinia": "^2.1.7",
     "sass": "^1.69.3",

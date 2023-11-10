@@ -2,7 +2,7 @@ export default async (
   argEndpoint: string,
   argMethod: string,
   argOptions?: {[key: string]: any},
-  transition: boolean = false
+  transition?: boolean
 ) => {
   const method: string = argMethod || 'GET'
   const options: Record<string, string | boolean> = {
@@ -10,9 +10,11 @@ export default async (
     server: false,
     ...argOptions
   }
+  // url形式ならそのまま。なければAPIサーバへのアクセスとする。
+  const url = argEndpoint.search(/:\/\//) ? argEndpoint : useRuntimeConfig().public.apiUrl + argEndpoint
   const { data, error, pending, refresh } = await useAsyncData(
     argEndpoint,
-    () => $fetch(useRuntimeConfig().public.apiUrl + argEndpoint, options))
+    () => $fetch(url, options))
 
   if (transition && error.value) {
     // transitionがtrueの場合、エラー画面に遷移させる。

@@ -12,7 +12,7 @@
 import VueLoadingOverlay from 'vue-loading-overlay'
 
 withDefaults(
-  defineProps<{ fullPage: boolean }>(),
+  defineProps<{ fullPage?: boolean }>(),
   { fullPage: false }
 )
 </script>

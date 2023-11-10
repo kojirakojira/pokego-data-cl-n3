@@ -124,6 +124,30 @@ export default () => {
     return url
   }
 
+  /**
+   * ポケモンの画像のURLを取得する。
+   *
+   * @param pathname
+   * @returns
+   */
+  const getPokemonImageUrl = (pathname: string): string => {
+    let url: string = ''
+    if (pathname) {
+      url = useRuntimeConfig().public.staticUrl + pathname
+    } else {
+      url = getUrl('/img/no-image.png') || ''
+    }
+    return url
+  }
+
+  const toArrayFromDic = (dic: Record<any, any>): Array<any> => {
+    const arr : Array<any> = []
+    for (const [, v] of Object.entries(dic)) {
+      arr.push(v)
+    }
+    return arr
+  }
+
   return {
     getPdxNo,
     appendRemarks,
@@ -132,6 +156,8 @@ export default () => {
     createStyleElem,
     deleteStyleElem,
     typeDecoration,
-    getUrl
+    getUrl,
+    getPokemonImageUrl,
+    toArrayFromDic
   }
 }
