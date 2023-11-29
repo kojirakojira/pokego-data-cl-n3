@@ -11,7 +11,7 @@ export default async (
     ...argOptions
   }
   // url形式ならそのまま。なければAPIサーバへのアクセスとする。
-  const url = argEndpoint.search(/:\/\//) ? argEndpoint : useRuntimeConfig().public.apiUrl + argEndpoint
+  const url = argEndpoint.search(/:\/\//) > 0 ? argEndpoint : useRuntimeConfig().public.apiUrl + argEndpoint
   const { data, error, pending, refresh } = await useAsyncData(
     argEndpoint,
     () => $fetch(url, options))

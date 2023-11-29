@@ -33,10 +33,10 @@
 const error: any = useError()
 // 表示メッセージ
 const dispMessage = computed(() => {
-  if (error?.message) {
-    return error.message
+  if (error.value?.message) {
+    return error.value.message
   }
-  return error?.statusCode === 404 ? '404 Not Found' : '例外が発生しました。'
+  return error.value?.statusCode === 404 ? '404 Not Found' : '例外が発生しました。'
 })
 </script>
 

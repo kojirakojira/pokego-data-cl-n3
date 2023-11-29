@@ -20,6 +20,16 @@ export const dtoStore = defineStore(
     // 直前の操作
     const navigationState = ref<string>('reload')
 
+    const history = historyState.value.history
+
+    const getHistory = (): Array<ScreenInfo> => history
+
+    const clearHistory = (): void => {
+      // 全削除
+      history.splice(0)
+    }
+
+    const getNavigation = (): string => navigationState.value
     /**
      * 画面に遷移してきたときの処理
      */
@@ -69,6 +79,8 @@ export const dtoStore = defineStore(
       positionState.value = si.position
       // 現在のwindow.historyの要素数を退避させる
       lenState.value = window.history.length
+
+      console.log(history) // eslint-disable-line no-console
     }
 
     /**
@@ -92,17 +104,6 @@ export const dtoStore = defineStore(
       history[idx].query = si.query
       history[idx].params = si.params
     }
-
-    const history = historyState.value.history
-
-    const getHistory = (): Array<ScreenInfo> => history
-
-    const clearHistory = (): void => {
-      // 全削除
-      history.splice(0)
-    }
-
-    const getNavigation = (): string => navigationState.value
 
     /**
      * 1つ前のScreenInfoを取得する。存在しない場合は、nullが返却される。
