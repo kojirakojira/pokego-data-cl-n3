@@ -64,6 +64,7 @@
               :items="cDtoItem.resData.scpRankList"
               items-per-page="100"
               :items-per-page-options="[100, 500, 1000, -1]"
+              class="body-2"
             >
               <template #[`item.percent`]="{ item }">
                 {{ item.percent + '%' }}
@@ -81,7 +82,7 @@
 
 <script setup lang="ts">
 import { RouteLocationNormalizedLoaded } from 'vue-router'
-const searchPattern = 'scpRank'
+const searchPattern = 'scpRankList'
 const headers = ref<any>([
   { title: 'ランク', key: 'rank' },
   { title: 'AT', key: 'iva' },
