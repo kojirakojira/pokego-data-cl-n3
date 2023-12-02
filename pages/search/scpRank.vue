@@ -39,7 +39,7 @@
             label="例：101508(攻撃,防御,HPを6桁で入力)"
             outlined
             dense
-            :rules="rules.iv"
+            :rules="searchCommon().rules.iv"
             :counter="6"
             maxlength="6"
             autocomplete="off"
@@ -88,12 +88,6 @@ const dto: any = useAttrs().dto
 dto.params = cDtoItem
 
 const isSearchBtnClick = ref<boolean>(false)
-const rules = readonly({
-  iv: [
-    (v: string) =>
-      ((v || '').length === 6 || (v || '').length === 0) || '個体値は6桁で入力してください。'
-  ]
-})
 
 // created: 画面を復元する
 searchCommon().restoreSearchScreen(['searchParams', 'psr', 'resData'], cDtoItem.value)

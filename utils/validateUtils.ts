@@ -1,5 +1,17 @@
+export interface ValidatePattern {
+  valid: string | Array<string>,
+  item: any,
+  itemName: string,
+  additional?: string
+}
+export interface CheckPattern {
+  item: any,
+  itemName: string,
+  additional?: string
+}
+
 export default () => {
-  const checkRequired = ({ item, itemName, additional }: Record<string, string>) => {
+  const checkRequired = ({ item, itemName, additional }: CheckPattern) => {
     if (!item) {
       let msg = `「${itemName}」は必須項目です。\n`
       if (additional) {
@@ -9,7 +21,7 @@ export default () => {
     }
     return ''
   }
-  const checkIv = ({ item, itemName, additional }: Record<string, any>) => {
+  const checkIv = ({ item, itemName, additional }: CheckPattern) => {
     const ivNames = ['攻撃', '防御', 'HP']
     let msg = ''
 
@@ -31,12 +43,22 @@ export default () => {
 
     return additional ? additional + msg : msg
   }
-  const checkEmail = ({ item, additional }: Record<string, string>) => {
+  const checkNumeric = ({ item, itemName, additional }: CheckPattern) => {
+    if (isNaN(item)) {
+      let msg = `「${itemName}」は数値項目です。\n`
+      if (additional) {
+        msg = additional + msg
+      }
+      return msg
+    }
+    return ''
+  }
+  const checkEmail = ({ item, itemName, additional }: CheckPattern) => {
     if (!item) { return '' }
 
     let msg = ''
     if (!/^([a-zA-Z0-9])+([a-zA-Z0-9._-])*@([a-zA-Z0-9_-])+([a-zA-Z0-9._-]+)+$/.test(item)) {
-      msg = 'メールアドレスの形式に合いません。\n'
+      msg = `「${itemName}がメールアドレスの形式に合いません。\n`
       if (additional) {
         msg = additional + msg
       }
@@ -48,7 +70,7 @@ export default () => {
    *
    * iArrの要素のパターン：
    * | key | value | 必須 | 型 | 備考 |
-   * | valid | "required" or "iv" or "email" | 必須 | String or Array | 実行するチェックを指定する。 |
+   * | valid | "required" or "iv" or "numeric" or "email" | 必須 | String or Array | 実行するチェックを指定する。 |
    * | item | チェックする値 | 必須 | validに応ず |  |
    * | itemName | itemの日本語名 | 必須 | String |  |
    * | additional | メッセージの前に付加する値 | 任意 | String |  |
@@ -56,7 +78,7 @@ export default () => {
    *  [{valid: "required" or ["required", "email"], item: "", itemName: "", additional: "", }]
    * @param 判定する配列
    */
-  const validate = (iArr: Array<Record<string, any>>) => {
+  const validate = (vpArr: Array<ValidatePattern>) => {
     let msg = ''
     const getFuncName = (v: string): string => {
       return `check${v.charAt(0).toUpperCase() + v.slice(1)}`
@@ -64,13 +86,14 @@ export default () => {
     const checkFuncDic: Record<string, Function> = {
       checkRequired,
       checkIv,
+      checkNumeric,
       checkEmail
     }
-    const execFunc = (v: string, e: any) => {
+    const execFunc = (v: string, e: CheckPattern) => {
       return checkFuncDic[getFuncName(v)](e)
     }
 
-    iArr.forEach((elem) => {
+    vpArr.forEach((elem: ValidatePattern) => {
       const valid = elem.valid
       if (typeof valid === 'string') {
         // validが文字列の場合
@@ -94,6 +117,7 @@ export default () => {
     validate,
     checkRequired,
     checkIv,
+    checkNumeric,
     checkEmail
   }
 }

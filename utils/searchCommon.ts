@@ -94,6 +94,10 @@ export default () => {
   const rules = readonly({
     name: [
       (v: string) => (v || '').length <= 20 || 'ポケモンは20文字以内で入力してください。'
+    ],
+    iv: [
+      (v: string) =>
+        ((v || '').length === 6 || (v || '').length === 0) || '個体値は6桁で入力してください。'
     ]
   })
 

@@ -77,7 +77,6 @@ const toSelector = (key: string) => {
     key === 'filterAll' ||
     key === 'race' ||
     key === 'raceDiff' ||
-    key === 'afterEvoScpRank' ||
     key === 'afterEvoCp' ||
     key === 'threeGalarBirds' ||
     key === 'cpIv' ||

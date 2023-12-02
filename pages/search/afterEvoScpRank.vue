@@ -10,6 +10,7 @@
             mdi-pen
           </v-icon>
           ポケモン
+          <span class="required-mark">必須</span>
         </v-col>
         <v-col cols="12" md="8" lg="8" xl="8">
           <v-text-field
@@ -22,6 +23,62 @@
             :counter="20"
             maxlength="20"
             autocomplete="off"
+            @keyup.enter.exact="clickSearchBtn"
+          />
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col cols="12" md="4" lg="4" xl="4" class="col-title">
+          <v-icon>
+            mdi-pen
+          </v-icon>
+          個体値
+          <span class="required-mark">必須</span>
+        </v-col>
+        <v-col cols="12" md="8" lg="8" xl="8">
+          <v-text-field
+            v-model="cDtoItem.searchParams.iv"
+            label="例：101508(攻撃,防御,HPを6桁で入力)"
+            outlined
+            dense
+            :rules="searchCommon().rules.iv"
+            :counter="6"
+            maxlength="6"
+            autocomplete="off"
+            type="number"
+            @keyup.enter.exact="clickSearchBtn"
+          />
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col cols="12" md="4" lg="4" xl="4" class="col-title">
+          <v-icon>
+            mdi-pen
+          </v-icon>
+          CP
+          <v-tooltip bottom>
+            <template #activator="{ props }">
+              <div
+                v-bind="props"
+                class="optional-mark"
+              >
+                <span>任意</span>
+                <v-icon size="small" color="white">
+                  mdi-help-circle
+                </v-icon>
+              </div>
+            </template>
+            <span>入力すると、進化後のCPもいっしょに調べることができます。</span>
+          </v-tooltip>
+        </v-col>
+        <v-col cols="12" md="8" lg="8" xl="8">
+          <v-text-field
+            v-model="cDtoItem.searchParams.cp"
+            label="例：4049"
+            outlined
+            dense
+            autocomplete="off"
+            type="number"
             @keyup.enter.exact="clickSearchBtn"
           />
         </v-col>
@@ -49,12 +106,14 @@
 </template>
 
 <script setup lang="ts">
-const searchPattern = 'scpRankMaxMin'
+const searchPattern = 'afterEvoScpRank'
 
 // current dto item
 const cDtoItem = ref<OnePokeDtoItem>({
   searchParams: {
-    name: ''
+    name: '',
+    iv: '',
+    cp: ''
   },
   psr: {
     goPokedexList: [],
@@ -87,13 +146,19 @@ const clickSearchBtn = async () => {
 const check = (): string => {
   let msg = ''
   msg += validateUtils().checkRequired({ item: cDtoItem.value.searchParams.name, itemName: 'ポケモン' })
+  msg += validateUtils().checkRequired({ item: cDtoItem.value.searchParams.iv, itemName: '個体値' })
+  msg += validateUtils().checkIv({ item: cDtoItem.value.searchParams.iv, itemName: '個体値' })
   return msg
 }
 
 const get = async (): Promise<Record<string, any>> => {
-  return await fetchCommon('/api/scpRankMaxMin', 'GET', {
+  return await fetchCommon('/api/afterEvoScpRank', 'GET', {
     query: {
-      name: cDtoItem.value.searchParams.name
+      name: cDtoItem.value.searchParams.name,
+      iva: cDtoItem.value.searchParams.iv.substring(0, 2),
+      ivd: cDtoItem.value.searchParams.iv.substring(2, 4),
+      ivh: cDtoItem.value.searchParams.iv.substring(4, 6),
+      cp: cDtoItem.value.searchParams.cp
     }
   })
 }
@@ -116,13 +181,13 @@ const handleApiResult = (res: Record<string, any>) => {
       cDtoItem.value.resData = rd
       cDtoItem.value.psr = { goPokedexList: [], maybe: false }
       useRouter().push({
-        name: 'search-result-scpRankMaxMinResult',
+        name: 'search-result-afterEvoScpRankResult',
         query: searchCommon().makeQuery(rd.pokedexId, cDtoItem.value.searchParams)
       })
     } else {
       // 複数件 or 0件ヒットした場合
       useRouter().replace({
-        name: 'search-scpRankMaxMin'
+        name: 'search-afterEvoScpRank'
       })
       cDtoItem.value.psr = rd.pokemonSearchResult
       isSearchBtnClick.value = false
@@ -137,8 +202,20 @@ useHead({
     { property: 'og:title', content: `${searchCommon().getSearchPatternName(searchPattern)} - ペリずかん` },
     { property: 'og:url', content: useRuntimeConfig().public.url + useRoute().path },
     { property: 'og:site_name', content: 'ペリずかん' },
-    { property: 'og:description', content: 'PvPにおける最高個体値、最低個体値を確認することができます。' },
+    { property: 'og:description', content: '進化後のPvP順位のランキングを確認できます。' },
     { property: 'og:image', content: useRuntimeConfig().public.staticUrl + '/pokego/peripper-eyes.png' }
   ]
 })
 </script>
+
+<style>
+/* 入力ボックスフォーカス時に出てくる上下矢印のボタンを非表示にする。 */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+input[type="number"] {
+  -moz-appearance:textfield;
+}
+</style>
