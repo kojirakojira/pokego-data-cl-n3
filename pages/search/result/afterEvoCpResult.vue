@@ -37,7 +37,7 @@
                       {{ `${cDtoItem.resData.iva} - ${cDtoItem.resData.ivd} - ${cDtoItem.resData.ivh}` }}
                     </v-col>
                   </v-row>
-                  <v-row v-if="cDtoItem.resData.cp" class="searched-param">
+                  <v-row class="searched-param">
                     <v-col cols="7" md="6" lg="6" xl="6" class="pa-1">
                       CP
                     </v-col>
@@ -45,7 +45,7 @@
                       {{ cDtoItem.resData.cp }}
                     </v-col>
                   </v-row>
-                  <v-row v-if="cDtoItem.resData.pl" class="searched-param">
+                  <v-row class="searched-param">
                     <v-col cols="7" md="6" lg="6" xl="6" class="pa-1">
                       (PL)
                     </v-col>
@@ -100,14 +100,11 @@
 
 <script setup lang="ts">
 import { RouteLocationNormalizedLoaded } from 'vue-router'
-const searchPattern = 'afterEvoScpRank'
+const searchPattern = 'afterEvoCp'
 const headers = ref<any>([
   { title: '図鑑№', key: 'goPokedex.pokedexId', sortable: false },
   { title: '', key: 'goPokedex.image', sortable: false, width: '52px' },
   { title: 'ポケモン', key: 'goPokedex.name', sortable: false },
-  { title: 'スーパーリーグ順位', key: 'slRank', sortable: false },
-  { title: 'ハイパーリーグ順位', key: 'hlRank', sortable: false },
-  { title: 'マスターリーグ順位', key: 'mlRank', sortable: false },
   { title: 'CP', key: 'cp', sortable: false }])
 // current dto item
 const cDtoItem = ref<ResultDtoItem>({
@@ -124,7 +121,7 @@ const isLoading = ref<boolean>(true)
 
 // APIアクセス用get関数
 const get = async (): Promise<Record<string, any>> => {
-  const res = await fetchCommon('/api/afterEvoScpRank', 'GET', {
+  const res = await fetchCommon('/api/afterEvoCp', 'GET', {
     query: {
       id: cDtoItem.value.searchParams.pid,
       iva: cDtoItem.value.searchParams.iv.substring(0, 2),
@@ -158,9 +155,7 @@ if (rd) {
   // 存在しない場合は取得する
   let msg = ''
   msg += validateUtils().checkIv({ item: cDtoItem.value.searchParams.iv, itemName: '個体値' })
-  msg += cDtoItem.value.searchParams.cp
-    ? validateUtils().checkNumeric({ item: cDtoItem.value.searchParams.cp, itemName: 'CP' })
-    : ''
+  msg += validateUtils().checkNumeric({ item: cDtoItem.value.searchParams.cp, itemName: 'CP' })
   if (msg) {
     throw createError({ statusCode: 400, message: '不正なパラメータが指定されました。', fatal: true })
   }
@@ -178,13 +173,13 @@ isLoading.value = !cDtoItem.value.resData
 const ogpName = cDtoItem.value.resData.name
 const ogpImage = cDtoItem.value.resData.image || '/pokego/peripper-eyes.png'
 useHead({
-  title: `${ogpName}の進化後PvP順位`,
+  title: `${ogpName}の進化後CP`,
   meta: [
     { property: 'og:type', content: 'article' },
-    { property: 'og:title', content: `${ogpName}の進化後PvP順位 - ペリずかん` },
+    { property: 'og:title', content: `${ogpName}の進化後CP - ペリずかん` },
     { property: 'og:url', content: useRuntimeConfig().public.url + useRoute().path },
     { property: 'og:site_name', content: 'ペリずかん' },
-    { property: 'og:description', content: `${cDtoItem.value.resData.name}の進化後のPvP順位を確認できます。` },
+    { property: 'og:description', content: `${cDtoItem.value.resData.name}の進化後のCPを確認できます。` },
     { property: 'og:image', content: useRuntimeConfig().public.staticUrl + ogpImage }
   ]
 })
