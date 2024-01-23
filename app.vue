@@ -56,7 +56,12 @@ onMounted(() => {
   // display.theme.dark = this.$store.getters.darkTheme
   isLoading.value = false
 })
+// constantUtilsの初期化
+await constantUtils().init()
 
+/**
+ * DTO機能
+ */
 const dto = ref<Record<string, any>>({
   params: {}
 })

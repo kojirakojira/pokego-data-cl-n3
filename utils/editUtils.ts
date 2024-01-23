@@ -23,10 +23,10 @@ export default () => {
    * 英語名、日本語名の両方から取得できます。
    *
    */
-  const getRGB = async (type1: string, type2?: string) => {
+  const getRGB = (type1: string, type2?: string) => {
     let rgb1: Record<string, any> = { r: 0, g: 0, b: 0 }
     let rgb2: Record<string, any> = { r: 0, g: 0, b: 0 }
-    for (const t of (await constantUtils()).TYPE) {
+    for (const t of (constantUtils()).value.TYPE) {
       if (type1 === t.v || type1 === t.k) { rgb1 = t }
       if (type2 === t.v || type2 === t.k) { rgb2 = t }
     }
@@ -44,10 +44,10 @@ export default () => {
      * @param type1 タイプ１
      * @param type2 タイプ２
      */
-  const getRGBA = async (alpha: number, type1: string, type2: string) => {
+  const getRGBA = (alpha: number, type1: string, type2: string) => {
     let rgb1: Record<string, any> = { r: 0, g: 0, b: 0 }
     let rgb2: Record<string, any> = { r: 0, g: 0, b: 0 }
-    for (const t of (await constantUtils()).TYPE) {
+    for (const t of (constantUtils()).value.TYPE) {
       if (type1 === t.v || type1 === t.k) { rgb1 = t }
       if (type2 === t.v || type2 === t.k) { rgb2 = t }
     }
@@ -101,8 +101,8 @@ export default () => {
      *
      * @param {String} value タイプコメントの1つ
      */
-  const typeDecoration = async (value: string) => {
-    const regex = new RegExp((await constantUtils()).TYPE.map(elem => elem.v).join('|'), 'g')
+  const typeDecoration = (value: string) => {
+    const regex = new RegExp((constantUtils()).value.TYPE.map(elem => elem.v).join('|'), 'g')
     return value.replace(regex, (match) => {
       return '<span class="type" style="background-color: ' +
         `${getRGB(match)}">${match}</span>`

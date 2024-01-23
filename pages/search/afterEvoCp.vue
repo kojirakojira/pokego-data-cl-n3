@@ -36,17 +36,9 @@
           <span class="required-mark">必須</span>
         </v-col>
         <v-col cols="12" md="8" lg="8" xl="8">
-          <v-text-field
+          <SearchInputIv
             v-model="cDtoItem.searchParams.iv"
-            label="例：101508(攻撃,防御,HPを6桁で入力)"
-            outlined
-            dense
-            :rules="searchCommon().rules.iv"
-            :counter="6"
-            maxlength="6"
-            autocomplete="off"
-            type="number"
-            @keyup.enter.exact="clickSearchBtn"
+            :keyup-enter="clickSearchBtn"
           />
         </v-col>
       </v-row>
