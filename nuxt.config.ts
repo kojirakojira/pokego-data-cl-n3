@@ -1,6 +1,6 @@
 import vuetify from 'vite-plugin-vuetify'
 // https://nuxt.com/docs/api/configuration/nuxt-config
-console.log(`APP_ENV=${process.env.APP_ENV}`)
+console.log(`APP_ENV=${process.env.APP_ENV}`) // eslint-disable-line no-console
 
 const defineNuxtConfig = async () => {
   let envVars: Record<string, string> = {}
@@ -50,12 +50,13 @@ const defineNuxtConfig = async () => {
     },
     vite: {
       define: {
+        __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: false,
         'process.env.DEBUG': false
       },
       vue: {
         script: {
-          defineModel: true,
-          propsDestructure: true
+          defineModel: true, // TODO: Vue v3.4.15にバージョンアップさせた際に追加。（将来的にいらなくなりそう）
+          propsDestructure: true // TODO: Vue v3.4.15にバージョンアップさせた際に追加。（将来的にいらなくなりそう）
         }
       },
       ssr: {

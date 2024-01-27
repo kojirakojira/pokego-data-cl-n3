@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- ナビゲーションバー -->
-    <v-app-bar app color="grey-darken-4 accent-4" style="z-index:60;" height="56">
+    <v-app-bar app color="grey-darken-4 accent-4" height="56">
       <v-app-bar-nav-icon @click="drawer = !drawer" />
       <v-app-bar-title>
         <nuxt-link :to="{ name: 'search' }" class="title-line">
@@ -21,18 +21,21 @@
         </v-tab>
       </v-tabs>
     </v-app-bar>
-    <v-navigation-drawer v-model="drawer" permanent>
-      <v-list density="compact">
-        <v-list-item
-          v-for="(menuItem, index) in menuItems"
-          :key="index"
-          :to="menuItem.link"
-          style="font-size: 0.875rem;"
-        >
-          {{ menuItem.name }}
-        </v-list-item>
-      </v-list>
-    </v-navigation-drawer>
+    <!-- TODO: client-onlyはv-navigation-drawerでHydration style mismatchのエラーが出るため一時的に追加している。 -->
+    <client-only>
+      <v-navigation-drawer v-model="drawer" permanent>
+        <v-list density="compact">
+          <v-list-item
+            v-for="(menuItem, index) in menuItems"
+            :key="index"
+            :to="menuItem.link"
+            style="font-size: 0.875rem;"
+          >
+            {{ menuItem.name }}
+          </v-list-item>
+        </v-list>
+      </v-navigation-drawer>
+    </client-only>
   </div>
 </template>
 
