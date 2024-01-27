@@ -13,17 +13,9 @@
           <span class="required-mark">必須</span>
         </v-col>
         <v-col cols="12" md="8" lg="8" xl="8">
-          <v-text-field
+          <SearchInputPokeName
             v-model="cDtoItem.searchParams.name"
-            label="例：ミュウツー"
-            outlined
-            dense
-            rows="1"
-            :rules="searchCommon().rules.name"
-            :counter="20"
-            maxlength="20"
-            autocomplete="off"
-            @keyup.enter.exact="clickSearchBtn"
+            :keyup-enter="clickSearchBtn"
           />
         </v-col>
       </v-row>
