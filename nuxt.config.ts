@@ -3,7 +3,10 @@ import vuetify from 'vite-plugin-vuetify'
 console.log(`APP_ENV=${process.env.APP_ENV}`)
 
 const defineNuxtConfig = async () => {
-  const envVars: Record<string, string> = await import(`./env/${process.env.APP_ENV}`)
+  let envVars: Record<string, string> = {}
+  if (process.env.APP_ENV) {
+    envVars = await import(`./env/${process.env.APP_ENV}`)
+  }
   return {
   // devtools: { enabled: true },
     runtimeConfig: envVars,
@@ -48,6 +51,12 @@ const defineNuxtConfig = async () => {
     vite: {
       define: {
         'process.env.DEBUG': false
+      },
+      vue: {
+        script: {
+          defineModel: true,
+          propsDestructure: true
+        }
       },
       ssr: {
         noExternal: ['vuetify']
