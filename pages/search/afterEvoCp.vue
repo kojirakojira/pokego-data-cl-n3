@@ -120,6 +120,7 @@ const check = (): string => {
   msg += validateUtils().checkRequired({ item: cDtoItem.value.searchParams.iv, itemName: '個体値' })
   msg += validateUtils().checkRequired({ item: cDtoItem.value.searchParams.cp, itemName: 'CP' })
   msg += validateUtils().checkIv({ item: cDtoItem.value.searchParams.iv, itemName: '個体値' })
+  msg += validateUtils().checkNumeric({ item: cDtoItem.value.searchParams.cp, itemName: 'CP' })
   return msg
 }
 
@@ -145,7 +146,10 @@ const handleApiResult = (res: Record<string, any>) => {
 
   // メッセージ、メッセージレベルによるハンドリング
   const success = searchCommon().handleApiMessage(rd)
-  if (!success) { return }
+  if (!success) {
+    isSearchBtnClick.value = false
+    return
+  }
 
   if (rd.success) {
     if (rd.pokemonSearchResult.unique) {

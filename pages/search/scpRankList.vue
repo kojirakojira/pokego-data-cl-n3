@@ -127,7 +127,10 @@ const handleApiResult = (res: Record<string, any>) => {
 
   // メッセージ、メッセージレベルによるハンドリング
   const success = searchCommon().handleApiMessage(rd)
-  if (!success) { return }
+  if (!success) {
+    isSearchBtnClick.value = false
+    return
+  }
 
   if (rd.success) {
     if (rd.pokemonSearchResult.unique) {
