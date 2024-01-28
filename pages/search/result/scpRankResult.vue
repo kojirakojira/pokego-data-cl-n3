@@ -81,7 +81,6 @@
                 cDtoItem.resData.scpHlRank,
                 cDtoItem.resData.scpMlRank
               ]"
-              mobile-breakpoint="300"
               no-data-text="loading now..."
               no-results-text="該当するデータがありません。"
             >
@@ -135,7 +134,7 @@ const isLoading = ref<boolean>(true)
 const get = async (): Promise<Record<string, any>> => {
   const res = await fetchCommon('/api/scpRank', 'GET', {
     query: {
-      id: cDtoItem.value.searchParams.pid,
+      pid: cDtoItem.value.searchParams.pid,
       iva: cDtoItem.value.searchParams.iv.substring(0, 2),
       ivd: cDtoItem.value.searchParams.iv.substring(2, 4),
       ivh: cDtoItem.value.searchParams.iv.substring(4, 6)
@@ -153,7 +152,7 @@ const get = async (): Promise<Record<string, any>> => {
  */
 const route: RouteLocationNormalizedLoaded = useRoute()
 cDtoItem.value.searchParams = {
-  pid: route.query.pid ? route.query.pid.toString() : '',
+  pid: route.query.pid,
   iv: route.query.iv
 }
 // dtoStoreからresDataを復元

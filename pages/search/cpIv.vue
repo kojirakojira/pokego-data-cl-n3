@@ -9,8 +9,29 @@
           <v-icon>
             mdi-pen
           </v-icon>
+          シチュエーション
+        </v-col>
+        <v-col cols="12" md="8" lg="8" xl="8">
+          <client-only>
+            <v-select
+              v-model="cDtoItem.searchParams.situation"
+              :items="constantUtils().value.SITUATION"
+              item-value="k"
+              item-title="v"
+              label="シチュエーションを選択"
+              dense
+              outlined
+              hide-details
+            />
+          </client-only>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col cols="12" md="4" lg="4" xl="4" class="col-title">
+          <v-icon>
+            mdi-pen
+          </v-icon>
           ポケモン
-          <span class="required-mark">必須</span>
         </v-col>
         <v-col cols="12" md="8" lg="8" xl="8">
           <SearchInputPokeName
@@ -24,13 +45,17 @@
           <v-icon>
             mdi-pen
           </v-icon>
-          個体値
-          <span class="required-mark">必須</span>
+          CP
         </v-col>
         <v-col cols="12" md="8" lg="8" xl="8">
-          <SearchInputIv
-            v-model="cDtoItem.searchParams.iv"
-            :keyup-enter="clickSearchBtn"
+          <v-text-field
+            v-model="cDtoItem.searchParams.cp"
+            label="例：4049"
+            outlined
+            dense
+            autocomplete="off"
+            type="number"
+            @keyup.enter.exact="clickSearchBtn"
           />
         </v-col>
       </v-row>
@@ -39,17 +64,28 @@
           <v-icon>
             mdi-pen
           </v-icon>
-          PL
-          <span class="required-mark">必須</span>
+          天候ブースト
+          <v-tooltip bottom>
+            <template #activator="{ props }">
+              <v-icon
+                small
+                v-bind="props"
+              >
+                mdi-help-circle
+              </v-icon>
+            </template>
+            <span>フィールドリサーチクリア後のボーナス、タマゴ孵化は、天候ブーストの影響を受けません。</span>
+          </v-tooltip>
         </v-col>
         <v-col cols="12" md="8" lg="8" xl="8">
-          <v-select
-            v-model="cDtoItem.searchParams.pl"
-            :items="constantUtils().value.PL"
-            label="PLを選択"
-            dense
-            outlined
+          <v-switch
+            v-model="cDtoItem.searchParams.wbFlg"
+            inset
             hide-details
+            :label="cDtoItem.searchParams.wbFlg ? 'あり' : 'なし'"
+            :disabled="
+              cDtoItem.searchParams.situation === 'frTask' || cDtoItem.searchParams.situation === 'egg'"
+            style="margin-top: 0px;"
           />
         </v-col>
       </v-row>
@@ -76,13 +112,14 @@
 </template>
 
 <script setup lang="ts">
-const searchPattern = 'cp'
+const searchPattern = 'cpIv'
 // current dto item
 const cDtoItem = ref<OnePokeDtoItem>({
   searchParams: {
+    situation: 'wild',
     name: '',
-    iv: '',
-    pl: ''
+    cp: '',
+    wbFlg: false
   },
   psr: {
     goPokedexList: [],
@@ -113,21 +150,14 @@ const clickSearchBtn = async () => {
 const check = () => {
   let msg = ''
   msg += validateUtils().checkRequired({ item: cDtoItem.value.searchParams.name, itemName: 'ポケモン' })
-  msg += validateUtils().checkRequired({ item: cDtoItem.value.searchParams.iv, itemName: '個体値' })
-  msg += validateUtils().checkRequired({ item: cDtoItem.value.searchParams.pl, itemName: 'PL' })
-  msg += validateUtils().checkIv({ item: cDtoItem.value.searchParams.iv, itemName: '個体値' })
+  msg += validateUtils().checkRequired({ item: cDtoItem.value.searchParams.cp, itemName: 'CP' })
+  msg += validateUtils().checkNumeric({ item: cDtoItem.value.searchParams.cp, itemName: 'CP' })
   return msg
 }
 
 const get = async () => {
-  return await fetchCommon('/api/cp', 'GET', {
-    query: {
-      name: cDtoItem.value.searchParams.name,
-      iva: cDtoItem.value.searchParams.iv.substring(0, 2),
-      ivd: cDtoItem.value.searchParams.iv.substring(2, 4),
-      ivh: cDtoItem.value.searchParams.iv.substring(4, 6),
-      pl: cDtoItem.value.searchParams.pl
-    }
+  return await fetchCommon('/api/cpIv', 'GET', {
+    query: cDtoItem.value.searchParams
   })
 }
 
@@ -141,7 +171,10 @@ const handleApiResult = (res: Record<string, any>) => {
 
   // メッセージ、メッセージレベルによるハンドリング
   const success = searchCommon().handleApiMessage(rd)
-  if (!success) { return }
+  if (!success) {
+    isSearchBtnClick.value = false
+    return
+  }
 
   if (rd.success) {
     if (rd.pokemonSearchResult.unique) {
@@ -149,13 +182,13 @@ const handleApiResult = (res: Record<string, any>) => {
       cDtoItem.value.resData = rd
       cDtoItem.value.psr = { goPokedexList: [], maybe: false }
       useRouter().push({
-        name: 'search-result-cpResult',
+        name: 'search-result-cpIvResult',
         query: searchCommon().makeQuery(rd.pokedexId, cDtoItem.value.searchParams)
       })
     } else {
       // 複数件 or 0件ヒットした場合
       useRouter().replace({
-        name: 'search-cp'
+        name: 'search-cpIv'
       })
       cDtoItem.value.psr = rd.pokemonSearchResult
       isSearchBtnClick.value = false
@@ -170,7 +203,7 @@ useHead({
     { property: 'og:title', content: `${searchCommon().getSearchPatternName(searchPattern)} - ペリずかん` },
     { property: 'og:url', content: useRuntimeConfig().public.url + useRoute().path },
     { property: 'og:site_name', content: 'ペリずかん' },
-    { property: 'og:description', content: '個体値、PLを入力することにより、CPを求めることができます。' },
+    { property: 'og:description', content: 'ポケモン、CP、ポケモンを捕まえるときのシチュエーションから、個体値を検索することができます。' },
     { property: 'og:image', content: useRuntimeConfig().public.staticUrl + '/pokego/peripper-eyes.png' }
   ]
 })

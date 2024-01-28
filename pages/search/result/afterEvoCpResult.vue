@@ -69,7 +69,7 @@
               v-if="cDtoItem.resData.afEvoList.length"
               :headers="headers"
               :items="cDtoItem.resData.afEvoList"
-              :items-per-page-options="[-1]"
+              items-per-page="-1"
               class="body-2"
             >
               <template #[`item.goPokedex.pokedexId`]="{ item }">
@@ -123,7 +123,7 @@ const isLoading = ref<boolean>(true)
 const get = async (): Promise<Record<string, any>> => {
   const res = await fetchCommon('/api/afterEvoCp', 'GET', {
     query: {
-      id: cDtoItem.value.searchParams.pid,
+      pid: cDtoItem.value.searchParams.pid,
       iva: cDtoItem.value.searchParams.iv.substring(0, 2),
       ivd: cDtoItem.value.searchParams.iv.substring(2, 4),
       ivh: cDtoItem.value.searchParams.iv.substring(4, 6),
@@ -142,7 +142,7 @@ const get = async (): Promise<Record<string, any>> => {
  */
 const route: RouteLocationNormalizedLoaded = useRoute()
 cDtoItem.value.searchParams = {
-  pid: route.query.pid ? route.query.pid.toString() : '',
+  pid: route.query.pid,
   iv: route.query.iv,
   cp: route.query.cp
 }

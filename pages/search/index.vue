@@ -78,7 +78,6 @@ const toSelector = (key: string) => {
     key === 'race' ||
     key === 'raceDiff' ||
     key === 'threeGalarBirds' ||
-    key === 'cpIv' ||
     key === 'plList' ||
     key === 'cpRank' ||
     key === 'cpRankList' ||

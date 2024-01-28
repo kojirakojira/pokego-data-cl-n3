@@ -210,10 +210,7 @@ const isLoading = ref<boolean>(true)
 // APIアクセス用get関数
 const get = async (): Promise<Record<string, any>> => {
   const res = await fetchCommon('/api/scpRankMaxMin', 'GET', {
-    query: {
-      id: cDtoItem.value.searchParams.pid,
-      league: cDtoItem.value.searchParams.league
-    }
+    query: cDtoItem.value.searchParams
   })
   const rd: Record<string, any> = res.data || {}
   if (!searchCommon().pushToast(rd?.message, rd?.msgLevel)) {
@@ -255,7 +252,7 @@ const onClickScpSpBtn = () => {
  */
 const route: RouteLocationNormalizedLoaded = useRoute()
 cDtoItem.value.searchParams = {
-  pid: route.query.pid ? route.query.pid.toString() : ''
+  pid: route.query.pid
 }
 // dtoStoreからresDataを復元
 const rd: Record<string, any> | null = searchCommon().restoreResData()

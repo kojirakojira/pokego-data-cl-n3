@@ -58,4 +58,3 @@ const closeToast = () => {
 }
 
 </script>
-~/stores/toastStore

@@ -81,9 +81,7 @@ const isLoading = ref<boolean>(true)
 // APIアクセス用get関数
 const get = async (): Promise<Record<string, any>> => {
   const res = await fetchCommon('/api/fRTask', 'GET', {
-    query: {
-      id: cDtoItem.value.searchParams.pid
-    }
+    query: cDtoItem.value.searchParams
   })
   const rd: Record<string, any> = res.data || {}
   if (!searchCommon().pushToast(rd?.message, rd?.msgLevel)) {
@@ -97,8 +95,8 @@ const get = async (): Promise<Record<string, any>> => {
  */
 const route: RouteLocationNormalizedLoaded = useRoute()
 cDtoItem.value.searchParams = {
-  pid: route.query.pid ? route.query.pid.toString() : '',
-  shadow: !!route.query.shadow
+  pid: route.query.pid,
+  shadow: route.query.shadow === 'true'
 }
 // dtoStoreからresDataを復元
 const rd: Record<string, any> | null = searchCommon().restoreResData()

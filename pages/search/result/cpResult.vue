@@ -92,7 +92,7 @@ const isLoading = ref<boolean>(true)
 const get = async (): Promise<Record<string, any>> => {
   const res = await fetchCommon('/api/cp', 'GET', {
     query: {
-      id: cDtoItem.value.searchParams.pid,
+      pid: cDtoItem.value.searchParams.pid,
       iva: cDtoItem.value.searchParams.iv.substring(0, 2),
       ivd: cDtoItem.value.searchParams.iv.substring(2, 4),
       ivh: cDtoItem.value.searchParams.iv.substring(4, 6),
@@ -111,9 +111,9 @@ const get = async (): Promise<Record<string, any>> => {
   */
 const route: RouteLocationNormalizedLoaded = useRoute()
 cDtoItem.value.searchParams = {
-  pid: route.query.pid ? route.query.pid.toString() : '',
-  iv: route.query.iv ? route.query.iv.toString() : '',
-  pl: route.query.pl ? route.query.pl.toString() : ''
+  pid: route.query.pid,
+  iv: route.query.iv,
+  pl: route.query.pl
 }
 // dtoStoreからresDataを復元
 const rd: Record<string, any> | null = searchCommon().restoreResData()
