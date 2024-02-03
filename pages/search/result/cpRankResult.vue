@@ -44,20 +44,17 @@
         </v-row>
       </v-container>
       <h3>
-        PLとCP一覧
+        {{ `算出結果(PL40時CP：${cDtoItem.resData.cpRank.cp})` }}
       </h3>
       <v-container>
-        <v-data-table
-          :headers="headers"
-          :items="cDtoItem.resData.plList"
-          items-per-page="-1"
-          class="body-2"
-        >
-          <template #[`item.percent`]="{ item }">
-            {{ item.percent + '%' }}
-          </template>
-          <template #bottom />
-        </v-data-table>
+        <v-row>
+          <v-col cols="12" md="6" lg="6" xl="6" class="col-title">
+            順位
+          </v-col>
+          <v-col cols="12" md="6" lg="6" xl="6">
+            {{ `${cDtoItem.resData.cpRank.rank}位 / 4096位` }}
+          </v-col>
+        </v-row>
       </v-container>
     </div>
     <div v-else>
@@ -68,7 +65,7 @@
 
 <script setup lang="ts">
 import { RouteLocationNormalizedLoaded } from 'vue-router'
-const searchPattern = 'plList'
+const searchPattern = 'cpRank'
 // current dto item
 const cDtoItem = ref<ResultDtoItem>({
   searchParams: {
@@ -80,15 +77,11 @@ const cDtoItem = ref<ResultDtoItem>({
 const dto: any = useAttrs().dto
 dto.params = cDtoItem
 
-const headers = ref<any>([
-  { title: 'PL', key: 'pl', sortable: true },
-  { title: 'CP', key: 'cp', sortable: true }
-])
 const isLoading = ref<boolean>(true)
 
 // APIアクセス用get関数
 const get = async (): Promise<Record<string, any>> => {
-  const res = await fetchCommon('/api/plList', 'GET', {
+  const res = await fetchCommon('/api/cpRank', 'GET', {
     query: {
       pid: cDtoItem.value.searchParams.pid,
       iva: cDtoItem.value.searchParams.iv.substring(0, 2),
@@ -127,13 +120,13 @@ isLoading.value = !cDtoItem.value.resData
 const ogpName = cDtoItem.value.resData.name
 const ogpImage = cDtoItem.value.resData.image || '/pokego/peripper-eyes.png'
 useHead({
-  title: `${ogpName}のPLごとのCP`,
+  title: `${ogpName}のCP順位`,
   meta: [
     { property: 'og:type', content: 'article' },
-    { property: 'og:title', content: `${ogpName}のPLごとのCP - ペリずかん` },
+    { property: 'og:title', content: `${ogpName}のCP順位 - ペリずかん` },
     { property: 'og:url', content: useRuntimeConfig().public.url + useRoute().path },
     { property: 'og:site_name', content: 'ペリずかん' },
-    { property: 'og:description', content: `${ogpName}のPLごとのCPを確認できます。` },
+    { property: 'og:description', content: `${ogpName}全個体中における、指定した個体値のCP順位を確認できます。` },
     { property: 'og:image', content: useRuntimeConfig().public.staticUrl + ogpImage }
   ]
 })

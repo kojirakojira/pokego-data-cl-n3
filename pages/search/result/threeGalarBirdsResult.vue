@@ -29,12 +29,20 @@
                       {{ editUtils().appendRemarks(cDtoItem.resData.name, cDtoItem.resData.remarks) }}
                     </v-col>
                   </v-row>
-                  <v-row class="searched-param" align="center">
+                  <v-row class="searched-param">
                     <v-col cols="7" md="6" lg="6" xl="6" class="pa-1">
-                      個体値<br>(こうげき - ぼうぎょ - HP)
+                      CP
                     </v-col>
                     <v-col cols="5" md="6" lg="6" xl="6" class="pa-1">
-                      {{ `${cDtoItem.resData.iva} - ${cDtoItem.resData.ivd} - ${cDtoItem.resData.ivh}` }}
+                      {{ cDtoItem.resData.cp }}
+                    </v-col>
+                  </v-row>
+                  <v-row class="searched-param">
+                    <v-col cols="7" md="6" lg="6" xl="6" class="pa-1">
+                      天候ブースト
+                    </v-col>
+                    <v-col cols="5" md="6" lg="6" xl="6" class="pa-1">
+                      {{ cDtoItem.resData.wbFlg ? 'あり' : 'なし' }}
                     </v-col>
                   </v-row>
                 </v-container>
@@ -43,21 +51,42 @@
           </v-col>
         </v-row>
       </v-container>
+      <v-container>
+        <v-row>
+          <v-col class="subtitle-2">
+            野生ポケモンにおけるPLは1～30、個体値はHP、こうげき、ぼうぎょそれぞれ最低値保証はなく0～15の振れ幅があります。天候ブーストの場合、PLは6～35、個体値は4～15になります。
+          </v-col>
+        </v-row>
+      </v-container>
       <h3>
-        PLとCP一覧
+        {{ `個体値一覧(CP${cDtoItem.resData.cp})` }}
       </h3>
       <v-container>
-        <v-data-table
-          :headers="headers"
-          :items="cDtoItem.resData.plList"
-          items-per-page="-1"
-          class="body-2"
-        >
-          <template #[`item.percent`]="{ item }">
-            {{ item.percent + '%' }}
-          </template>
-          <template #bottom />
-        </v-data-table>
+        <v-row>
+          <v-col
+            cols="12"
+            md="12"
+            lg="12"
+            xl="12"
+            style="text-align: right;"
+            class="subtitle-2"
+          >
+            {{ `該当する個体数：${cDtoItem.resData.ivList?.length}` }}
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-data-table
+            :headers="headers"
+            :items="cDtoItem.resData.ivList"
+            items-per-page="-1"
+            :items-per-page-options="[50, 100, -1]"
+            class="body-2"
+          >
+            <template #[`item.percent`]="{ item }">
+              {{ item.percent + '%' }}
+            </template>
+          </v-data-table>
+        </v-row>
       </v-container>
     </div>
     <div v-else>
@@ -68,33 +97,33 @@
 
 <script setup lang="ts">
 import { RouteLocationNormalizedLoaded } from 'vue-router'
-const searchPattern = 'plList'
+const searchPattern = 'threeGalarBirds'
+const headers = ref<any>([
+  { title: '№', key: 'no', sortable: true },
+  { title: 'AT', key: 'iva', sortable: true },
+  { title: 'DF', key: 'ivd', sortable: true },
+  { title: 'HP', key: 'ivh', sortable: true },
+  { title: '%', key: 'percent', sortable: true },
+  { title: 'PL', key: 'pl', sortable: true }
+])
 // current dto item
 const cDtoItem = ref<ResultDtoItem>({
   searchParams: {
     pid: '',
-    iv: null
+    cp: '',
+    wbFlg: false
   },
   resData: {}
 })
 const dto: any = useAttrs().dto
 dto.params = cDtoItem
 
-const headers = ref<any>([
-  { title: 'PL', key: 'pl', sortable: true },
-  { title: 'CP', key: 'cp', sortable: true }
-])
 const isLoading = ref<boolean>(true)
 
 // APIアクセス用get関数
 const get = async (): Promise<Record<string, any>> => {
-  const res = await fetchCommon('/api/plList', 'GET', {
-    query: {
-      pid: cDtoItem.value.searchParams.pid,
-      iva: cDtoItem.value.searchParams.iv.substring(0, 2),
-      ivd: cDtoItem.value.searchParams.iv.substring(2, 4),
-      ivh: cDtoItem.value.searchParams.iv.substring(4, 6)
-    }
+  const res = await fetchCommon('/api/threeGalarBirds', 'GET', {
+    query: cDtoItem.value.searchParams
   })
   const rd: Record<string, any> = res.data || {}
   if (!searchCommon().pushToast(rd?.message, rd?.msgLevel)) {
@@ -109,7 +138,8 @@ const get = async (): Promise<Record<string, any>> => {
 const route: RouteLocationNormalizedLoaded = useRoute()
 cDtoItem.value.searchParams = {
   pid: route.query.pid,
-  iv: route.query.iv
+  cp: route.query.cp,
+  wbFlg: route.query.wbFlg === 'true'
 }
 // dtoStoreからresDataを復元
 const rd: Record<string, any> | null = searchCommon().restoreResData()
@@ -127,13 +157,13 @@ isLoading.value = !cDtoItem.value.resData
 const ogpName = cDtoItem.value.resData.name
 const ogpImage = cDtoItem.value.resData.image || '/pokego/peripper-eyes.png'
 useHead({
-  title: `${ogpName}のPLごとのCP`,
+  title: `${ogpName}の野生個体値`,
   meta: [
     { property: 'og:type', content: 'article' },
-    { property: 'og:title', content: `${ogpName}のPLごとのCP - ペリずかん` },
+    { property: 'og:title', content: `${ogpName}の野生個体値 - ペリずかん` },
     { property: 'og:url', content: useRuntimeConfig().public.url + useRoute().path },
     { property: 'og:site_name', content: 'ペリずかん' },
-    { property: 'og:description', content: `${ogpName}のPLごとのCPを確認できます。` },
+    { property: 'og:description', content: `野生で出現した${ogpName}のCPから、有り得る個体値を一覧で表示させることができます。` },
     { property: 'og:image', content: useRuntimeConfig().public.staticUrl + ogpImage }
   ]
 })
