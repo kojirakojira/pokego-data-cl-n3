@@ -23,7 +23,7 @@ export default () => {
    * 英語名、日本語名の両方から取得できます。
    *
    */
-  const getRGB = (type1: string, type2?: string) => {
+  const getRGB = (type1: string, type2?: string | null | undefined) => {
     let rgb1: Record<string, any> = { r: 0, g: 0, b: 0 }
     let rgb2: Record<string, any> = { r: 0, g: 0, b: 0 }
     for (const t of (constantUtils()).value.TYPE) {
@@ -44,7 +44,7 @@ export default () => {
      * @param type1 タイプ１
      * @param type2 タイプ２
      */
-  const getRGBA = (alpha: number, type1: string, type2: string) => {
+  const getRGBA = (alpha: number, type1: string, type2: string | null | undefined) => {
     let rgb1: Record<string, any> = { r: 0, g: 0, b: 0 }
     let rgb2: Record<string, any> = { r: 0, g: 0, b: 0 }
     for (const t of (constantUtils()).value.TYPE) {

@@ -52,11 +52,10 @@
   vertical-align: top;
   color: white;
   font-weight: bold;
-  padding: 1px 3px;
+  padding: 1px 3px !important;
   font-size: 80%;
   border-radius: 4px;
   white-space: nowrap;
-  display: inline-table; 
 }
 .widget-item {
   border: 1px solid #333; 
