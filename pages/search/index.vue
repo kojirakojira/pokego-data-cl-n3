@@ -80,8 +80,7 @@ const toSelector = (key: string) => {
     key === 'xType' ||
     key === 'iroiroTypeRank' ||
     key === 'unimplPokemon' ||
-    key === 'evoCost' ||
-    key === 'evolution') {
+    key === 'evoCost') {
     return undefined
   }
   return { name: `search-${key}` }

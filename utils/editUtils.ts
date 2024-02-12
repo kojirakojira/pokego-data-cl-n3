@@ -67,6 +67,7 @@ export default () => {
    * @param {Array} styleIdArr
    */
   const createStyleElem = (id: string, style: string, styleIdArr: Array<string>) => {
+    if (process.server) { return }
     // styleを追加
     const newStyle = document.createElement('style')
     newStyle.id = id
@@ -84,6 +85,7 @@ export default () => {
    * @param {String} prefix 該当した接頭辞のみ削除する（省略可）
    */
   const deleteStyleElem = (styleIdArr: Array<string>, prefix?: string) => {
+    if (process.server) { return styleIdArr }
     // styleの削除
     styleIdArr.forEach((id) => {
       if (!prefix || !id.indexOf(prefix)) {
