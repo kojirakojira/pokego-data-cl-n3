@@ -1,8 +1,12 @@
 import { readonly } from 'vue'
-import { RouteLocationNormalizedLoaded, RouteRecordName, LocationQuery } from 'vue-router'
+import {
+  type RouteLocationNormalizedLoaded,
+  type RouteRecordName,
+  type LocationQuery
+} from 'vue-router'
 import { toastStore } from '~/stores/toastStore'
 // import { historyStore, ScreenInfo } from '~/stores/historyStore'
-import { ScreenInfo, dtoStore } from '~/stores/dtoStore'
+import { dtoStore, type ScreenInfo } from '~/stores/dtoStore'
 
 /**
  * 検索系の画面(pageがsearch配下の画面)でperiDtoStoreに値を追加するときは、
@@ -17,13 +21,11 @@ export interface SearchDtoItem extends Record<string, any> {
  * このインターフェースを使用する。
  * ※psrを使用する場合はこっちの型を使用する。
  */
-export interface OnePokeDtoItem extends Record<string, any> {
-  searchParams: Record<string, any>
+export interface OnePokeDtoItem extends SearchDtoItem {
   psr: {
     goPokedexList: Array<any>
     maybe: boolean
   }
-  resData?: Record<string, any>
 }
 /**
  * 結果画面で使用する。

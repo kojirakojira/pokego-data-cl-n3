@@ -103,7 +103,7 @@
 </template>
 
 <script setup lang="ts">
-import { RouteLocationNormalizedLoaded } from 'vue-router'
+import { type RouteLocationNormalizedLoaded } from 'vue-router'
 const searchPattern = 'scpRank'
 const headers = readonly<any>([
   { title: 'リーグ', key: 'league' },

@@ -62,7 +62,7 @@
 </template>
 
 <script setup lang="ts">
-import { RouteLocationNormalizedLoaded } from 'vue-router'
+import { type RouteLocationNormalizedLoaded } from 'vue-router'
 const searchPattern = 'cpRankList'
 // current dto item
 const cDtoItem = ref<ResultDtoItem>({

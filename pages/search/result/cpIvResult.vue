@@ -97,7 +97,7 @@
 </template>
 
 <script setup lang="ts">
-import { RouteLocationNormalizedLoaded } from 'vue-router'
+import { type RouteLocationNormalizedLoaded } from 'vue-router'
 const searchPattern = 'cpIv'
 const headers = ref<any>([
   { title: '№', key: 'no', sortable: true },

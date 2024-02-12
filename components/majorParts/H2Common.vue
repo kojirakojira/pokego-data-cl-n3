@@ -12,7 +12,6 @@
 </template>
 
 <script setup>
-import { onBeforeMount } from 'vue'
 const brainImages = [
   'brain-juice-cat',
   'brain-juice-cat2',

@@ -40,7 +40,6 @@
 </template>
 
 <script setup lang="ts">
-import { ref, readonly } from 'vue'
 
 const drawer = ref<boolean>(false)
 const menuItems = readonly([

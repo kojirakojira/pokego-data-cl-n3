@@ -77,7 +77,6 @@ const toSelector = (key: string) => {
     key === 'filterAll' ||
     key === 'race' ||
     key === 'raceDiff' ||
-    key === 'xType' ||
     key === 'iroiroTypeRank' ||
     key === 'unimplPokemon' ||
     key === 'evoCost') {

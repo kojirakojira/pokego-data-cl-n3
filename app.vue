@@ -47,8 +47,8 @@
 <script setup lang="ts">
 // import { useTheme } from 'vuetify'
 import '@/assets/styles/spinners.css'
-import { RouteLocationNormalized, NavigationGuardNext } from 'vue-router'
-import { dtoStore, ScreenInfo } from '~/stores/dtoStore'
+import { type RouteLocationNormalized, type NavigationGuardNext } from 'vue-router'
+import { dtoStore, type ScreenInfo } from '~/stores/dtoStore'
 // const theme = useTheme()
 const isLoading = ref(true)
 onMounted(() => {

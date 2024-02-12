@@ -19,8 +19,6 @@
               item-value="k"
               item-title="v"
               label="シチュエーションを選択"
-              dense
-              outlined
               hide-details
             />
           </client-only>
