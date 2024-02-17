@@ -4,7 +4,30 @@
     <div :class="`triangle ' + ${theme}`" />
     <div :class="`type-comments-fukidashi ' + ${theme}`">
       <!-- eslint-disable-next-line vue/no-v-html -->
-      <p class="mx-0 my-0" v-html="title" />
+      <p class="mx-0 my-0">
+        <template v-if="!type1">
+          <slot />
+        </template>
+        <template v-else>
+          あ、どうも。<!--
+          -->{{ name ? editUtils().appendRemarks(name, remarks) : 'こ' }}<!--
+          -->のタイプ(<!--
+          --><span
+                :style="`background-color: ${editUtils().getRGB(type1)};'}`"
+                class="type"
+              >
+              {{ toJpn(type1) }}
+          </span>
+          <span
+            v-if="type2"
+            :style="`background-color: ${editUtils().getRGB(type2)}; margin-left: 3px;`"
+            class="type"
+          >
+            {{ toJpn(type2) }}
+          </span><!--
+          -->)の特徴について簡単に説明します。
+        </template>
+      </p>
       <ul class="px-0 py-0 mx-5 my-0">
         <li
           v-for="(comment, idx) in comments"
@@ -23,15 +46,27 @@
 import { useTheme } from 'vuetify'
 withDefaults(
   defineProps<{
-    title: string,
+    type1?: string, // タイプ1(英字)
+    type2?: string, // タイプ2(英字)
+    name?: string,
+    remarks?: string,
     comments: Array<string>
    }>(),
-  {}
+  {
+    type1: '',
+    type2: '',
+    name: '',
+    remarks: ''
+  }
 )
 // Vuetifyのテーマを取得する（light or dark）
 const theme = computed((): string => {
   return useTheme().global.name.value
 })
+
+const toJpn = (v: string) => {
+  return constantUtils().getValue(v, constantUtils().value.TYPE)
+}
 </script>
 
 <style scoped>

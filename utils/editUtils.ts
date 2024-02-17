@@ -132,7 +132,7 @@ export default () => {
    * @param pathname
    * @returns
    */
-  const getPokemonImageUrl = (pathname: string): string => {
+  const getPokemonImageUrl = (pathname: string | null | undefined): string => {
     let url: string = ''
     if (pathname) {
       url = useRuntimeConfig().public.staticUrl + pathname

@@ -68,7 +68,7 @@
             <v-data-table
               v-if="cDtoItem.resData.afEvoList.length"
               :headers="headers"
-              :items="cDtoItem.resData.afEvoList"
+              :items="(cDtoItem.resData.afEvoList as Array<GoPokedexAndCp>)"
               items-per-page="-1"
               class="body-2"
             >
@@ -100,6 +100,7 @@
 
 <script setup lang="ts">
 import { type RouteLocationNormalizedLoaded } from 'vue-router'
+import { type GoPokedexAndCp } from '~/components/interface/ApiInterface'
 const searchPattern = 'afterEvoCp'
 const headers = ref<any>([
   { title: '図鑑№', key: 'goPokedex.pokedexId', sortable: false },

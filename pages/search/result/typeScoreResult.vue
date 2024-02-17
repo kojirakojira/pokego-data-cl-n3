@@ -8,8 +8,11 @@
         <v-row>
           <v-col>
             <SearchTypeComments
-              :title="generateTypeCommentTitle(cDtoItem.resData.name, cDtoItem.resData.remarks, typeDic.defender.jpn)"
               :comments="cDtoItem.resData.typeComments"
+              :type1="cDtoItem.resData.type1"
+              :type2="cDtoItem.resData.type2"
+              :name="cDtoItem.resData.name"
+              :remarks="cDtoItem.resData.remarks"
             />
           </v-col>
         </v-row>
@@ -220,14 +223,6 @@ const createTypeDic = (type1: string, type2: string | null, resData: Record<stri
     vRatingScore: round2to3(resData.defenderScore)
   }
   return { attacker1, attacker2, defender }
-}
-const generateTypeCommentTitle = (name: string, remarks: string, dfType: string) : string => {
-  let text = 'あ、どうも。'
-  text += name ? editUtils().appendRemarks(name, remarks) : 'こ'
-  text += 'のタイプ('
-  text += editUtils().typeDecoration(dfType)
-  text += ')の特徴について簡単に説明します。'
-  return text
 }
 
 /**

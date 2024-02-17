@@ -8,13 +8,15 @@ import { toastStore } from '~/stores/toastStore'
 // import { historyStore, ScreenInfo } from '~/stores/historyStore'
 import { dtoStore, type ScreenInfo } from '~/stores/dtoStore'
 
+export interface ResData extends Record<string, any> {
+}
 /**
  * 検索系の画面(pageがsearch配下の画面)でperiDtoStoreに値を追加するときは、
  * このインターフェースを使用する。
  */
-export interface SearchDtoItem extends Record<string, any> {
+export interface SearchDtoItem {
   searchParams: Record<string, any>
-  resData?: Record<string, any>
+  resData?: ResData
 }
 /**
  * 検索系の画面(pageがsearch配下の画面)でperiDtoStoreに値を追加するときは、
@@ -30,9 +32,9 @@ export interface OnePokeDtoItem extends SearchDtoItem {
 /**
  * 結果画面で使用する。
  */
-export interface ResultDtoItem extends Record<string, any> {
+export interface ResultDtoItem {
   searchParams: Record<string, any>
-  resData: Record<string, any>
+  resData: ResData
 }
 export default () => {
   const searchPatternNames = readonly({
@@ -300,7 +302,7 @@ export default () => {
    * 遷移前の画面のクエリからnameを削除。pidを追加して返却する。
    *
    */
-  const makeQuery = (pid: string, searchParams: Record<string, any>) => {
+  const makeQuery = (pid: string | null | undefined, searchParams: Record<string, any>) => {
     const query: Record<string, any> = {}
     for (const [k, v] of Object.entries(searchParams)) {
       if (query[k]) {
