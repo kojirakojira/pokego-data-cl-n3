@@ -134,7 +134,7 @@
 
 <script setup lang="ts">
 import { type RouteLocationNormalizedLoaded } from 'vue-router'
-import { type XTypeElement } from '~/components/interface/ApiInterface'
+import { type XTypeElement } from '~/components/interface/api/dto'
 
 const searchPattern = 'xType'
 const headers = ref<any>([

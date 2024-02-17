@@ -100,7 +100,7 @@
 
 <script setup lang="ts">
 import { type RouteLocationNormalizedLoaded } from 'vue-router'
-import { type GoPokedexAndCp } from '~/components/interface/ApiInterface'
+import { type GoPokedexAndCp } from '~/components/interface/api/dto'
 const searchPattern = 'afterEvoCp'
 const headers = ref<any>([
   { title: '図鑑№', key: 'goPokedex.pokedexId', sortable: false },

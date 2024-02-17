@@ -36,7 +36,7 @@
 </template>
 
 <script setup lang="ts">
-import { type GoPokedex } from '~/components/interface/ApiInterface'
+import { type GoPokedex } from '~/components/interface/api/dto'
 
 const props = withDefaults(
   defineProps<{

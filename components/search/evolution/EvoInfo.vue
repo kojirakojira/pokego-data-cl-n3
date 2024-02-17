@@ -108,7 +108,7 @@
 </template>
 
 <script setup lang="ts">
-import { type Hierarchy, type Race } from '~/components/interface/ApiInterface'
+import { type Hierarchy, type Race } from '~/components/interface/api/dto'
 
 const props = withDefaults(
   defineProps<{

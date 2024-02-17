@@ -66,7 +66,7 @@
 
 <script setup lang="ts">
 import { type RouteLocationNormalizedLoaded } from 'vue-router'
-import { type GoPokedex } from '~/components/interface/ApiInterface'
+import { type GoPokedex } from '~/components/interface/api/dto'
 const searchPattern = 'evolution'
 // current dto item
 const cDtoItem = ref<ResultDtoItem>({
