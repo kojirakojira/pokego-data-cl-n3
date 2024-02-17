@@ -1,9 +1,17 @@
+interface FetchResult {
+  data: Record<string, any> | null,
+  error?: Record<string, any> | null,
+  pending?: Ref<boolean>,
+  refresh?: Function,
+  server: boolean
+}
+
 export default async (
   argEndpoint: string,
   argMethod: string,
   argOptions?: {[key: string]: any},
   transition?: boolean
-) => {
+): Promise<FetchResult> => {
   const method: string = argMethod || 'GET'
   const options: Record<string, string | boolean> = {
     method,
@@ -12,20 +20,34 @@ export default async (
   }
   // url形式ならそのまま。なければAPIサーバへのアクセスとする。
   const url = argEndpoint.search(/:\/\//) > 0 ? argEndpoint : useRuntimeConfig().public.apiUrl + argEndpoint
-  const { data, error, pending, refresh } = await useAsyncData(
-    argEndpoint,
-    () => $fetch(url, options))
+  if (process.server) {
+    // サーバ側で実行する場合
+    const { data, error, pending, refresh } = await useAsyncData(
+      argEndpoint,
+      () => $fetch(url, options))
 
-  if (transition && error.value) {
-    // transitionがtrueの場合、エラー画面に遷移させる。
-    const errVal: any = error.value
-    throw createError({ statusCode: errVal.statusCode, message: errVal.data, fatal: true })
-  }
+    if (transition && error.value) {
+      // transitionがtrueの場合、エラー画面に遷移させる。
+      const errVal: any = error.value
+      throw createError({ statusCode: errVal.statusCode, message: errVal.data, fatal: true })
+    }
 
-  return {
-    data: data.value ? { ...data.value } : null,
-    error: error.value ? { ...error.value } : null,
-    pending,
-    refresh
+    return {
+      data: data.value ? { ...data.value } : null,
+      error: error.value ? { ...error.value } : null,
+      pending,
+      refresh,
+      server: true
+    }
+  } else {
+    // クライアントで実行する場合
+    const data = await $fetch(url, options)
+      .catch((err) => {
+        throw createError({ statusCode: err.statusCode, message: err.message, fatal: true })
+      }) as any
+    return {
+      data,
+      server: false
+    }
   }
 }
