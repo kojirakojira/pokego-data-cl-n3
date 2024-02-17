@@ -50,35 +50,27 @@
         </v-col>
       </v-row>
     </v-container>
-    <SearchResultList
-      v-if="cDtoItem.psr.goPokedexList.length !== 0"
-      :psr="cDtoItem.psr"
-      @click-row="searchCommon().clickRowResultList($event, searchPattern, cDtoItem.searchParams)"
-    />
+    <template v-if="cDtoItem.resData && cDtoItem.resData.pokemonSearchResult.goPokedexList.length !== 0">
+      <SearchResultList
+        :psr="cDtoItem.resData.pokemonSearchResult"
+        @click-row="searchCommon().clickRowResultList($event, searchPattern, cDtoItem.searchParams)"
+      />
+    </template>
   </div>
 </template>
 
 <script setup lang="ts">
+import { RaidSearchDtoItem } from '~/components/interface/raid'
 const searchPattern = 'raid'
 // current dto item
-const cDtoItem = ref<OnePokeDtoItem>({
-  searchParams: {
-    shadow: false,
-    name: ''
-  },
-  psr: {
-    goPokedexList: [],
-    maybe: false
-  },
-  resData: {}
-})
+const cDtoItem = ref<RaidSearchDtoItem>(new RaidSearchDtoItem())
 const dto: any = useAttrs().dto
 dto.params = cDtoItem
 
 const isSearchBtnClick = ref(false)
 
 // created: 画面を復元する
-searchCommon().restoreSearchScreen(['searchParams', 'psr', 'resData'], cDtoItem.value)
+searchCommon().restoreSearchScreen(['searchParams', 'resData'], cDtoItem.value)
 
 const clickSearchBtn = async () => {
   isSearchBtnClick.value = true
@@ -116,10 +108,9 @@ const handleApiResult = (res: Record<string, any>) => {
   }
 
   if (rd.success) {
+    cDtoItem.value.resData = rd
     if (rd.pokemonSearchResult.unique) {
       // 1件のみヒットした場合
-      cDtoItem.value.resData = rd
-      cDtoItem.value.psr = { goPokedexList: [], maybe: false }
       useRouter().push({
         name: 'search-result-raidResult',
         query: searchCommon().makeQuery(rd.pokedexId, cDtoItem.value.searchParams)
@@ -129,7 +120,6 @@ const handleApiResult = (res: Record<string, any>) => {
       useRouter().replace({
         name: 'search-raid'
       })
-      cDtoItem.value.psr = rd.pokemonSearchResult
       isSearchBtnClick.value = false
     }
   }

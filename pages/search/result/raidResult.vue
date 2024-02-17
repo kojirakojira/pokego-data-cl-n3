@@ -87,29 +87,24 @@
 
 <script setup lang="ts">
 import { type RouteLocationNormalizedLoaded } from 'vue-router'
+import { RaidResponse, RaidResultDtoItem } from '~/components/interface/raid'
 const searchPattern = 'raid'
 // current dto item
-const cDtoItem = ref<ResultDtoItem>({
-  searchParams: {
-    pid: '',
-    shadow: false
-  },
-  resData: {}
-})
+const cDtoItem = ref<RaidResultDtoItem>(new RaidResultDtoItem())
 const dto: any = useAttrs().dto
 dto.params = cDtoItem
 const isLoading = ref<boolean>(true)
 
 // APIアクセス用get関数
-const get = async (): Promise<Record<string, any>> => {
+const get = async (): Promise<RaidResponse | void> => {
   const res = await fetchCommon('/api/raid', 'GET', {
     query: cDtoItem.value.searchParams
   })
   const rd: Record<string, any> = res.data || {}
   if (!searchCommon().pushToast(rd?.message, rd?.msgLevel)) {
-    return {}
+    return
   }
-  return rd
+  return rd as RaidResponse
 }
 
 /**
@@ -117,17 +112,18 @@ const get = async (): Promise<Record<string, any>> => {
  */
 const route: RouteLocationNormalizedLoaded = useRoute()
 cDtoItem.value.searchParams = {
-  pid: route.query.pid,
+  pid: String(route.query.pid),
   shadow: route.query.shadow === 'true'
 }
 // dtoStoreからresDataを復元
-const rd: Record<string, any> | null = searchCommon().restoreResData()
+const rd: RaidResponse | null = searchCommon().restoreResData() as RaidResponse
 
 if (rd) {
   cDtoItem.value.resData = rd
 } else {
   // 存在しない場合は取得する
-  cDtoItem.value.resData = await get()
+  const ret = await get()
+  if (ret) { cDtoItem.value.resData = ret }
 }
 
 isLoading.value = !cDtoItem.value.resData
