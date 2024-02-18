@@ -29,7 +29,8 @@ export default async (
     if (transition && error.value) {
       // transitionがtrueの場合、エラー画面に遷移させる。
       const errVal: any = error.value
-      throw createError({ statusCode: errVal.statusCode, message: errVal.data, fatal: true })
+      const message = !errVal.statusCode && !errVal.data ? 'サーバとの通信に失敗しました。' : errVal.data
+      throw createError({ statusCode: errVal.statusCode, message, fatal: true })
     }
 
     return {
@@ -43,7 +44,8 @@ export default async (
     // クライアントで実行する場合
     const data = await $fetch(url, options)
       .catch((err) => {
-        throw createError({ statusCode: err.statusCode, message: err.message, fatal: true })
+        const message = !err.statusCode && !err.data ? 'サーバとの通信に失敗しました。' : err.data
+        throw createError({ statusCode: err.statusCode, message, fatal: true })
       }) as any
     return {
       data,

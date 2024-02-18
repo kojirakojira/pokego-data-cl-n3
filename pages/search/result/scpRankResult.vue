@@ -6,58 +6,49 @@
     <div v-if="!isLoading">
       <v-container>
         <v-row>
-          <v-col
-            cols="12"
-            md="6"
-            lg="6"
-            xl="6"
-            class="col-title"
-          >
-            図鑑No
-          </v-col>
-          <v-col cols="12" md="6" lg="6" xl="6">
-            {{ editUtils().getPdxNo(cDtoItem.resData.pokedexId) }}
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col
-            cols="12"
-            md="6"
-            lg="6"
-            xl="6"
-            class="col-title"
-          >
-            ポケモン
-          </v-col>
-          <v-col cols="12" md="6" lg="6" xl="6">
-            {{ editUtils().appendRemarks(cDtoItem.resData.name, cDtoItem.resData.remarks) }}
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col
-            cols="12"
-            md="6"
-            lg="6"
-            xl="6"
-            class="col-title"
-          >
-            個体値<br>(攻撃 - 防御 - HP)
-          </v-col>
-          <v-col cols="12" md="6" lg="6" xl="6">
-            {{ `${cDtoItem.resData.scpSlRank.iva} - ${cDtoItem.resData.scpSlRank.ivd} - ${cDtoItem.resData.scpSlRank.ivh}` }}
+          <v-col>
+            <v-card max-width="500px" class="searched-items">
+              <v-card-title class="d-block pa-2 searched-params-title">
+                検索条件
+              </v-card-title>
+              <v-card-text class="caption text-left py-1">
+                <v-container>
+                  <v-row>
+                    <v-col cols="7" md="6" lg="6" xl="6" class="pa-1">
+                      図鑑№
+                    </v-col>
+                    <v-col cols="5" md="6" lg="6" xl="6" class="pa-1">
+                      {{ editUtils().getPdxNo(cDtoItem.resData.pokedexId) }}
+                    </v-col>
+                  </v-row>
+                  <v-row class="searched-param">
+                    <v-col cols="7" md="6" lg="6" xl="6" class="pa-1">
+                      ポケモン
+                    </v-col>
+                    <v-col cols="5" md="6" lg="6" xl="6" class="pa-1">
+                      {{ editUtils().appendRemarks(cDtoItem.resData.name, cDtoItem.resData.remarks) }}
+                    </v-col>
+                  </v-row>
+                  <v-row class="searched-param">
+                    <v-col cols="7" md="6" lg="6" xl="6" class="pa-1">
+                      個体値<br>(攻撃 - 防御 - HP)
+                    </v-col>
+                    <v-col cols="5" md="6" lg="6" xl="6" class="pa-1">
+                      {{ `${cDtoItem.resData.scpSlRank.iva} - ${cDtoItem.resData.scpSlRank.ivd} - ${cDtoItem.resData.scpSlRank.ivh}` }}
+                    </v-col>
+                  </v-row>
+                </v-container>
+              </v-card-text>
+            </v-card>
           </v-col>
         </v-row>
+      </v-container>
+      <h3>
+        PvP順位
+      </h3>
+      <v-container>
         <v-row>
-          <v-col
-            cols="12"
-            md="6"
-            lg="6"
-            xl="6"
-            class="col-title"
-          >
-            PvP順位
-          </v-col>
-          <v-col cols="12" md="6" lg="6" xl="6">
+          <v-col align="center">
             <p>{{ `スーパーリーグ：${cDtoItem.resData.scpSlRank.rank}位` }}</p>
             <p>{{ `ハイパーリーグ：${cDtoItem.resData.scpHlRank.rank}位` }}</p>
             <p>{{ `マスターリーグ：${cDtoItem.resData.scpMlRank.rank}位` }}</p>
@@ -104,7 +95,14 @@
 
 <script setup lang="ts">
 import { type RouteLocationNormalizedLoaded } from 'vue-router'
+import { ScpRankResponse, ScpRankResultDtoItem } from '~/components/interface/scpRank'
 const searchPattern = 'scpRank'
+
+// current dto item
+const cDtoItem = ref<ScpRankResultDtoItem>(new ScpRankResultDtoItem())
+const dto: any = useAttrs().dto
+dto.params = cDtoItem
+
 const headers = readonly<any>([
   { title: 'リーグ', key: 'league' },
   { title: '順位', key: 'rank' },
@@ -118,20 +116,10 @@ const leagueDic = readonly<Record<string, string>>({
   hl: 'ハイパー',
   ml: 'マスター'
 })
-// current dto item
-const cDtoItem = ref<ResultDtoItem>({
-  searchParams: {
-    pid: '',
-    iv: ''
-  },
-  resData: {}
-})
-const dto: any = useAttrs().dto
-dto.params = cDtoItem
 const isLoading = ref<boolean>(true)
 
 // APIアクセス用get関数
-const get = async (): Promise<Record<string, any>> => {
+const get = async (): Promise<ScpRankResponse | void> => {
   const res = await fetchCommon('/api/scpRank', 'GET', {
     query: {
       pid: cDtoItem.value.searchParams.pid,
@@ -142,9 +130,9 @@ const get = async (): Promise<Record<string, any>> => {
   })
   const rd: Record<string, any> = res.data || {}
   if (!searchCommon().pushToast(rd?.message, rd?.msgLevel)) {
-    return {}
+    return
   }
-  return rd
+  return rd as ScpRankResponse
 }
 
 /**
@@ -152,11 +140,11 @@ const get = async (): Promise<Record<string, any>> => {
  */
 const route: RouteLocationNormalizedLoaded = useRoute()
 cDtoItem.value.searchParams = {
-  pid: route.query.pid,
-  iv: route.query.iv
+  pid: String(route.query.pid),
+  iv: String(route.query.iv)
 }
 // dtoStoreからresDataを復元
-const rd: Record<string, any> | null = searchCommon().restoreResData()
+const rd: ScpRankResponse | null = searchCommon().restoreResData() as ScpRankResponse
 
 if (rd) {
   cDtoItem.value.resData = rd
@@ -166,7 +154,8 @@ if (rd) {
   if (msg) {
     throw createError({ statusCode: 400, message: '不正なパラメータが指定されました。', fatal: true })
   }
-  cDtoItem.value.resData = await get()
+  const ret = await get()
+  if (ret) { cDtoItem.value.resData = ret }
 }
 isLoading.value = !cDtoItem.value.resData
 

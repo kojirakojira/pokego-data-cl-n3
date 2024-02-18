@@ -69,7 +69,7 @@
           </v-col>
         </v-row>
       </v-container>
-      <v-container v-if="cDtoItem.resData.typeComments">
+      <v-container v-if="cDtoItem.resData.typeComments.length">
         <v-row>
           <v-col>
             <SearchTypeComments
@@ -135,42 +135,36 @@
 <script setup lang="ts">
 import { type RouteLocationNormalizedLoaded } from 'vue-router'
 import { type XTypeElement } from '~/components/interface/api/dto'
+import { type XTypeResponse, XTypeResultDtoItem } from '~/components/interface/xType'
 
 const searchPattern = 'xType'
+
+// current dto item
+const cDtoItem = ref<XTypeResultDtoItem>(new XTypeResultDtoItem())
+const dto: any = useAttrs().dto
+dto.params = cDtoItem
+
 const headers = ref<any>([
   { title: '有利順位', value: 'rank', align: 'center' },
   { title: 'タイプ', value: 'twoTypeKey', sortable: false, align: 'left' },
   { title: 'こうげき時相性', value: 'atkMsgs', sortable: false, align: 'left' },
   { title: 'ぼうぎょ時相性', value: 'defMsgs', sortable: false, align: 'left' }
 ])
-// current dto item
-const cDtoItem = ref<ResultDtoItem>({
-  searchParams: {
-    own1: '',
-    own2: '',
-    opp1: '',
-    opp2: '',
-    emphasis: ''
-  },
-  resData: {}
-})
-const dto: any = useAttrs().dto
-dto.params = cDtoItem
 
 // xを自分側に定義したかどうか
 const definedXOwn = ref<boolean>(false)
 const isLoading = ref<boolean>(true)
 
 // APIアクセス用get関数
-const get = async (): Promise<Record<string, any>> => {
+const get = async (): Promise<XTypeResponse | void> => {
   const res = await fetchCommon('/api/xType', 'GET', {
     query: cDtoItem.value.searchParams
   })
   const rd: Record<string, any> = res.data || {}
   if (!searchCommon().pushToast(rd?.message, rd?.msgLevel)) {
-    return {}
+    return
   }
-  return rd
+  return rd as XTypeResponse
 }
 
 const check = () => {
@@ -228,14 +222,14 @@ const combiDecoration = (msg: string, atkFlg: boolean) => {
  */
 const route: RouteLocationNormalizedLoaded = useRoute()
 cDtoItem.value.searchParams = {
-  own1: route.query.own1,
-  own2: route.query.own2,
-  opp1: route.query.opp1,
-  opp2: route.query.opp2,
-  emphasis: route.query.emphasis
+  own1: String(route.query.own1),
+  own2: String(route.query.own2),
+  opp1: String(route.query.opp1),
+  opp2: String(route.query.opp2),
+  emphasis: String(route.query.emphasis)
 }
 // dtoStoreからresDataを復元
-const rd: Record<string, any> | null = searchCommon().restoreResData()
+const rd: XTypeResponse = searchCommon().restoreResData() as XTypeResponse
 
 if (rd) {
   cDtoItem.value.resData = rd
@@ -245,13 +239,10 @@ if (rd) {
     throw createError({ statusCode: 400, message: '不正なパラメータが指定されました。', fatal: true })
   }
 
-  cDtoItem.value.resData = await get()
+  const ret = await get()
+  if (ret) { cDtoItem.value.resData = ret }
 }
 
-if (!cDtoItem.value.searchParams.cp && headers.value[headers.value.length - 1].key === 'cp') {
-  // cpが未入力の場合はcp列を削除する。
-  headers.value.pop()
-}
 definedXOwn.value = isIncludeX(cDtoItem.value.resData.own1, cDtoItem.value.resData.own2)
 isLoading.value = !cDtoItem.value.resData
 

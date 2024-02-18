@@ -97,7 +97,14 @@
 
 <script setup lang="ts">
 import { type RouteLocationNormalizedLoaded } from 'vue-router'
+import { type ThreeGalarBirdsResponse, ThreeGalarBirdsResultDtoItem } from '~/components/interface/threeGlarBirds'
 const searchPattern = 'threeGalarBirds'
+
+// current dto item
+const cDtoItem = ref<ThreeGalarBirdsResultDtoItem>(new ThreeGalarBirdsResultDtoItem())
+const dto: any = useAttrs().dto
+dto.params = cDtoItem
+
 const headers = ref<any>([
   { title: '№', key: 'no', sortable: true },
   { title: 'AT', key: 'iva', sortable: true },
@@ -106,30 +113,19 @@ const headers = ref<any>([
   { title: '%', key: 'percent', sortable: true },
   { title: 'PL', key: 'pl', sortable: true }
 ])
-// current dto item
-const cDtoItem = ref<ResultDtoItem>({
-  searchParams: {
-    pid: '',
-    cp: '',
-    wbFlg: false
-  },
-  resData: {}
-})
-const dto: any = useAttrs().dto
-dto.params = cDtoItem
 
 const isLoading = ref<boolean>(true)
 
 // APIアクセス用get関数
-const get = async (): Promise<Record<string, any>> => {
+const get = async (): Promise<ThreeGalarBirdsResponse | void> => {
   const res = await fetchCommon('/api/threeGalarBirds', 'GET', {
     query: cDtoItem.value.searchParams
   })
   const rd: Record<string, any> = res.data || {}
   if (!searchCommon().pushToast(rd?.message, rd?.msgLevel)) {
-    return {}
+    return
   }
-  return rd
+  return rd as ThreeGalarBirdsResponse
 }
 
 /**
@@ -137,18 +133,19 @@ const get = async (): Promise<Record<string, any>> => {
   */
 const route: RouteLocationNormalizedLoaded = useRoute()
 cDtoItem.value.searchParams = {
-  pid: route.query.pid,
-  cp: route.query.cp,
+  pid: String(route.query.pid),
+  cp: String(route.query.cp),
   wbFlg: route.query.wbFlg === 'true'
 }
 // dtoStoreからresDataを復元
-const rd: Record<string, any> | null = searchCommon().restoreResData()
+const rd: ThreeGalarBirdsResponse | null = searchCommon().restoreResData() as ThreeGalarBirdsResponse
 
 if (rd) {
   cDtoItem.value.resData = rd
 } else {
   // 存在しない場合は取得する
-  cDtoItem.value.resData = await get()
+  const ret = await get()
+  if (ret) { cDtoItem.value.resData = ret }
 }
 
 isLoading.value = !cDtoItem.value.resData

@@ -43,6 +43,31 @@ export interface Pokedex {
   gen: string,
   implFlg: boolean
 }
+export class ScpRank {
+  league: string
+  rank: number
+  iva: number
+  ivd: number
+  ivh: number
+  cp: number
+  sp: number
+  scp: number
+  pl: string
+  percent: number
+
+  constructor () {
+    this.league = ''
+    this.rank = 0
+    this.iva = 0
+    this.ivd = 0
+    this.ivh = 0
+    this.cp = 0
+    this.sp = 0
+    this.scp = 0
+    this.pl = ''
+    this.percent = 0
+  }
+}
 
 export interface Hierarchy {
   x: number,
@@ -71,9 +96,45 @@ export interface Race {
   type2Color: Color | null | undefined
 }
 
+export class CpRank {
+  rank: number
+  iva: number
+  ivd: number
+  ivh: number
+  cp: number
+  percent: number
+
+  constructor () {
+    this.rank = 0
+    this.iva = 0
+    this.ivd = 0
+    this.ivh = 0
+    this.cp = 0
+    this.percent = 0
+  }
+}
+
 export interface GoPokedexAndCp {
   goPokedex: GoPokedex,
   cp: number
+}
+
+export class VersatilityIv {
+  no: number
+  pl: string
+  iva: number
+  ivd: number
+  ivh: number
+  percent: number
+
+  constructor () {
+    this.no = 0
+    this.pl = ''
+    this.iva = 0
+    this.ivd = 0
+    this.ivh = 0
+    this.percent = 0
+  }
 }
 
 export class PokemonSearchResult {
@@ -108,4 +169,26 @@ export interface XTypeElement {
   rank: number,
   atkMsgs: Array<string>,
   defMsgs: Array<string>
+}
+
+export class AfterEvoIv {
+  goPokedex: GoPokedex
+  cp: number
+  slRank: number
+  hlRank: number
+  mlRank: number
+
+  constructor () {
+    this.goPokedex = new GoPokedex()
+    this.cp = 0
+    this.slRank = 0
+    this.hlRank = 0
+    this.mlRank = 0
+  }
+}
+
+export interface PlCp {
+  no: string,
+  pl: string,
+  cp: number
 }

@@ -65,29 +65,25 @@
 
 <script setup lang="ts">
 import { type RouteLocationNormalizedLoaded } from 'vue-router'
+import { type EggsResponse, EggsResultDtoItem } from '~/components/interface/eggs'
 const searchPattern = 'eggs'
 // current dto item
-const cDtoItem = ref<ResultDtoItem>({
-  searchParams: {
-    pid: ''
-  },
-  resData: {}
-})
+const cDtoItem = ref<EggsResultDtoItem>(new EggsResultDtoItem())
 const dto: any = useAttrs().dto
 dto.params = cDtoItem
 
 const isLoading = ref<boolean>(true)
 
 // APIアクセス用get関数
-const get = async (): Promise<Record<string, any>> => {
+const get = async (): Promise<EggsResponse | void> => {
   const res = await fetchCommon('/api/eggs', 'GET', {
     query: cDtoItem.value.searchParams
   })
   const rd: Record<string, any> = res.data || {}
   if (!searchCommon().pushToast(rd?.message, rd?.msgLevel)) {
-    return {}
+    return
   }
-  return rd
+  return rd as EggsResponse
 }
 
 /**
@@ -95,17 +91,17 @@ const get = async (): Promise<Record<string, any>> => {
  */
 const route: RouteLocationNormalizedLoaded = useRoute()
 cDtoItem.value.searchParams = {
-  pid: route.query.pid,
-  shadow: route.query.shadow === 'true'
+  pid: String(route.query.pid)
 }
 // dtoStoreからresDataを復元
-const rd: Record<string, any> | null = searchCommon().restoreResData()
+const rd: EggsResponse | null = searchCommon().restoreResData() as EggsResponse
 
 if (rd) {
   cDtoItem.value.resData = rd
 } else {
   // 存在しない場合は取得する
-  cDtoItem.value.resData = await get()
+  const ret = await get()
+  if (ret) { cDtoItem.value.resData = ret }
 }
 
 isLoading.value = !cDtoItem.value.resData

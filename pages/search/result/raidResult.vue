@@ -87,7 +87,7 @@
 
 <script setup lang="ts">
 import { type RouteLocationNormalizedLoaded } from 'vue-router'
-import { RaidResponse, RaidResultDtoItem } from '~/components/interface/raid'
+import { type RaidResponse, RaidResultDtoItem } from '~/components/interface/raid'
 const searchPattern = 'raid'
 // current dto item
 const cDtoItem = ref<RaidResultDtoItem>(new RaidResultDtoItem())
@@ -117,7 +117,6 @@ cDtoItem.value.searchParams = {
 }
 // dtoStoreからresDataを復元
 const rd: RaidResponse | null = searchCommon().restoreResData() as RaidResponse
-
 if (rd) {
   cDtoItem.value.resData = rd
 } else {

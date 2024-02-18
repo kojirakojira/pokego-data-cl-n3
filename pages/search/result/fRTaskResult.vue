@@ -65,29 +65,26 @@
 
 <script setup lang="ts">
 import { type RouteLocationNormalizedLoaded } from 'vue-router'
+import { type FRTaskResponse, FRTaskResultDtoItem } from '~/components/interface/frTask'
+
 const searchPattern = 'fRTask'
 // current dto item
-const cDtoItem = ref<ResultDtoItem>({
-  searchParams: {
-    pid: ''
-  },
-  resData: {}
-})
+const cDtoItem = ref<FRTaskResultDtoItem>(new FRTaskResultDtoItem())
 const dto: any = useAttrs().dto
 dto.params = cDtoItem
 
 const isLoading = ref<boolean>(true)
 
 // APIアクセス用get関数
-const get = async (): Promise<Record<string, any>> => {
+const get = async (): Promise<FRTaskResponse | void> => {
   const res = await fetchCommon('/api/fRTask', 'GET', {
     query: cDtoItem.value.searchParams
   })
   const rd: Record<string, any> = res.data || {}
   if (!searchCommon().pushToast(rd?.message, rd?.msgLevel)) {
-    return {}
+    return
   }
-  return rd
+  return rd as FRTaskResponse
 }
 
 /**
@@ -95,17 +92,17 @@ const get = async (): Promise<Record<string, any>> => {
  */
 const route: RouteLocationNormalizedLoaded = useRoute()
 cDtoItem.value.searchParams = {
-  pid: route.query.pid,
-  shadow: route.query.shadow === 'true'
+  pid: String(route.query.pid)
 }
 // dtoStoreからresDataを復元
-const rd: Record<string, any> | null = searchCommon().restoreResData()
+const rd: FRTaskResponse | null = searchCommon().restoreResData() as FRTaskResponse
 
 if (rd) {
   cDtoItem.value.resData = rd
 } else {
   // 存在しない場合は取得する
-  cDtoItem.value.resData = await get()
+  const ret = await get()
+  if (ret) { cDtoItem.value.resData = ret }
 }
 
 isLoading.value = !cDtoItem.value.resData

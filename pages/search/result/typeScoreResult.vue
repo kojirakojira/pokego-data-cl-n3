@@ -154,7 +154,15 @@
 
 <script setup lang="ts">
 import { type RouteLocationNormalizedLoaded } from 'vue-router'
+import { type TypeScoreResponse, TypeScoreResultDtoItem } from '~/components/interface/typeScore'
+
 const searchPattern = 'typeScore'
+
+// current dto item
+const cDtoItem = ref<TypeScoreResultDtoItem>(new TypeScoreResultDtoItem())
+const dto: any = useAttrs().dto
+dto.params = cDtoItem
+
 interface TypeInfo {
   jpn: string,
   color: string,
@@ -170,30 +178,19 @@ const typeDic = ref<TypeDic>({
   attacker2: { jpn: '', color: '', vRatingScore: 0 },
   defender: { jpn: '', color: '', vRatingScore: 0 }
 })
-// current dto item
-const cDtoItem = ref<ResultDtoItem>({
-  searchParams: {
-    pid: '',
-    type1: null,
-    type2: null
-  },
-  resData: {}
-})
-const dto: any = useAttrs().dto
-dto.params = cDtoItem
 
 const isLoading = ref<boolean>(true)
 
 // APIアクセス用get関数
-const get = async (): Promise<Record<string, any>> => {
+const get = async (): Promise<TypeScoreResponse | void> => {
   const res = await fetchCommon('/api/typeScore', 'GET', {
     query: cDtoItem.value.searchParams
   })
   const rd: Record<string, any> = res.data || {}
   if (!searchCommon().pushToast(rd?.message, rd?.msgLevel)) {
-    return {}
+    return
   }
-  return rd
+  return rd as TypeScoreResponse
 }
 
 /**
@@ -230,18 +227,20 @@ const createTypeDic = (type1: string, type2: string | null, resData: Record<stri
   */
 const route: RouteLocationNormalizedLoaded = useRoute()
 cDtoItem.value.searchParams = {
-  pid: route.query.pid,
-  type1: route.query.type1,
-  type2: route.query.type2
+  pid: String(route.query.pid),
+  type1: String(route.query.type1),
+  type2: String(route.query.type2),
+  isPoke: route.query.isPoke === 'true'
 }
 // dtoStoreからresDataを復元
-const rd: Record<string, any> | null = searchCommon().restoreResData()
+const rd: TypeScoreResponse | null = searchCommon().restoreResData() as TypeScoreResponse
 
 if (rd) {
   cDtoItem.value.resData = rd
 } else {
   // 存在しない場合は取得する
-  cDtoItem.value.resData = await get()
+  const ret = await get()
+  if (ret) { cDtoItem.value.resData = ret }
 }
 // API側の仕様として、タイプ1に値がなく、タイプ2に値がある場合は、タイプ2にタイプ1の値が設定される。
 // そのため、再セットする。

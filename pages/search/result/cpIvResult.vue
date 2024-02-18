@@ -98,7 +98,12 @@
 
 <script setup lang="ts">
 import { type RouteLocationNormalizedLoaded } from 'vue-router'
+import { type CpIvResponse, CpIvResultDtoItem } from '~/components/interface/cpIv'
 const searchPattern = 'cpIv'
+// current dto item
+const cDtoItem = ref<CpIvResultDtoItem>(new CpIvResultDtoItem())
+const dto: any = useAttrs().dto
+dto.params = cDtoItem
 const headers = ref<any>([
   { title: '№', key: 'no', sortable: true },
   { title: 'AT', key: 'iva', sortable: true },
@@ -107,31 +112,19 @@ const headers = ref<any>([
   { title: '%', key: 'percent', sortable: true },
   { title: 'PL', key: 'pl', sortable: true }
 ])
-// current dto item
-const cDtoItem = ref<ResultDtoItem>({
-  searchParams: {
-    pid: '',
-    cp: '',
-    wbFlg: false,
-    situation: ''
-  },
-  resData: {}
-})
-const dto: any = useAttrs().dto
-dto.params = cDtoItem
 
 const isLoading = ref<boolean>(true)
 
 // APIアクセス用get関数
-const get = async (): Promise<Record<string, any>> => {
+const get = async (): Promise<CpIvResponse | void> => {
   const res = await fetchCommon('/api/cpIv', 'GET', {
     query: cDtoItem.value.searchParams
   })
   const rd: Record<string, any> = res.data || {}
   if (!searchCommon().pushToast(rd?.message, rd?.msgLevel)) {
-    return {}
+    return
   }
-  return rd
+  return rd as CpIvResponse
 }
 
 /**
@@ -139,19 +132,20 @@ const get = async (): Promise<Record<string, any>> => {
   */
 const route: RouteLocationNormalizedLoaded = useRoute()
 cDtoItem.value.searchParams = {
-  pid: route.query.pid,
-  cp: route.query.cp,
+  pid: String(route.query.pid),
+  cp: String(route.query.cp),
   wbFlg: route.query.wbFlg === 'true',
-  situation: route.query.situation
+  situation: String(route.query.situation)
 }
 // dtoStoreからresDataを復元
-const rd: Record<string, any> | null = searchCommon().restoreResData()
+const rd: CpIvResponse | null = searchCommon().restoreResData() as CpIvResponse
 
 if (rd) {
   cDtoItem.value.resData = rd
 } else {
   // 存在しない場合は取得する
-  cDtoItem.value.resData = await get()
+  const ret = await get()
+  if (ret) { cDtoItem.value.resData = ret }
 }
 
 isLoading.value = !cDtoItem.value.resData

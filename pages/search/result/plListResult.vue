@@ -53,9 +53,6 @@
           items-per-page="-1"
           class="body-2"
         >
-          <template #[`item.percent`]="{ item }">
-            {{ item.percent + '%' }}
-          </template>
           <template #bottom />
         </v-data-table>
       </v-container>
@@ -68,15 +65,10 @@
 
 <script setup lang="ts">
 import { type RouteLocationNormalizedLoaded } from 'vue-router'
+import { PlListResponse, PlListResultDtoItem } from '~/components/interface/plList'
 const searchPattern = 'plList'
 // current dto item
-const cDtoItem = ref<ResultDtoItem>({
-  searchParams: {
-    pid: '',
-    iv: null
-  },
-  resData: {}
-})
+const cDtoItem = ref<PlListResultDtoItem>(new PlListResultDtoItem())
 const dto: any = useAttrs().dto
 dto.params = cDtoItem
 
@@ -87,7 +79,7 @@ const headers = ref<any>([
 const isLoading = ref<boolean>(true)
 
 // APIアクセス用get関数
-const get = async (): Promise<Record<string, any>> => {
+const get = async (): Promise<PlListResponse | void> => {
   const res = await fetchCommon('/api/plList', 'GET', {
     query: {
       pid: cDtoItem.value.searchParams.pid,
@@ -98,9 +90,9 @@ const get = async (): Promise<Record<string, any>> => {
   })
   const rd: Record<string, any> = res.data || {}
   if (!searchCommon().pushToast(rd?.message, rd?.msgLevel)) {
-    return {}
+    return
   }
-  return rd
+  return rd as PlListResponse
 }
 
 /**
@@ -108,17 +100,18 @@ const get = async (): Promise<Record<string, any>> => {
   */
 const route: RouteLocationNormalizedLoaded = useRoute()
 cDtoItem.value.searchParams = {
-  pid: route.query.pid,
-  iv: route.query.iv
+  pid: String(route.query.pid),
+  iv: String(route.query.iv)
 }
 // dtoStoreからresDataを復元
-const rd: Record<string, any> | null = searchCommon().restoreResData()
+const rd: PlListResponse | null = searchCommon().restoreResData() as PlListResponse
 
 if (rd) {
   cDtoItem.value.resData = rd
 } else {
   // 存在しない場合は取得する
-  cDtoItem.value.resData = await get()
+  const ret = await get()
+  if (ret) { cDtoItem.value.resData = ret }
 }
 
 isLoading.value = !cDtoItem.value.resData

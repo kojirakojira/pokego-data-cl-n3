@@ -68,7 +68,7 @@
             <v-data-table
               v-if="cDtoItem.resData.afEvoList.length"
               :headers="headers"
-              :items="(cDtoItem.resData.afEvoList as Array<GoPokedexAndCp>)"
+              :items="cDtoItem.resData.afEvoList"
               items-per-page="-1"
               class="body-2"
             >
@@ -100,28 +100,24 @@
 
 <script setup lang="ts">
 import { type RouteLocationNormalizedLoaded } from 'vue-router'
-import { type GoPokedexAndCp } from '~/components/interface/api/dto'
+import { type AfterEvoCpResponse, AfterEvoCpResultDtoItem } from '~/components/interface/afterEvoCp'
 const searchPattern = 'afterEvoCp'
+
+// current dto item
+const cDtoItem = ref<AfterEvoCpResultDtoItem>(new AfterEvoCpResultDtoItem())
+const dto: any = useAttrs().dto
+dto.params = cDtoItem
+
 const headers = ref<any>([
   { title: '図鑑№', key: 'goPokedex.pokedexId', sortable: false },
   { title: '', key: 'goPokedex.image', sortable: false, width: '52px' },
   { title: 'ポケモン', key: 'goPokedex.name', sortable: false },
   { title: 'CP', key: 'cp', sortable: false }])
-// current dto item
-const cDtoItem = ref<ResultDtoItem>({
-  searchParams: {
-    pid: '',
-    iv: '',
-    cp: ''
-  },
-  resData: {}
-})
-const dto: any = useAttrs().dto
-dto.params = cDtoItem
+
 const isLoading = ref<boolean>(true)
 
 // APIアクセス用get関数
-const get = async (): Promise<Record<string, any>> => {
+const get = async (): Promise<AfterEvoCpResponse | void> => {
   const res = await fetchCommon('/api/afterEvoCp', 'GET', {
     query: {
       pid: cDtoItem.value.searchParams.pid,
@@ -133,9 +129,9 @@ const get = async (): Promise<Record<string, any>> => {
   })
   const rd: Record<string, any> = res.data || {}
   if (!searchCommon().pushToast(rd?.message, rd?.msgLevel)) {
-    return {}
+    return
   }
-  return rd
+  return rd as AfterEvoCpResponse
 }
 
 /**
@@ -143,12 +139,12 @@ const get = async (): Promise<Record<string, any>> => {
  */
 const route: RouteLocationNormalizedLoaded = useRoute()
 cDtoItem.value.searchParams = {
-  pid: route.query.pid,
-  iv: route.query.iv,
-  cp: route.query.cp
+  pid: String(route.query.pid),
+  iv: String(route.query.iv),
+  cp: String(route.query.cp)
 }
 // dtoStoreからresDataを復元
-const rd: Record<string, any> | null = searchCommon().restoreResData()
+const rd: AfterEvoCpResponse | null = searchCommon().restoreResData() as AfterEvoCpResponse
 
 if (rd) {
   cDtoItem.value.resData = rd
@@ -161,7 +157,8 @@ if (rd) {
     throw createError({ statusCode: 400, message: '不正なパラメータが指定されました。', fatal: true })
   }
 
-  cDtoItem.value.resData = await get()
+  const ret = await get()
+  if (ret) { cDtoItem.value.resData = ret }
 }
 
 if (!cDtoItem.value.searchParams.cp && headers.value[headers.value.length - 1].key === 'cp') {

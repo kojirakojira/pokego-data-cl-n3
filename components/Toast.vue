@@ -21,12 +21,12 @@
 </template>
 
 <script setup lang="ts">
-import { toastStore } from '@/stores/toastStore'
+import { toastStore, type ToastItem } from '@/stores/toastStore'
 
-const msg = ref<any>('')
+const msg = ref<string>('')
 const dispFlg = ref<boolean>(false) // closeToastで手動でトーストを閉じた場合の考慮
 
-const waitMsgArr = computed(() => JSON.parse(JSON.stringify(toastStore().waitingMsgs.arr)))
+const waitMsgArr = computed((): Array<ToastItem> => JSON.parse(JSON.stringify(toastStore().waitingMsgs.arr)))
 
 watch(waitMsgArr, (newValue) => {
   if (!newValue.length || dispFlg.value) {

@@ -66,30 +66,26 @@
 
 <script setup lang="ts">
 import { type RouteLocationNormalizedLoaded } from 'vue-router'
+import { EvolutionResponse, EvolutionResultDtoItem } from '~/components/interface/evolution'
 import { type GoPokedex } from '~/components/interface/api/dto'
 const searchPattern = 'evolution'
 // current dto item
-const cDtoItem = ref<ResultDtoItem>({
-  searchParams: {
-    pid: ''
-  },
-  resData: {}
-})
+const cDtoItem = ref<EvolutionResultDtoItem>(new EvolutionResultDtoItem())
 const dto: any = useAttrs().dto
 dto.params = cDtoItem
 
 const isLoading = ref<boolean>(true)
 
 // APIアクセス用get関数
-const get = async (): Promise<Record<string, any>> => {
+const get = async (): Promise<EvolutionResponse | void> => {
   const res = await fetchCommon('/api/evolution', 'GET', {
     query: cDtoItem.value.searchParams
   })
   const rd: Record<string, any> = res.data || {}
   if (!searchCommon().pushToast(rd?.message, rd?.msgLevel)) {
-    return {}
+    return
   }
-  return rd
+  return rd as EvolutionResponse
 }
 
 let ogpName = ''
@@ -100,16 +96,17 @@ const init = async () => {
    */
   const route: RouteLocationNormalizedLoaded = useRoute()
   cDtoItem.value.searchParams = {
-    pid: route.query.pid
+    pid: String(route.query.pid)
   }
   // dtoStoreからresDataを復元
-  const rd: Record<string, any> | null = searchCommon().restoreResData()
+  const rd: EvolutionResponse | null = searchCommon().restoreResData() as EvolutionResponse
 
   if (rd) {
     cDtoItem.value.resData = rd
   } else {
   // 存在しない場合は取得する
-    cDtoItem.value.resData = await get()
+    const ret = await get()
+    if (ret) { cDtoItem.value.resData = ret }
   }
 
   isLoading.value = !cDtoItem.value.resData

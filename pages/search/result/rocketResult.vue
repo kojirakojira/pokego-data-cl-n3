@@ -87,30 +87,25 @@
 
 <script setup lang="ts">
 import { type RouteLocationNormalizedLoaded } from 'vue-router'
+import { type RocketResponse, RocketResultDtoItem } from '~/components/interface/rocket'
 const searchPattern = 'rocket'
 // current dto item
-const cDtoItem = ref<ResultDtoItem>({
-  searchParams: {
-    pid: '',
-    sakaki: false
-  },
-  resData: {}
-})
+const cDtoItem = ref<RocketResultDtoItem>(new RocketResultDtoItem())
 const dto: any = useAttrs().dto
 dto.params = cDtoItem
 
 const isLoading = ref<boolean>(true)
 
 // APIアクセス用get関数
-const get = async (): Promise<Record<string, any>> => {
+const get = async (): Promise<RocketResponse | void> => {
   const res = await fetchCommon('/api/rocket', 'GET', {
     query: cDtoItem.value.searchParams
   })
   const rd: Record<string, any> = res.data || {}
   if (!searchCommon().pushToast(rd?.message, rd?.msgLevel)) {
-    return {}
+    return
   }
-  return rd
+  return rd as RocketResponse
 }
 
 /**
@@ -118,17 +113,18 @@ const get = async (): Promise<Record<string, any>> => {
  */
 const route: RouteLocationNormalizedLoaded = useRoute()
 cDtoItem.value.searchParams = {
-  pid: route.query.pid,
+  pid: String(route.query.pid),
   sakaki: route.query.sakaki === 'true'
 }
 // dtoStoreからresDataを復元
-const rd: Record<string, any> | null = searchCommon().restoreResData()
+const rd: RocketResponse | null = searchCommon().restoreResData() as RocketResponse
 
 if (rd) {
   cDtoItem.value.resData = rd
 } else {
   // 存在しない場合は取得する
-  cDtoItem.value.resData = await get()
+  const ret = await get()
+  if (ret) { cDtoItem.value.resData = ret }
 }
 
 isLoading.value = !cDtoItem.value.resData

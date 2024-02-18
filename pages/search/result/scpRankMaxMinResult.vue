@@ -68,7 +68,7 @@
                     :key="hIndex"
                     :style="h.key === 'mm' ? 'color: red;' : undefined"
                   >
-                    {{ convTableData(cDtoItem.resData.scpSlRankMax as RankData, h.key as keyof TableData, true) }}
+                    {{ convTableData(cDtoItem.resData.scpSlRankMax, h.key as keyof TableData, true) }}
                   </td>
                 </tr>
                 <tr>
@@ -77,7 +77,7 @@
                     :key="hIndex"
                     :style="h.key === 'mm' ? 'color: blue;' : undefined"
                   >
-                    {{ convTableData(cDtoItem.resData.scpSlRankMin as RankData, h.key as keyof TableData, false) }}
+                    {{ convTableData(cDtoItem.resData.scpSlRankMin, h.key as keyof TableData, false) }}
                   </td>
                 </tr>
               </tbody>
@@ -104,7 +104,7 @@
                     :key="hIndex"
                     :style="h.key === 'mm' ? 'color: red;' : undefined"
                   >
-                    {{ convTableData(cDtoItem.resData.scpHlRankMax as RankData, h.key as keyof TableData, true) }}
+                    {{ convTableData(cDtoItem.resData.scpHlRankMax, h.key as keyof TableData, true) }}
                   </td>
                 </tr>
                 <tr>
@@ -113,7 +113,7 @@
                     :key="hIndex"
                     :style="h.key === 'mm' ? 'color: blue;' : undefined"
                   >
-                    {{ convTableData(cDtoItem.resData.scpHlRankMin as RankData, h.key as keyof TableData, false) }}
+                    {{ convTableData(cDtoItem.resData.scpHlRankMin, h.key as keyof TableData, false) }}
                   </td>
                 </tr>
               </tbody>
@@ -140,7 +140,7 @@
                     :key="hIndex"
                     :style="h.key === 'mm' ? 'color: red;' : undefined"
                   >
-                    {{ convTableData(cDtoItem.resData.scpMlRankMax as RankData, h.key as keyof TableData, true) }}
+                    {{ convTableData(cDtoItem.resData.scpMlRankMax, h.key as keyof TableData, true) }}
                   </td>
                 </tr>
                 <tr>
@@ -149,7 +149,7 @@
                     :key="hIndex"
                     :style="h.key === 'mm' ? 'color: blue;' : undefined"
                   >
-                    {{ convTableData(cDtoItem.resData.scpMlRankMin as RankData, h.key as keyof TableData, false) }}
+                    {{ convTableData(cDtoItem.resData.scpMlRankMin, h.key as keyof TableData, false) }}
                   </td>
                 </tr>
               </tbody>
@@ -166,16 +166,14 @@
 
 <script setup lang="ts">
 import { type RouteLocationNormalizedLoaded } from 'vue-router'
-interface RankData {
-  iva: number,
-  ivd: number,
-  ivh: number,
-  pl: string,
-  cp: number,
-  percent: number,
-  sp: number,
-  scp: number
-}
+import type { ScpRank } from '~/components/interface/api/dto'
+import { type ScpRankMaxMinResponse, ScpRankMaxMinResultDtoItem } from '~/components/interface/scpRankMaxMin'
+const searchPattern = 'scpRankMaxMin'
+// current dto item
+const cDtoItem = ref<ScpRankMaxMinResultDtoItem>(new ScpRankMaxMinResultDtoItem())
+const dto: any = useAttrs().dto
+dto.params = cDtoItem
+
 interface TableData {
   mm: string,
   iva: number,
@@ -187,49 +185,40 @@ interface TableData {
   sp: number,
   scp: number
 }
-const searchPattern = 'scpRankMaxMin'
 const headers = ref<Record<string, string>[]>([
-  { title: '', key: 'mm' },
+  { title: '', key: 'mm' }, // 最高個体 or 最低個体
   { title: 'AT', key: 'iva' },
   { title: 'DF', key: 'ivd' },
   { title: 'HP', key: 'ivh' },
   { title: 'PL', key: 'pl' },
   { title: 'CP', key: 'cp' },
   { title: '%', key: 'percent' }])
-// current dto item
-const cDtoItem = ref<ResultDtoItem>({
-  searchParams: {
-    pid: ''
-  },
-  resData: {}
-})
-const dto: any = useAttrs().dto
-dto.params = cDtoItem
+
 const isLoading = ref<boolean>(true)
 
 // APIアクセス用get関数
-const get = async (): Promise<Record<string, any>> => {
+const get = async (): Promise<ScpRankMaxMinResponse | void> => {
   const res = await fetchCommon('/api/scpRankMaxMin', 'GET', {
     query: cDtoItem.value.searchParams
   })
   const rd: Record<string, any> = res.data || {}
   if (!searchCommon().pushToast(rd?.message, rd?.msgLevel)) {
-    return {}
+    return
   }
-  return rd
+  return rd as ScpRankMaxMinResponse
 }
 
 /**
- * resDataの"RankData"から、表示用の値を生成する。
+ * resDataのScpRankから、表示用の値を生成する。
  * @param rankData example: resData.scpHlRankMax
  * @param key TableDataのキー
  * @param maxFlg max or min
  */
-const convTableData = (rankData: RankData, key: keyof TableData, maxFlg: boolean): string | number => {
+const convTableData = (rankData: ScpRank, key: string, maxFlg: boolean): string | number => {
   if (key === 'mm') {
     return maxFlg ? '最高個体' : '最低個体'
   }
-  return rankData[key]
+  return rankData[key as keyof typeof rankData]
 }
 
 /**
@@ -252,16 +241,17 @@ const onClickScpSpBtn = () => {
  */
 const route: RouteLocationNormalizedLoaded = useRoute()
 cDtoItem.value.searchParams = {
-  pid: route.query.pid
+  pid: String(route.query.pid)
 }
 // dtoStoreからresDataを復元
-const rd: Record<string, any> | null = searchCommon().restoreResData()
+const rd: ScpRankMaxMinResponse | null = searchCommon().restoreResData() as ScpRankMaxMinResponse
 
 if (rd) {
   cDtoItem.value.resData = rd
 } else {
   // 存在しない場合は取得する
-  cDtoItem.value.resData = await get()
+  const ret = await get()
+  if (ret) { cDtoItem.value.resData = ret }
 }
 isLoading.value = !cDtoItem.value.resData
 

@@ -2,7 +2,7 @@ import { ref } from 'vue'
 import { defineStore } from 'pinia'
 
 export interface ToastItem {
-  msg: any,
+  msg: string,
   timeout?: number,
   color?: string
 }
@@ -14,6 +14,10 @@ export const toastStore = defineStore(
     const pushToast = (elem: ToastItem) => {
       elem.color = elem.color || 'black'
       elem.timeout = elem.timeout || 4000
+      if (elem.msg === waitingMsgs.value.arr.slice(-1)[0]?.msg) {
+        // waitingMsgsの一番後ろと追加しようとしているメッセージが全く同じ場合は追加しない。
+        return
+      }
       waitingMsgs.value.arr.push(elem)
     }
 

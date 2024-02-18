@@ -82,7 +82,14 @@
 
 <script setup lang="ts">
 import { type RouteLocationNormalizedLoaded } from 'vue-router'
+import { ScpRankListResponse, ScpRankListResultDtoItem } from '~/components/interface/scpRankList'
 const searchPattern = 'scpRankList'
+
+// current dto item
+const cDtoItem = ref<ScpRankListResultDtoItem>(new ScpRankListResultDtoItem())
+const dto: any = useAttrs().dto
+dto.params = cDtoItem
+
 const headers = ref<any>([
   { title: 'ランク', key: 'rank' },
   { title: 'AT', key: 'iva' },
@@ -91,7 +98,6 @@ const headers = ref<any>([
   { title: 'PL', key: 'pl' },
   { title: 'CP', key: 'cp' },
   { title: '%', key: 'percent' }])
-
 const leagueDic = readonly<Record<string, string>>({
   sl: 'スーパーリーグ(CP1500以下)',
   gl: 'スーパーリーグ(CP1500以下)',
@@ -99,28 +105,19 @@ const leagueDic = readonly<Record<string, string>>({
   ul: 'ハイパーリーグ(CP2500以下)',
   ml: 'マスターリーグ'
 })
-// current dto item
-const cDtoItem = ref<ResultDtoItem>({
-  searchParams: {
-    pid: '',
-    league: ''
-  },
-  resData: {}
-})
-const dto: any = useAttrs().dto
-dto.params = cDtoItem
+
 const isLoading = ref<boolean>(true)
 
 // APIアクセス用get関数
-const get = async (): Promise<Record<string, any>> => {
+const get = async (): Promise<ScpRankListResponse | void> => {
   const res = await fetchCommon('/api/scpRankList', 'GET', {
     query: cDtoItem.value.searchParams
   })
   const rd: Record<string, any> = res.data || {}
   if (!searchCommon().pushToast(rd?.message, rd?.msgLevel)) {
-    return {}
+    return
   }
-  return rd
+  return rd as ScpRankListResponse
 }
 
 /**
@@ -128,17 +125,18 @@ const get = async (): Promise<Record<string, any>> => {
  */
 const route: RouteLocationNormalizedLoaded = useRoute()
 cDtoItem.value.searchParams = {
-  pid: route.query.pid,
-  league: route.query.league
+  pid: String(route.query.pid),
+  league: String(route.query.league)
 }
 // dtoStoreからresDataを復元
-const rd: Record<string, any> | null = searchCommon().restoreResData()
+const rd: ScpRankListResponse | null = searchCommon().restoreResData() as ScpRankListResponse
 
 if (rd) {
   cDtoItem.value.resData = rd
 } else {
   // 存在しない場合は取得する
-  cDtoItem.value.resData = await get()
+  const ret = await get()
+  if (ret) { cDtoItem.value.resData = ret }
 }
 isLoading.value = !cDtoItem.value.resData
 

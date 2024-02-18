@@ -41,18 +41,11 @@
       <v-container>
         <v-data-table
           :headers="headers"
-          :items="cDtoItem.resData.cpRankList"
+          :items="(cDtoItem.resData.cpRankList)"
           items-per-page="500"
           :items-per-page-options="[500, 1000, -1]"
           class="body-2"
-        >
-          <template #[`item.goPokedex.pokedexId`]="{ item }">
-            {{ editUtils().getPdxNo(item.goPokedex.pokedexId) }}
-          </template>
-          <template #[`item.goPokedex.name`]="{ item }">
-            {{ editUtils().appendRemarks(item.goPokedex.name, item.goPokedex.remarks) }}
-          </template>
-        </v-data-table>
+        />
       </v-container>
     </div>
     <div v-else>
@@ -63,14 +56,10 @@
 
 <script setup lang="ts">
 import { type RouteLocationNormalizedLoaded } from 'vue-router'
+import { type CpRankListResponse, CpRankListResultDtoItem } from '~/components/interface/cpRankList'
 const searchPattern = 'cpRankList'
 // current dto item
-const cDtoItem = ref<ResultDtoItem>({
-  searchParams: {
-    pid: ''
-  },
-  resData: {}
-})
+const cDtoItem = ref<CpRankListResultDtoItem>(new CpRankListResultDtoItem())
 const dto: any = useAttrs().dto
 dto.params = cDtoItem
 
@@ -84,15 +73,15 @@ const headers = ref<any>([
 const isLoading = ref<boolean>(true)
 
 // APIアクセス用get関数
-const get = async (): Promise<Record<string, any>> => {
+const get = async (): Promise<CpRankListResponse | void> => {
   const res = await fetchCommon('/api/cpRankList', 'GET', {
     query: cDtoItem.value.searchParams
   })
   const rd: Record<string, any> = res.data || {}
   if (!searchCommon().pushToast(rd?.message, rd?.msgLevel)) {
-    return {}
+    return
   }
-  return rd
+  return rd as CpRankListResponse
 }
 
 /**
@@ -100,16 +89,17 @@ const get = async (): Promise<Record<string, any>> => {
   */
 const route: RouteLocationNormalizedLoaded = useRoute()
 cDtoItem.value.searchParams = {
-  pid: route.query.pid
+  pid: String(route.query.pid)
 }
 // dtoStoreからresDataを復元
-const rd: Record<string, any> | null = searchCommon().restoreResData()
+const rd: CpRankListResponse | null = searchCommon().restoreResData() as CpRankListResponse
 
 if (rd) {
   cDtoItem.value.resData = rd
 } else {
   // 存在しない場合は取得する
-  cDtoItem.value.resData = await get()
+  const ret = await get()
+  if (ret) { cDtoItem.value.resData = ret }
 }
 
 isLoading.value = !cDtoItem.value.resData

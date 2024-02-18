@@ -73,23 +73,17 @@
 
 <script setup lang="ts">
 import { type RouteLocationNormalizedLoaded } from 'vue-router'
+import { type CpResponse, CpResultDtoItem } from '~/components/interface/cp'
 const searchPattern = 'cp'
 // current dto item
-const cDtoItem = ref<ResultDtoItem>({
-  searchParams: {
-    pid: '',
-    iv: null,
-    pl: null
-  },
-  resData: {}
-})
+const cDtoItem = ref<CpResultDtoItem>(new CpResultDtoItem())
 const dto: any = useAttrs().dto
 dto.params = cDtoItem
 
 const isLoading = ref<boolean>(true)
 
 // APIアクセス用get関数
-const get = async (): Promise<Record<string, any>> => {
+const get = async (): Promise<CpResponse | void> => {
   const res = await fetchCommon('/api/cp', 'GET', {
     query: {
       pid: cDtoItem.value.searchParams.pid,
@@ -101,9 +95,9 @@ const get = async (): Promise<Record<string, any>> => {
   })
   const rd: Record<string, any> = res.data || {}
   if (!searchCommon().pushToast(rd?.message, rd?.msgLevel)) {
-    return {}
+    return
   }
-  return rd
+  return rd as CpResponse
 }
 
 /**
@@ -111,18 +105,19 @@ const get = async (): Promise<Record<string, any>> => {
   */
 const route: RouteLocationNormalizedLoaded = useRoute()
 cDtoItem.value.searchParams = {
-  pid: route.query.pid,
-  iv: route.query.iv,
-  pl: route.query.pl
+  pid: String(route.query.pid),
+  iv: String(route.query.iv),
+  pl: String(route.query.pl)
 }
 // dtoStoreからresDataを復元
-const rd: Record<string, any> | null = searchCommon().restoreResData()
+const rd: CpResponse | null = searchCommon().restoreResData() as CpResponse
 
 if (rd) {
   cDtoItem.value.resData = rd
 } else {
   // 存在しない場合は取得する
-  cDtoItem.value.resData = await get()
+  const ret = await get()
+  if (ret) { cDtoItem.value.resData = ret }
 }
 
 isLoading.value = !cDtoItem.value.resData

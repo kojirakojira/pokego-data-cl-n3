@@ -3,102 +3,101 @@
     <MajorPartsH2Common>
       {{ searchCommon().getSearchPatternName(searchPattern) }}
     </MajorPartsH2Common>
-    <v-container>
-      <v-row>
-        <v-col cols="12" md="4" lg="4" xl="4" class="col-title">
-          <v-icon>
-            mdi-pen
-          </v-icon>
-          ポケモン
-        </v-col>
-        <v-col cols="12" md="8" lg="8" xl="8">
-          <v-combobox
-            v-model="cDtoItem.searchParams.name"
-            :items="tgbArr"
-            label="ポケモンを選択"
-            outlined
-            dense
-          />
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col cols="12" md="4" lg="4" xl="4" class="col-title">
-          <v-icon>
-            mdi-pen
-          </v-icon>
-          CP
-        </v-col>
-        <v-col cols="12" md="8" lg="8" xl="8">
-          <v-text-field
-            v-model="cDtoItem.searchParams.cp"
-            label="例：4049"
-            outlined
-            dense
-            autocomplete="off"
-            type="number"
-            @keyup.enter.exact="clickSearchBtn"
-          />
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col cols="12" md="4" lg="4" xl="4" class="col-title">
-          <v-icon>
-            mdi-pen
-          </v-icon>
-          天候ブースト
-        </v-col>
-        <v-col cols="12" md="8" lg="8" xl="8">
-          <v-switch
-            v-model="cDtoItem.searchParams.wbFlg"
-            inset
-            hide-details
-            :label="cDtoItem.searchParams.wbFlg ? 'あり' : 'なし'"
-            style="margin-top: 0px;"
-          />
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col cols="12" class="text-center">
-          <v-btn
-            rounded
-            min-width="50%"
-            color="success"
-            :disabled="isSearchBtnClick"
-            @click="clickSearchBtn"
-          >
-            検索
-          </v-btn>
-        </v-col>
-      </v-row>
-    </v-container>
-    <SearchResultList
-      v-if="cDtoItem.psr.goPokedexList.length !== 0"
-      :psr="cDtoItem.psr"
-      @click-row="searchCommon().clickRowResultList($event, searchPattern, cDtoItem.searchParams)"
-    />
+    <div v-show="!isLoading">
+      <v-container>
+        <v-row>
+          <v-col cols="12" md="4" lg="4" xl="4" class="col-title">
+            <v-icon>
+              mdi-pen
+            </v-icon>
+            ポケモン
+          </v-col>
+          <v-col cols="12" md="8" lg="8" xl="8">
+            <v-combobox
+              v-model="cDtoItem.searchParams.name"
+              :items="tgbArr"
+              label="ポケモンを選択"
+              outlined
+              dense
+            />
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col cols="12" md="4" lg="4" xl="4" class="col-title">
+            <v-icon>
+              mdi-pen
+            </v-icon>
+            CP
+          </v-col>
+          <v-col cols="12" md="8" lg="8" xl="8">
+            <v-text-field
+              v-model="cDtoItem.searchParams.cp"
+              label="例：4049"
+              outlined
+              dense
+              autocomplete="off"
+              type="number"
+              @keyup.enter.exact="clickSearchBtn"
+            />
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col cols="12" md="4" lg="4" xl="4" class="col-title">
+            <v-icon>
+              mdi-pen
+            </v-icon>
+            天候ブースト
+          </v-col>
+          <v-col cols="12" md="8" lg="8" xl="8">
+            <v-switch
+              v-model="cDtoItem.searchParams.wbFlg"
+              inset
+              hide-details
+              :label="cDtoItem.searchParams.wbFlg ? 'あり' : 'なし'"
+              style="margin-top: 0px;"
+            />
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col cols="12" class="text-center">
+            <v-btn
+              rounded
+              min-width="50%"
+              color="success"
+              :disabled="isSearchBtnClick"
+              @click="clickSearchBtn"
+            >
+              検索
+            </v-btn>
+          </v-col>
+        </v-row>
+      </v-container>
+      <template v-if="cDtoItem.resData && cDtoItem.resData.pokemonSearchResult?.goPokedexList.length > 1">
+        <SearchResultList
+          :psr="cDtoItem.resData.pokemonSearchResult"
+          @click-row="searchCommon().clickRowResultList($event, searchPattern, cDtoItem.searchParams)"
+        />
+      </template>
+    </div>
+    <div v-show="isLoading">
+      <Loading full-page />
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { ThreeGalarBirdsSearchDtoItem } from '~/components/interface/threeGlarBirds'
+
 const searchPattern = 'threeGalarBirds'
-const tgbArr = ['フリーザー(ガラルのすがた)', 'サンダー(ガラルのすがた)', 'ファイヤー(ガラルのすがた)']
 // current dto item
-const cDtoItem = ref<OnePokeDtoItem>({
-  searchParams: {
-    name: '',
-    cp: '',
-    wbFlg: false
-  },
-  psr: {
-    goPokedexList: [],
-    maybe: false
-  },
-  resData: {}
-})
+const cDtoItem = ref<ThreeGalarBirdsSearchDtoItem>(new ThreeGalarBirdsSearchDtoItem())
 const dto: any = useAttrs().dto
 dto.params = cDtoItem
 
-const isSearchBtnClick = ref(false)
+const tgbArr = ['フリーザー(ガラルのすがた)', 'サンダー(ガラルのすがた)', 'ファイヤー(ガラルのすがた)']
+
+const isLoading = ref<boolean>(false)
+const isSearchBtnClick = ref<boolean>(false)
 
 // created: 画面を復元する
 searchCommon().restoreSearchScreen(['searchParams', 'psr', 'resData'], cDtoItem.value)
@@ -111,6 +110,7 @@ const clickSearchBtn = async () => {
     isSearchBtnClick.value = false
     return
   }
+  isLoading.value = true
   const res: Record<string, any> = await get()
   handleApiResult(res)
 }
@@ -141,14 +141,14 @@ const handleApiResult = (res: Record<string, any>) => {
   const success = searchCommon().handleApiMessage(rd)
   if (!success) {
     isSearchBtnClick.value = false
+    isLoading.value = false
     return
   }
 
   if (rd.success) {
+    cDtoItem.value.resData = rd
     if (rd.pokemonSearchResult.unique) {
       // 1件のみヒットした場合
-      cDtoItem.value.resData = rd
-      cDtoItem.value.psr = { goPokedexList: [], maybe: false }
       useRouter().push({
         name: 'search-result-threeGalarBirdsResult',
         query: searchCommon().makeQuery(rd.pokedexId, cDtoItem.value.searchParams)
@@ -158,8 +158,8 @@ const handleApiResult = (res: Record<string, any>) => {
       useRouter().replace({
         name: 'search-threeGalarBirds'
       })
-      cDtoItem.value.psr = rd.pokemonSearchResult
       isSearchBtnClick.value = false
+      isLoading.value = false
     }
   }
 }
