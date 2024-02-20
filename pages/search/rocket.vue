@@ -65,8 +65,15 @@
 </template>
 
 <script setup lang="ts">
-import { RocketSearchDtoItem } from '~/components/interface/rocket'
+import {
+  RocketSearchDtoItem,
+  type RocketResponse,
+  get,
+  check
+} from '~/components/interface/rocket'
+
 const searchPattern = 'rocket'
+
 // current dto item
 const cDtoItem = ref<RocketSearchDtoItem>(new RocketSearchDtoItem())
 const dto: any = useAttrs().dto
@@ -80,41 +87,28 @@ searchCommon().restoreSearchScreen(['searchParams', 'resData'], cDtoItem.value)
 
 const clickSearchBtn = async () => {
   isSearchBtnClick.value = true
-  const msg = check()
+  const msg = check(cDtoItem.value.searchParams)
   if (msg) {
     alert(msg)
     isSearchBtnClick.value = false
     return
   }
   isLoading.value = true
-  const res: Record<string, any> = await get()
+  const res = await get(cDtoItem.value.searchParams)
+  if (!res) {
+    isSearchBtnClick.value = false
+    isLoading.value = false
+    return
+  }
   handleApiResult(res)
-}
-
-const check = () => {
-  return validateUtils().checkRequired({ item: cDtoItem.value.searchParams.name, itemName: 'ポケモン' })
-}
-
-const get = async () => {
-  return await fetchCommon('/api/rocket', 'GET', { query: cDtoItem.value.searchParams })
 }
 
 /**
  * APIのレスポンスを処理する。
  *
- * @param res
+ * @param rd
  */
-const handleApiResult = (res: Record<string, any>) => {
-  const rd = res.data
-
-  // メッセージ、メッセージレベルによるハンドリング
-  const success = searchCommon().handleApiMessage(rd)
-  if (!success) {
-    isSearchBtnClick.value = false
-    isLoading.value = false
-    return
-  }
-
+const handleApiResult = (rd: RocketResponse) => {
   if (rd.success) {
     cDtoItem.value.resData = rd
     if (rd.pokemonSearchResult.unique) {

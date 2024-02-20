@@ -62,3 +62,32 @@ export class ScpRankListResultDtoItem implements ResultDtoItem {
     this.resData = new ScpRankListResponse()
   }
 }
+
+/**
+ * APIアクセス用get関数
+ */
+export const get = async (
+  searchParams: ScpRankListSearchParams | ScpRankListResultSearchParams
+): Promise<ScpRankListResponse | void> => {
+  const res = await fetchCommon('/api/scpRankList', 'GET', {
+    query: searchParams
+  })
+  const rd: ScpRankListResponse | null = res.data as ScpRankListResponse
+  if (!searchCommon().handleApiMessage(rd)) {
+    return
+  }
+  return rd
+}
+
+/**
+ * 入力チェック関数
+ * @returns エラーメッセージ
+ */
+export const check = (searchParams: ScpRankListSearchParams | ScpRankListResultSearchParams) => {
+  let msg = ''
+  if ('name' in searchParams) {
+    msg += validateUtils().checkRequired({ item: searchParams.name, itemName: 'ポケモン' })
+  }
+  msg += validateUtils().checkRequired({ item: searchParams.league, itemName: 'リーグ' })
+  return msg
+}

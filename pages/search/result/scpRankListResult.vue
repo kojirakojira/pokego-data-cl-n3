@@ -81,8 +81,13 @@
 </template>
 
 <script setup lang="ts">
-import { type RouteLocationNormalizedLoaded } from 'vue-router'
-import { ScpRankListResponse, ScpRankListResultDtoItem } from '~/components/interface/scpRankList'
+import {
+  type ScpRankListResponse,
+  ScpRankListResultDtoItem,
+  ScpRankListResultSearchParams,
+  get,
+  check
+} from '~/components/interface/scpRankList'
 const searchPattern = 'scpRankList'
 
 // current dto item
@@ -108,38 +113,6 @@ const leagueDic = readonly<Record<string, string>>({
 
 const isLoading = ref<boolean>(true)
 
-// APIアクセス用get関数
-const get = async (): Promise<ScpRankListResponse | void> => {
-  const res = await fetchCommon('/api/scpRankList', 'GET', {
-    query: cDtoItem.value.searchParams
-  })
-  const rd: Record<string, any> = res.data || {}
-  if (!searchCommon().pushToast(rd?.message, rd?.msgLevel)) {
-    return
-  }
-  return rd as ScpRankListResponse
-}
-
-/**
- * searchParams, resDataのセット
- */
-const route: RouteLocationNormalizedLoaded = useRoute()
-cDtoItem.value.searchParams = {
-  pid: String(route.query.pid),
-  league: String(route.query.league)
-}
-// dtoStoreからresDataを復元
-const rd: ScpRankListResponse | null = searchCommon().restoreResData() as ScpRankListResponse
-
-if (rd) {
-  cDtoItem.value.resData = rd
-} else {
-  // 存在しない場合は取得する
-  const ret = await get()
-  if (ret) { cDtoItem.value.resData = ret }
-}
-isLoading.value = !cDtoItem.value.resData
-
 /**
  * SCP,ステ積表示ボタン押下時のイベント
  */
@@ -155,10 +128,32 @@ const onClickScpSpBtn = () => {
   }
 }
 
-/**
- * Head情報
- */
-const ogpName = cDtoItem.value.resData.name
+const init = async () => {
+  // route.queryからsearchParamsを復元
+  cDtoItem.value.searchParams = searchCommon()
+    .restoreSearchParams(useRoute().query, ScpRankListResultSearchParams)
+  // dtoStoreからresDataを復元
+  const rd: ScpRankListResponse | null = searchCommon().restoreResData() as ScpRankListResponse
+
+  if (rd) {
+    cDtoItem.value.resData = rd
+  } else {
+  // 存在しない場合は取得する
+    if (check(cDtoItem.value.searchParams)) {
+      throw createError({ statusCode: 400, message: '不正なパラメータが指定されました。', fatal: true })
+    }
+
+    const ret = await get(cDtoItem.value.searchParams)
+    if (!ret) { return }
+    cDtoItem.value.resData = ret
+  }
+  isLoading.value = !cDtoItem.value.resData
+}
+
+await init()
+
+// header
+const ogpName = cDtoItem.value.resData.name || ''
 const ogpImage = cDtoItem.value.resData.image || '/pokego/peripper-eyes.png'
 useHead({
   title: `${ogpName}のPvP順位の一覧`,

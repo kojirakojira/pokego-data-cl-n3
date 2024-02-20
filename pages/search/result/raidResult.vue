@@ -86,49 +86,43 @@
 </template>
 
 <script setup lang="ts">
-import { type RouteLocationNormalizedLoaded } from 'vue-router'
-import { type RaidResponse, RaidResultDtoItem } from '~/components/interface/raid'
+import {
+  type RaidResponse,
+  RaidResultDtoItem,
+  RaidResultSearchParams,
+  get
+} from '~/components/interface/raid'
 const searchPattern = 'raid'
 // current dto item
 const cDtoItem = ref<RaidResultDtoItem>(new RaidResultDtoItem())
 const dto: any = useAttrs().dto
 dto.params = cDtoItem
+
 const isLoading = ref<boolean>(true)
 
-// APIアクセス用get関数
-const get = async (): Promise<RaidResponse | void> => {
-  const res = await fetchCommon('/api/raid', 'GET', {
-    query: cDtoItem.value.searchParams
-  })
-  const rd: Record<string, any> = res.data || {}
-  if (!searchCommon().pushToast(rd?.message, rd?.msgLevel)) {
-    return
+const init = async () => {
+  // route.queryからsearchParamsを復元
+  cDtoItem.value.searchParams = searchCommon()
+    .restoreSearchParams(useRoute().query, RaidResultSearchParams)
+  // dtoStoreからresDataを復元
+  const rd: RaidResponse | null = searchCommon().restoreResData() as RaidResponse
+  if (rd) {
+    cDtoItem.value.resData = rd
+  } else {
+    // 存在しない場合は取得する
+    // 入力チェック不要
+    const ret = await get(cDtoItem.value.searchParams)
+    if (!ret) { return }
+    cDtoItem.value.resData = ret
   }
-  return rd as RaidResponse
+
+  isLoading.value = !cDtoItem.value.resData
 }
 
-/**
- * searchParams, resDataのセット
- */
-const route: RouteLocationNormalizedLoaded = useRoute()
-cDtoItem.value.searchParams = {
-  pid: String(route.query.pid),
-  shadow: route.query.shadow === 'true'
-}
-// dtoStoreからresDataを復元
-const rd: RaidResponse | null = searchCommon().restoreResData() as RaidResponse
-if (rd) {
-  cDtoItem.value.resData = rd
-} else {
-  // 存在しない場合は取得する
-  const ret = await get()
-  if (ret) { cDtoItem.value.resData = ret }
-}
+await init()
 
-isLoading.value = !cDtoItem.value.resData
-
-// Head情報
-const ogpName = cDtoItem.value.resData.name
+// Header
+const ogpName = cDtoItem.value.resData.name || ''
 const ogpImage = cDtoItem.value.resData.image || '/pokego/peripper-eyes.png'
 useHead({
   title: `${ogpName}のレイドCP`,

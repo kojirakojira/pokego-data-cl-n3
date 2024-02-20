@@ -138,9 +138,15 @@
 </template>
 
 <script setup lang="ts">
-import { XTypeSearchDtoItem } from '~/components/interface/xType'
+import {
+  XTypeSearchDtoItem,
+  type XTypeResponse,
+  get,
+  check
+} from '~/components/interface/xType'
 
 const searchPattern = 'xType'
+
 // current dto item
 const cDtoItem = ref<XTypeSearchDtoItem>(new XTypeSearchDtoItem())
 const dto: any = useAttrs().dto
@@ -158,57 +164,28 @@ searchCommon().restoreSearchScreen(['searchParams', 'resData'], cDtoItem.value)
 
 const clickSearchBtn = async () => {
   isSearchBtnClick.value = true
-  const msg = check()
+  const msg = check(cDtoItem.value.searchParams)
   if (msg) {
     alert(msg)
     isSearchBtnClick.value = false
     return
   }
   isLoading.value = true
-  const res: Record<string, any> = await get()
+  const res = await get(cDtoItem.value.searchParams)
+  if (!res) {
+    isSearchBtnClick.value = false
+    isLoading.value = false
+    return
+  }
   handleApiResult(res)
-}
-
-const check = () => {
-  let msg = ''
-  const sp = cDtoItem.value.searchParams
-  if (!sp.own1 && !sp.own2) {
-    msg += '「じぶんのポケモン」は少なくともどちらか一方を入力してください。\n'
-  }
-  if (!sp.opp1 && !sp.opp2) {
-    msg += '「あいてのポケモン」は少なくともどちらか一方を入力してください。\n'
-  }
-  // Xは1個だけしか置けない。NOT(at1 XOR at2 XOR df1 XOR df2)
-  const isX = (t: string | null | undefined): boolean => t === 'x'
-  if (!(isX(sp.own1) !== isX(sp.own2) !== isX(sp.opp1) !== isX(sp.opp2))) {
-    msg += '「じぶんのポケモン」「あいてのポケモン」どちから一方に1つだけXを置いてください。\n'
-  }
-
-  return msg
-}
-
-const get = async () => {
-  return await fetchCommon('/api/xType', 'GET', { query: cDtoItem.value.searchParams })
 }
 
 /**
  * APIのレスポンスを処理する。
  *
- * @param res
+ * @param rd
  */
-const handleApiResult = (res: Record<string, any>) => {
-  const rd = res.data
-
-  // メッセージ、メッセージレベルによるハンドリング
-  const success = searchCommon().pushToast(
-    rd.message,
-    rd.msgLevel)
-  if (!success) {
-    isSearchBtnClick.value = false
-    isLoading.value = false
-    return
-  }
-
+const handleApiResult = (rd: XTypeResponse) => {
   if (rd.success) {
     cDtoItem.value.resData = rd
     useRouter().push({

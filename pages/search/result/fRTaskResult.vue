@@ -64,8 +64,12 @@
 </template>
 
 <script setup lang="ts">
-import { type RouteLocationNormalizedLoaded } from 'vue-router'
-import { type FRTaskResponse, FRTaskResultDtoItem } from '~/components/interface/frTask'
+import {
+  type FRTaskResponse,
+  FRTaskResultDtoItem,
+  FRTaskResultSearchParams,
+  get
+} from '~/components/interface/fRTask'
 
 const searchPattern = 'fRTask'
 // current dto item
@@ -75,40 +79,30 @@ dto.params = cDtoItem
 
 const isLoading = ref<boolean>(true)
 
-// APIアクセス用get関数
-const get = async (): Promise<FRTaskResponse | void> => {
-  const res = await fetchCommon('/api/fRTask', 'GET', {
-    query: cDtoItem.value.searchParams
-  })
-  const rd: Record<string, any> = res.data || {}
-  if (!searchCommon().pushToast(rd?.message, rd?.msgLevel)) {
-    return
+const init = async () => {
+  // route.queryからsearchParamsを復元
+  cDtoItem.value.searchParams = searchCommon()
+    .restoreSearchParams(useRoute().query, FRTaskResultSearchParams)
+  // dtoStoreからresDataを復元
+  const rd: FRTaskResponse | null = searchCommon().restoreResData() as FRTaskResponse
+
+  if (rd) {
+    cDtoItem.value.resData = rd
+  } else {
+    // 存在しない場合は取得する
+    // 入力チェック不要
+    const ret = await get(cDtoItem.value.searchParams)
+    if (!ret) { return }
+    cDtoItem.value.resData = ret
   }
-  return rd as FRTaskResponse
+
+  isLoading.value = !cDtoItem.value.resData
 }
 
-/**
- * searchParams, resDataのセット
- */
-const route: RouteLocationNormalizedLoaded = useRoute()
-cDtoItem.value.searchParams = {
-  pid: String(route.query.pid)
-}
-// dtoStoreからresDataを復元
-const rd: FRTaskResponse | null = searchCommon().restoreResData() as FRTaskResponse
+await init()
 
-if (rd) {
-  cDtoItem.value.resData = rd
-} else {
-  // 存在しない場合は取得する
-  const ret = await get()
-  if (ret) { cDtoItem.value.resData = ret }
-}
-
-isLoading.value = !cDtoItem.value.resData
-
-// Head情報
-const ogpName = cDtoItem.value.resData.name
+// Header
+const ogpName = cDtoItem.value.resData.name || ''
 const ogpImage = cDtoItem.value.resData.image || '/pokego/peripper-eyes.png'
 useHead({
   title: `${ogpName}のフィールドリサーチCP`,
@@ -122,3 +116,4 @@ useHead({
   ]
 })
 </script>
+~/components/interface/fRTask

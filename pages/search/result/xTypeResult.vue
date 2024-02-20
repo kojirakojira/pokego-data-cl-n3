@@ -133,9 +133,14 @@
 </template>
 
 <script setup lang="ts">
-import { type RouteLocationNormalizedLoaded } from 'vue-router'
 import { type XTypeElement } from '~/components/interface/api/dto'
-import { type XTypeResponse, XTypeResultDtoItem } from '~/components/interface/xType'
+import {
+  type XTypeResponse,
+  XTypeResultDtoItem,
+  XTypeResultSearchParams,
+  get,
+  check
+} from '~/components/interface/xType'
 
 const searchPattern = 'xType'
 
@@ -154,36 +159,6 @@ const headers = ref<any>([
 // xを自分側に定義したかどうか
 const definedXOwn = ref<boolean>(false)
 const isLoading = ref<boolean>(true)
-
-// APIアクセス用get関数
-const get = async (): Promise<XTypeResponse | void> => {
-  const res = await fetchCommon('/api/xType', 'GET', {
-    query: cDtoItem.value.searchParams
-  })
-  const rd: Record<string, any> = res.data || {}
-  if (!searchCommon().pushToast(rd?.message, rd?.msgLevel)) {
-    return
-  }
-  return rd as XTypeResponse
-}
-
-const check = () => {
-  let msg = ''
-  const sp = cDtoItem.value.searchParams
-  if (!sp.own1 && !sp.own2) {
-    msg += '「じぶんのポケモン」は少なくともどちらか一方を入力してください。\n'
-  }
-  if (!sp.opp1 && !sp.opp2) {
-    msg += '「あいてのポケモン」は少なくともどちらか一方を入力してください。\n'
-  }
-  // Xは1個だけしか置けない。NOT(at1 XOR at2 XOR df1 XOR df2)
-  const isX = (t: string | null | undefined): boolean => t === 'x'
-  if (!(isX(sp.own1) !== isX(sp.own2) !== isX(sp.opp1) !== isX(sp.opp2))) {
-    msg += '「じぶんのポケモン」「あいてのポケモン」どちから一方に1つだけXを置いてください。\n'
-  }
-
-  return msg
-}
 
 const toJpn = (v: string) => {
   if (v === 'x') {
@@ -217,36 +192,33 @@ const combiDecoration = (msg: string, atkFlg: boolean) => {
   return ret
 }
 
-/**
- * searchParams, resDataのセット
- */
-const route: RouteLocationNormalizedLoaded = useRoute()
-cDtoItem.value.searchParams = {
-  own1: String(route.query.own1),
-  own2: String(route.query.own2),
-  opp1: String(route.query.opp1),
-  opp2: String(route.query.opp2),
-  emphasis: String(route.query.emphasis)
-}
-// dtoStoreからresDataを復元
-const rd: XTypeResponse = searchCommon().restoreResData() as XTypeResponse
+const init = async () => {
+  // route.queryからsearchParamsを復元
+  cDtoItem.value.searchParams = searchCommon()
+    .restoreSearchParams(useRoute().query, XTypeResultSearchParams)
+  // dtoStoreからresDataを復元
+  const rd: XTypeResponse = searchCommon().restoreResData() as XTypeResponse
 
-if (rd) {
-  cDtoItem.value.resData = rd
-} else {
-  // 存在しない場合は取得する
-  if (check()) {
-    throw createError({ statusCode: 400, message: '不正なパラメータが指定されました。', fatal: true })
+  if (rd) {
+    cDtoItem.value.resData = rd
+  } else {
+    // 存在しない場合は取得する
+    if (check(cDtoItem.value.searchParams)) {
+      throw createError({ statusCode: 400, message: '不正なパラメータが指定されました。', fatal: true })
+    }
+
+    const ret = await get(cDtoItem.value.searchParams)
+    if (!ret) { return }
+    cDtoItem.value.resData = ret
   }
 
-  const ret = await get()
-  if (ret) { cDtoItem.value.resData = ret }
+  definedXOwn.value = isIncludeX(cDtoItem.value.resData.own1, cDtoItem.value.resData.own2)
+  isLoading.value = !cDtoItem.value.resData
 }
 
-definedXOwn.value = isIncludeX(cDtoItem.value.resData.own1, cDtoItem.value.resData.own2)
-isLoading.value = !cDtoItem.value.resData
+await init()
 
-// Head情報
+// Header
 const ogpOwn1 = toJpn(cDtoItem.value.resData.own1) || ''
 const ogpOwn2 = toJpn(cDtoItem.value.resData.own2) || ''
 const ogpOpp1 = toJpn(cDtoItem.value.resData.opp1) || ''

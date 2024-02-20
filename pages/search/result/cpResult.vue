@@ -72,8 +72,13 @@
 </template>
 
 <script setup lang="ts">
-import { type RouteLocationNormalizedLoaded } from 'vue-router'
-import { type CpResponse, CpResultDtoItem } from '~/components/interface/cp'
+import {
+  type CpResponse,
+  CpResultDtoItem,
+  CpResultSearchParams,
+  get,
+  check
+} from '~/components/interface/cp'
 const searchPattern = 'cp'
 // current dto item
 const cDtoItem = ref<CpResultDtoItem>(new CpResultDtoItem())
@@ -82,48 +87,33 @@ dto.params = cDtoItem
 
 const isLoading = ref<boolean>(true)
 
-// APIアクセス用get関数
-const get = async (): Promise<CpResponse | void> => {
-  const res = await fetchCommon('/api/cp', 'GET', {
-    query: {
-      pid: cDtoItem.value.searchParams.pid,
-      iva: cDtoItem.value.searchParams.iv.substring(0, 2),
-      ivd: cDtoItem.value.searchParams.iv.substring(2, 4),
-      ivh: cDtoItem.value.searchParams.iv.substring(4, 6),
-      pl: cDtoItem.value.searchParams.pl
-    }
-  })
-  const rd: Record<string, any> = res.data || {}
-  if (!searchCommon().pushToast(rd?.message, rd?.msgLevel)) {
-    return
-  }
-  return rd as CpResponse
-}
+const init = async () => {
+  // route.queryからsearchParamsを復元
+  cDtoItem.value.searchParams = searchCommon()
+    .restoreSearchParams(useRoute().query, CpResultSearchParams)
+  // dtoStoreからresDataを復元
+  const rd: CpResponse | null = searchCommon().restoreResData() as CpResponse
 
-/**
-  * searchParams, resDataのセット
-  */
-const route: RouteLocationNormalizedLoaded = useRoute()
-cDtoItem.value.searchParams = {
-  pid: String(route.query.pid),
-  iv: String(route.query.iv),
-  pl: String(route.query.pl)
-}
-// dtoStoreからresDataを復元
-const rd: CpResponse | null = searchCommon().restoreResData() as CpResponse
-
-if (rd) {
-  cDtoItem.value.resData = rd
-} else {
+  if (rd) {
+    cDtoItem.value.resData = rd
+  } else {
   // 存在しない場合は取得する
-  const ret = await get()
-  if (ret) { cDtoItem.value.resData = ret }
+    if (check(cDtoItem.value.searchParams)) {
+      throw createError({ statusCode: 400, message: '不正なパラメータが指定されました。', fatal: true })
+    }
+
+    const ret = await get(cDtoItem.value.searchParams)
+    if (!ret) { return }
+    cDtoItem.value.resData = ret
+  }
+
+  isLoading.value = !cDtoItem.value.resData
 }
 
-isLoading.value = !cDtoItem.value.resData
+await init()
 
-// Head情報
-const ogpName = cDtoItem.value.resData.name
+// Header
+const ogpName = cDtoItem.value.resData.name || ''
 const ogpImage = cDtoItem.value.resData.image || '/pokego/peripper-eyes.png'
 useHead({
   title: `${ogpName}のCP`,

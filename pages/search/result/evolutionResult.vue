@@ -65,8 +65,12 @@
 </template>
 
 <script setup lang="ts">
-import { type RouteLocationNormalizedLoaded } from 'vue-router'
-import { EvolutionResponse, EvolutionResultDtoItem } from '~/components/interface/evolution'
+import {
+  EvolutionResponse,
+  EvolutionResultDtoItem,
+  EvolutionResultSearchParams,
+  get
+} from '~/components/interface/evolution'
 import { type GoPokedex } from '~/components/interface/api/dto'
 const searchPattern = 'evolution'
 // current dto item
@@ -76,44 +80,24 @@ dto.params = cDtoItem
 
 const isLoading = ref<boolean>(true)
 
-// APIアクセス用get関数
-const get = async (): Promise<EvolutionResponse | void> => {
-  const res = await fetchCommon('/api/evolution', 'GET', {
-    query: cDtoItem.value.searchParams
-  })
-  const rd: Record<string, any> = res.data || {}
-  if (!searchCommon().pushToast(rd?.message, rd?.msgLevel)) {
-    return
-  }
-  return rd as EvolutionResponse
-}
-
-let ogpName = ''
-let ogpImage = ''
 const init = async () => {
-  /**
-   * searchParams, resDataのセット
-   */
-  const route: RouteLocationNormalizedLoaded = useRoute()
-  cDtoItem.value.searchParams = {
-    pid: String(route.query.pid)
-  }
+  // route.queryからsearchParamsを復元
+  cDtoItem.value.searchParams = searchCommon()
+    .restoreSearchParams(useRoute().query, EvolutionResultSearchParams)
   // dtoStoreからresDataを復元
   const rd: EvolutionResponse | null = searchCommon().restoreResData() as EvolutionResponse
 
   if (rd) {
     cDtoItem.value.resData = rd
   } else {
-  // 存在しない場合は取得する
-    const ret = await get()
-    if (ret) { cDtoItem.value.resData = ret }
+    // 存在しない場合は取得する
+    // 入力チェック不要
+    const ret = await get(cDtoItem.value.searchParams)
+    if (!ret) { return }
+    cDtoItem.value.resData = ret
   }
 
   isLoading.value = !cDtoItem.value.resData
-
-  // Head情報
-  ogpName = cDtoItem.value.resData.name
-  ogpImage = cDtoItem.value.resData.image || '/pokego/peripper-eyes.png'
 }
 
 // created
@@ -126,6 +110,9 @@ watch(() => useRoute().fullPath, async () => {
   isLoading.value = false
 })
 
+// Header
+const ogpName = cDtoItem.value.resData.name || ''
+const ogpImage = cDtoItem.value.resData.image || '/pokego/peripper-eyes.png'
 useHead({
   title: `${ogpName}の進化ツリー`,
   meta: [

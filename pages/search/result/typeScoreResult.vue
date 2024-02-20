@@ -153,8 +153,14 @@
 </template>
 
 <script setup lang="ts">
-import { type RouteLocationNormalizedLoaded } from 'vue-router'
-import { type TypeScoreResponse, TypeScoreResultDtoItem } from '~/components/interface/typeScore'
+import {
+  type TypeScoreResponse,
+  TypeScoreResultDtoItem,
+  TypeScoreResultSearchParams,
+  get,
+  check,
+  createRequestQuery
+} from '~/components/interface/typeScore'
 
 const searchPattern = 'typeScore'
 
@@ -180,18 +186,6 @@ const typeDic = ref<TypeDic>({
 })
 
 const isLoading = ref<boolean>(true)
-
-// APIアクセス用get関数
-const get = async (): Promise<TypeScoreResponse | void> => {
-  const res = await fetchCommon('/api/typeScore', 'GET', {
-    query: cDtoItem.value.searchParams
-  })
-  const rd: Record<string, any> = res.data || {}
-  if (!searchCommon().pushToast(rd?.message, rd?.msgLevel)) {
-    return
-  }
-  return rd as TypeScoreResponse
-}
 
 /**
  * タイプを表す構造体を生成する。
@@ -222,39 +216,44 @@ const createTypeDic = (type1: string, type2: string | null, resData: Record<stri
   return { attacker1, attacker2, defender }
 }
 
-/**
-  * searchParams, resDataのセット
-  */
-const route: RouteLocationNormalizedLoaded = useRoute()
-cDtoItem.value.searchParams = {
-  pid: String(route.query.pid),
-  type1: String(route.query.type1),
-  type2: String(route.query.type2),
-  isPoke: route.query.isPoke === 'true'
+const init = async () => {
+  // route.queryからsearchParamsを復元
+  cDtoItem.value.searchParams = searchCommon()
+    .restoreSearchParams(useRoute().query, TypeScoreResultSearchParams)
+  // dtoStoreからresDataを復元
+  const rd: TypeScoreResponse | null = searchCommon().restoreResData() as TypeScoreResponse
+
+  if (rd) {
+    cDtoItem.value.resData = rd
+  } else {
+    // 存在しない場合は取得する
+    if (check(cDtoItem.value.searchParams)) {
+      throw createError({ statusCode: 400, message: '不正なパラメータが指定されました。', fatal: true })
+    }
+
+    const requestQuery: TypeScoreResultSearchParams =
+   createRequestQuery(cDtoItem.value.searchParams) as TypeScoreResultSearchParams
+
+    const ret = await get(requestQuery)
+    if (!ret) { return }
+    cDtoItem.value.resData = ret
+  }
+  // API側の仕様として、タイプ1に値がなく、タイプ2に値がある場合は、タイプ2にタイプ1の値が設定される。
+  // そのため、再セットする。
+  cDtoItem.value.searchParams.type1 = cDtoItem.value.resData?.type1
+  cDtoItem.value.searchParams.type2 = cDtoItem.value.resData?.type2
+
+  typeDic.value = createTypeDic(
+    cDtoItem.value.searchParams.type1,
+    cDtoItem.value.searchParams.type2,
+    cDtoItem.value.resData)
+
+  isLoading.value = !cDtoItem.value.resData
 }
-// dtoStoreからresDataを復元
-const rd: TypeScoreResponse | null = searchCommon().restoreResData() as TypeScoreResponse
 
-if (rd) {
-  cDtoItem.value.resData = rd
-} else {
-  // 存在しない場合は取得する
-  const ret = await get()
-  if (ret) { cDtoItem.value.resData = ret }
-}
-// API側の仕様として、タイプ1に値がなく、タイプ2に値がある場合は、タイプ2にタイプ1の値が設定される。
-// そのため、再セットする。
-cDtoItem.value.searchParams.type1 = cDtoItem.value.resData?.type1
-cDtoItem.value.searchParams.type2 = cDtoItem.value.resData?.type2
+await init()
 
-typeDic.value = createTypeDic(
-  cDtoItem.value.searchParams.type1,
-  cDtoItem.value.searchParams.type2,
-  cDtoItem.value.resData)
-
-isLoading.value = !cDtoItem.value.resData
-
-// Head情報
+// Header
 const ogpType = typeDic.value.defender.jpn
 useHead({
   title: `${ogpType}の評価`,

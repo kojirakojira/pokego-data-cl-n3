@@ -74,3 +74,33 @@ export class CpIvResultDtoItem implements ResultDtoItem {
     this.resData = new CpIvResponse()
   }
 }
+
+/**
+ * APIアクセス用get関数
+ */
+export const get = async (
+  searchParams: CpIvSearchParams | CpIvResultSearchParams
+): Promise<CpIvResponse | void> => {
+  const res = await fetchCommon('/api/cpIv', 'GET', {
+    query: searchParams
+  })
+  const rd: CpIvResponse | null = res.data as CpIvResponse
+  if (!searchCommon().handleApiMessage(rd)) {
+    return
+  }
+  return rd
+}
+
+/**
+ * 入力チェック関数
+ * @returns エラーメッセージ
+ */
+export const check = (searchParams: CpIvSearchParams | CpIvResultSearchParams) => {
+  let msg = ''
+  if ('name' in searchParams) {
+    msg += validateUtils().checkRequired({ item: searchParams.name, itemName: 'ポケモン' })
+  }
+  msg += validateUtils().checkRequired({ item: searchParams.cp, itemName: 'CP' })
+  msg += validateUtils().checkNumeric({ item: searchParams.cp, itemName: 'CP' })
+  return msg
+}

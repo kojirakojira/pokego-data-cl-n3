@@ -68,3 +68,33 @@ export class ThreeGalarBirdsResultDtoItem implements ResultDtoItem {
     this.resData = new ThreeGalarBirdsResponse()
   }
 }
+
+/**
+ * APIアクセス用get関数
+ */
+export const get = async (
+  searchParams: ThreeGalarBirdsSearchParams | ThreeGalarBirdsResultSearchParams
+): Promise<ThreeGalarBirdsResponse | void> => {
+  const res = await fetchCommon('/api/threeGalarBirds', 'GET', {
+    query: searchParams
+  })
+  const rd: ThreeGalarBirdsResponse | null = res.data as ThreeGalarBirdsResponse
+  if (!searchCommon().handleApiMessage(rd)) {
+    return
+  }
+  return rd
+}
+
+/**
+ * 入力チェック関数
+ * @returns エラーメッセージ
+ */
+export const check = (searchParams: ThreeGalarBirdsSearchParams | ThreeGalarBirdsResultSearchParams) => {
+  let msg = ''
+  if ('name' in searchParams) {
+    msg += validateUtils().checkRequired({ item: searchParams.name, itemName: 'ポケモン' })
+  }
+  msg += validateUtils().checkRequired({ item: searchParams.cp, itemName: 'CP' })
+  msg += validateUtils().checkNumeric({ item: searchParams.cp, itemName: 'CP' })
+  return msg
+}

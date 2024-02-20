@@ -41,17 +41,14 @@
               mdi-pen
             </v-icon>
             CP
+            <div class="optional-mark">
+              <span>任意</span>
+            </div>
             <v-tooltip bottom>
               <template #activator="{ props }">
-                <div
-                  v-bind="props"
-                  class="optional-mark"
-                >
-                  <span>任意</span>
-                  <v-icon size="small" color="white">
-                    mdi-help-circle
-                  </v-icon>
-                </div>
+                <v-icon v-bind="props" size="small">
+                  mdi-help-circle
+                </v-icon>
               </template>
               <span>入力すると、進化後のCPもいっしょに調べることができます。</span>
             </v-tooltip>
@@ -96,7 +93,13 @@
 </template>
 
 <script setup lang="ts">
-import { AfterEvoScpRankSearchDtoItem } from '~/components/interface/afterEvoScpRank'
+import {
+  AfterEvoScpRankSearchDtoItem,
+  type
+  AfterEvoScpRankResponse,
+  get,
+  check
+} from '~/components/interface/afterEvoScpRank'
 
 const searchPattern = 'afterEvoScpRank'
 
@@ -116,53 +119,28 @@ searchCommon().restoreSearchScreen(['searchParams', 'resData'], cDtoItem.value)
  */
 const clickSearchBtn = async () => {
   isSearchBtnClick.value = true
-  const msg = check()
+  const msg = check(cDtoItem.value.searchParams)
   if (msg) {
     alert(msg)
     isSearchBtnClick.value = false
     return
   }
   isLoading.value = true
-  const res = await get()
+  const res = await get(cDtoItem.value.searchParams)
+  if (!res) {
+    isSearchBtnClick.value = false
+    isLoading.value = false
+    return
+  }
   handleApiResult(res)
-}
-const check = (): string => {
-  let msg = ''
-  msg += validateUtils().checkRequired({ item: cDtoItem.value.searchParams.name, itemName: 'ポケモン' })
-  msg += validateUtils().checkRequired({ item: cDtoItem.value.searchParams.iv, itemName: '個体値' })
-  msg += validateUtils().checkIv({ item: cDtoItem.value.searchParams.iv, itemName: '個体値' })
-  msg += validateUtils().checkNumeric({ item: cDtoItem.value.searchParams.cp, itemName: 'CP' })
-  return msg
-}
-
-const get = async (): Promise<Record<string, any>> => {
-  return await fetchCommon('/api/afterEvoScpRank', 'GET', {
-    query: {
-      name: cDtoItem.value.searchParams.name,
-      iva: cDtoItem.value.searchParams.iv.substring(0, 2),
-      ivd: cDtoItem.value.searchParams.iv.substring(2, 4),
-      ivh: cDtoItem.value.searchParams.iv.substring(4, 6),
-      cp: cDtoItem.value.searchParams.cp
-    }
-  })
 }
 
 /**
  * APIのレスポンスを処理する。
  *
- * @param res
+ * @param rd
  */
-const handleApiResult = (res: Record<string, any>) => {
-  const rd = res.data
-
-  // メッセージ、メッセージレベルによるハンドリング
-  const success = searchCommon().handleApiMessage(rd)
-  if (!success) {
-    isSearchBtnClick.value = false
-    isLoading.value = false
-    return
-  }
-
+const handleApiResult = (rd: AfterEvoScpRankResponse) => {
   if (rd.success) {
     cDtoItem.value.resData = rd
     if (rd.pokemonSearchResult.unique) {

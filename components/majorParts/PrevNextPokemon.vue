@@ -56,15 +56,15 @@ const get = async () => {
   const res = await fetchCommon('/api/prevNextPokemon', 'GET', {
     query: { pid: props.pid }
   })
-  const rd: Record<string, any> = res.data || {}
+  const rd: Record<string, any> | null = res.data
   return rd
 }
 watch(() => useRoute().fullPath, async () => {
   isLoading.value = true
 
   const resData = await get()
-  prev.value = resData.prev
-  next.value = resData.next
+  prev.value = resData?.prev
+  next.value = resData?.next
 
   isLoading.value = false
 },

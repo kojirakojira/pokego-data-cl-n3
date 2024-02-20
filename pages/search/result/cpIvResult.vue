@@ -97,9 +97,15 @@
 </template>
 
 <script setup lang="ts">
-import { type RouteLocationNormalizedLoaded } from 'vue-router'
-import { type CpIvResponse, CpIvResultDtoItem } from '~/components/interface/cpIv'
+import {
+  type CpIvResponse,
+  CpIvResultDtoItem,
+  CpIvResultSearchParams,
+  get,
+  check
+} from '~/components/interface/cpIv'
 const searchPattern = 'cpIv'
+
 // current dto item
 const cDtoItem = ref<CpIvResultDtoItem>(new CpIvResultDtoItem())
 const dto: any = useAttrs().dto
@@ -115,43 +121,33 @@ const headers = ref<any>([
 
 const isLoading = ref<boolean>(true)
 
-// APIアクセス用get関数
-const get = async (): Promise<CpIvResponse | void> => {
-  const res = await fetchCommon('/api/cpIv', 'GET', {
-    query: cDtoItem.value.searchParams
-  })
-  const rd: Record<string, any> = res.data || {}
-  if (!searchCommon().pushToast(rd?.message, rd?.msgLevel)) {
-    return
-  }
-  return rd as CpIvResponse
-}
+const init = async () => {
+// route.queryからsearchParamsを復元
+  cDtoItem.value.searchParams = searchCommon()
+    .restoreSearchParams(useRoute().query, CpIvResultSearchParams)
+  // dtoStoreからresDataを復元
+  const rd: CpIvResponse | null = searchCommon().restoreResData() as CpIvResponse
 
-/**
-  * searchParams, resDataのセット
-  */
-const route: RouteLocationNormalizedLoaded = useRoute()
-cDtoItem.value.searchParams = {
-  pid: String(route.query.pid),
-  cp: String(route.query.cp),
-  wbFlg: route.query.wbFlg === 'true',
-  situation: String(route.query.situation)
-}
-// dtoStoreからresDataを復元
-const rd: CpIvResponse | null = searchCommon().restoreResData() as CpIvResponse
-
-if (rd) {
-  cDtoItem.value.resData = rd
-} else {
+  if (rd) {
+    cDtoItem.value.resData = rd
+  } else {
   // 存在しない場合は取得する
-  const ret = await get()
-  if (ret) { cDtoItem.value.resData = ret }
+    if (check(cDtoItem.value.searchParams)) {
+      throw createError({ statusCode: 400, message: '不正なパラメータが指定されました。', fatal: true })
+    }
+
+    const ret = await get(cDtoItem.value.searchParams)
+    if (!ret) { return }
+    cDtoItem.value.resData = ret
+  }
+
+  isLoading.value = !cDtoItem.value.resData
 }
 
-isLoading.value = !cDtoItem.value.resData
+await init()
 
-// Head情報
-const ogpName = cDtoItem.value.resData.name
+// Header
+const ogpName = cDtoItem.value.resData.name || ''
 const ogpImage = cDtoItem.value.resData.image || '/pokego/peripper-eyes.png'
 useHead({
   title: `${ogpName}のCP`,

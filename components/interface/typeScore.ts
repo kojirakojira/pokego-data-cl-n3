@@ -85,3 +85,69 @@ export class TypeScoreResultDtoItem implements ResultDtoItem {
     this.resData = new TypeScoreResponse()
   }
 }
+
+/**
+ * APIアクセス用クエリパラメータ生成関数
+ * TypeScoreはリクエストにisPokeを含まない（searchParams≠requestQuery）ため、この処理をおこなう。
+ */
+export const createRequestQuery = (
+  searchParams: TypeScoreSearchParams | TypeScoreResultSearchParams
+): TypeScoreSearchParams | TypeScoreResultSearchParams | void => {
+  let requestQuery: TypeScoreSearchParams | TypeScoreResultSearchParams
+  if ('name' in searchParams) {
+    // 検索画面
+    requestQuery = new TypeScoreSearchParams()
+
+    // ポケモンでの検索
+    if (searchParams.isPoke) { requestQuery.name = searchParams.name }
+  } else if ('pid' in searchParams) {
+    // 結果画面
+    requestQuery = new TypeScoreResultSearchParams()
+
+    // ポケモンでの検索
+    if (searchParams.isPoke) { requestQuery.pid = searchParams.pid }
+  } else {
+    throw createError({ statusCode: 500, message: 'Failed to create RequestQuery', fatal: true })
+  }
+
+  if (!searchParams.isPoke) {
+    // タイプでの検索
+    const sp = searchParams
+    if (sp.type1) { requestQuery.type1 = sp.type1 }
+    if (sp.type2) { requestQuery.type2 = sp.type2 }
+  }
+}
+
+/**
+ * APIアクセス用get関数
+ */
+export const get = async (
+  searchParams: TypeScoreSearchParams | TypeScoreResultSearchParams
+): Promise<TypeScoreResponse | void> => {
+  const res = await fetchCommon('/api/typeScore', 'GET', {
+    query: searchParams
+  })
+  const rd: TypeScoreResponse | null = res.data as TypeScoreResponse
+  if (!searchCommon().handleApiMessage(rd)) {
+    return
+  }
+  return rd
+}
+
+/**
+ * 入力チェック関数
+ * @returns エラーメッセージ
+ */
+export const check = (
+  searchParams: TypeScoreSearchParams | TypeScoreResultSearchParams
+) => {
+  let msg = ''
+  if (searchParams.isPoke) {
+    if ('name' in searchParams) {
+      msg += validateUtils().checkRequired({ item: searchParams.name, itemName: 'ポケモン' })
+    }
+  } else if (!searchParams.type1 && !searchParams.type2) {
+    msg += '「タイプ」は少なくともどちらか一方を入力してください。'
+  }
+  return msg
+}

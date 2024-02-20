@@ -72,3 +72,27 @@ export class RaidResultDtoItem implements ResultDtoItem {
     this.resData = new RaidResponse()
   }
 }
+
+/**
+ * APIアクセス用get関数
+ */
+export const get = async (
+  searchParams: RaidSearchParams | RaidResultSearchParams
+): Promise<RaidResponse | void> => {
+  const res = await fetchCommon('/api/raid', 'GET', {
+    query: searchParams
+  })
+  const rd: RaidResponse | null = res.data as RaidResponse
+  if (!searchCommon().handleApiMessage(rd)) {
+    return
+  }
+  return rd
+}
+
+/**
+ * 入力チェック関数
+ * @returns エラーメッセージ
+ */
+export const check = (searchParams: RaidSearchParams): string => {
+  return validateUtils().checkRequired({ item: searchParams.name, itemName: 'ポケモン' })
+}

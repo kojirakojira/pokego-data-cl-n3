@@ -76,3 +76,42 @@ export class AfterEvoScpRankResultDtoItem implements ResultDtoItem {
     this.resData = new AfterEvoScpRankResponse()
   }
 }
+
+/**
+ * APIアクセス用get関数
+ */
+export const get = async (
+  searchParams: AfterEvoScpRankSearchParams | AfterEvoScpRankResultSearchParams
+): Promise<AfterEvoScpRankResponse | void> => {
+  const query: Record<string, any> = {
+    iva: searchParams.iv.substring(0, 2),
+    ivd: searchParams.iv.substring(2, 4),
+    ivh: searchParams.iv.substring(4, 6),
+    cp: searchParams.cp
+  }
+  if ('pid' in searchParams) { query.pid = searchParams.pid }
+  if ('name' in searchParams) { query.name = searchParams.name }
+
+  const res = await fetchCommon('/api/afterEvoScpRank', 'GET', { query })
+  const rd: AfterEvoScpRankResponse | null = res.data as AfterEvoScpRankResponse
+  if (!searchCommon().handleApiMessage(rd)) {
+    return
+  }
+  return rd
+}
+
+/**
+ * 入力チェック関数
+ * @returns エラーメッセージ
+ */
+export const check = (searchParams: AfterEvoScpRankSearchParams | AfterEvoScpRankResultSearchParams) => {
+  let msg = ''
+  if ('name' in searchParams) {
+    msg += validateUtils().checkRequired({ item: searchParams.name, itemName: 'ポケモン' })
+  }
+  msg += validateUtils().checkRequired({ item: searchParams.iv, itemName: '個体値' })
+  msg += validateUtils().checkIv({ item: searchParams.iv, itemName: '個体値' })
+  // 任意項目
+  msg += validateUtils().checkNumeric({ item: searchParams.cp, itemName: 'CP' })
+  return msg
+}

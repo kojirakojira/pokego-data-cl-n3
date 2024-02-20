@@ -74,3 +74,41 @@ export class CpResultDtoItem implements ResultDtoItem {
     this.resData = new CpResponse()
   }
 }
+
+/**
+ * APIアクセス用get関数
+ */
+export const get = async (
+  searchParams: CpSearchParams | CpResultSearchParams
+): Promise<CpResponse | void> => {
+  const query: Record<string, any> = {
+    iva: searchParams.iv.substring(0, 2),
+    ivd: searchParams.iv.substring(2, 4),
+    ivh: searchParams.iv.substring(4, 6),
+    pl: searchParams.pl
+  }
+  if ('pid' in searchParams) { query.pid = searchParams.pid }
+  if ('name' in searchParams) { query.name = searchParams.name }
+  const res = await fetchCommon('/api/cp', 'GET', { query })
+
+  const rd: CpResponse | null = res.data as CpResponse
+  if (!searchCommon().handleApiMessage(rd)) {
+    return
+  }
+  return rd
+}
+
+/**
+ * 入力チェック関数
+ * @returns エラーメッセージ
+ */
+export const check = (searchParams: CpSearchParams | CpResultSearchParams) => {
+  let msg = ''
+  if ('name' in searchParams) {
+    msg += validateUtils().checkRequired({ item: searchParams.name, itemName: 'ポケモン' })
+  }
+  msg += validateUtils().checkRequired({ item: searchParams.iv, itemName: '個体値' })
+  msg += validateUtils().checkRequired({ item: searchParams.pl, itemName: 'PL' })
+  msg += validateUtils().checkIv({ item: searchParams.iv, itemName: '個体値' })
+  return msg
+}

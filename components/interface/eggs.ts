@@ -64,3 +64,27 @@ export class EggsResultDtoItem implements ResultDtoItem {
     this.resData = new EggsResponse()
   }
 }
+
+/**
+ * APIアクセス用get関数
+ */
+export const get = async (
+  searchParams: EggsSearchParams | EggsResultSearchParams
+): Promise<EggsResponse | void> => {
+  const res = await fetchCommon('/api/eggs', 'GET', {
+    query: searchParams
+  })
+  const rd: EggsResponse | null = res.data as EggsResponse
+  if (!searchCommon().handleApiMessage(rd)) {
+    return
+  }
+  return rd
+}
+
+/**
+ * 入力チェック関数
+ * @returns エラーメッセージ
+ */
+export const check = (searchParams: EggsSearchParams) => {
+  return validateUtils().checkRequired({ item: searchParams.name, itemName: 'ポケモン' })
+}

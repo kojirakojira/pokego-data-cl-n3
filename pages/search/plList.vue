@@ -63,7 +63,12 @@
 </template>
 
 <script setup lang="ts">
-import { PlListSearchDtoItem } from '~/components/interface/plList'
+import {
+  PlListSearchDtoItem,
+  type PlListResponse,
+  get,
+  check
+} from '~/components/interface/plList'
 
 const searchPattern = 'plList'
 // current dto item
@@ -79,52 +84,28 @@ searchCommon().restoreSearchScreen(['searchParams', 'resData'], cDtoItem.value)
 
 const clickSearchBtn = async () => {
   isSearchBtnClick.value = true
-  const msg = check()
+  const msg = check(cDtoItem.value.searchParams)
   if (msg) {
     alert(msg)
     isSearchBtnClick.value = false
     return
   }
   isLoading.value = true
-  const res: Record<string, any> = await get()
-  handleApiResult(res)
-}
-
-const check = () => {
-  let msg = ''
-  msg += validateUtils().checkRequired({ item: cDtoItem.value.searchParams.name, itemName: 'ポケモン' })
-  msg += validateUtils().checkRequired({ item: cDtoItem.value.searchParams.iv, itemName: '個体値' })
-  msg += validateUtils().checkIv({ item: cDtoItem.value.searchParams.iv, itemName: '個体値' })
-  return msg
-}
-
-const get = async () => {
-  return await fetchCommon('/api/plList', 'GET', {
-    query: {
-      name: cDtoItem.value.searchParams.name,
-      iva: cDtoItem.value.searchParams.iv.substring(0, 2),
-      ivd: cDtoItem.value.searchParams.iv.substring(2, 4),
-      ivh: cDtoItem.value.searchParams.iv.substring(4, 6)
-    }
-  })
-}
-
-/**
-   * APIのレスポンスを処理する。
-   *
-   * @param res
-   */
-const handleApiResult = (res: Record<string, any>) => {
-  const rd = res.data
-
-  // メッセージ、メッセージレベルによるハンドリング
-  const success = searchCommon().handleApiMessage(rd)
-  if (!success) {
+  const res = await get(cDtoItem.value.searchParams)
+  if (!res) {
     isSearchBtnClick.value = false
     isLoading.value = false
     return
   }
+  handleApiResult(res)
+}
 
+/**
+ * APIのレスポンスを処理する。
+ *
+ * @param rd
+ */
+const handleApiResult = (rd: PlListResponse) => {
   if (rd.success) {
     cDtoItem.value.resData = rd
     if (rd.pokemonSearchResult.unique) {

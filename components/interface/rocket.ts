@@ -72,3 +72,27 @@ export class RocketResultDtoItem implements ResultDtoItem {
     this.resData = new RocketResponse()
   }
 }
+
+/**
+ * APIアクセス用get関数
+ */
+export const get = async (
+  searchParams: RocketSearchParams | RocketResultSearchParams
+): Promise<RocketResponse | void> => {
+  const res = await fetchCommon('/api/rocket', 'GET', {
+    query: searchParams
+  })
+  const rd: RocketResponse | null = res.data as RocketResponse
+  if (!searchCommon().pushToast(rd?.message, rd?.msgLevel)) {
+    return
+  }
+  return rd
+}
+
+/**
+ * 入力チェック関数
+ * @returns エラーメッセージ
+ */
+export const check = (searchParams: RocketSearchParams) => {
+  return validateUtils().checkRequired({ item: searchParams.name, itemName: 'ポケモン' })
+}

@@ -47,7 +47,12 @@
 </template>
 
 <script setup lang="ts">
-import { EggsSearchDtoItem } from '~/components/interface/eggs'
+import {
+  EggsSearchDtoItem,
+  type EggsResponse,
+  get,
+  check
+} from '~/components/interface/eggs'
 
 const searchPattern = 'eggs'
 // current dto item
@@ -63,41 +68,28 @@ searchCommon().restoreSearchScreen(['searchParams', 'resData'], cDtoItem.value)
 
 const clickSearchBtn = async () => {
   isSearchBtnClick.value = true
-  const msg = check()
+  const msg = check(cDtoItem.value.searchParams)
   if (msg) {
     alert(msg)
     isLoading.value = false
     return
   }
   isLoading.value = true
-  const res: Record<string, any> = await get()
+  const res = await get(cDtoItem.value.searchParams)
+  if (!res) {
+    isSearchBtnClick.value = false
+    isLoading.value = false
+    return
+  }
   handleApiResult(res)
-}
-
-const check = () => {
-  return validateUtils().checkRequired({ item: cDtoItem.value.searchParams.name, itemName: 'ポケモン' })
-}
-
-const get = async () => {
-  return await fetchCommon('/api/eggs', 'GET', { query: cDtoItem.value.searchParams })
 }
 
 /**
  * APIのレスポンスを処理する。
  *
- * @param res
+ * @param rd
  */
-const handleApiResult = (res: Record<string, any>) => {
-  const rd = res.data
-
-  // メッセージ、メッセージレベルによるハンドリング
-  const success = searchCommon().handleApiMessage(rd)
-  if (!success) {
-    isSearchBtnClick.value = false
-    isLoading.value = false
-    return
-  }
-
+const handleApiResult = (rd: EggsResponse) => {
   if (rd.success) {
     cDtoItem.value.resData = rd
     if (rd.pokemonSearchResult.unique) {

@@ -99,9 +99,17 @@
 </template>
 
 <script setup lang="ts">
-import { TypeScoreSearchParams, TypeScoreSearchDtoItem } from '~/components/interface/typeScore'
+import {
+  TypeScoreSearchParams,
+  type TypeScoreResponse,
+  TypeScoreSearchDtoItem,
+  get,
+  check,
+  createRequestQuery
+} from '~/components/interface/typeScore'
 
 const searchPattern = 'typeScore'
+
 // current dto item
 const cDtoItem = ref<TypeScoreSearchDtoItem>(new TypeScoreSearchDtoItem())
 const dto: any = useAttrs().dto
@@ -115,71 +123,33 @@ searchCommon().restoreSearchScreen(['searchParams', 'resData'], cDtoItem.value)
 
 const clickSearchBtn = async () => {
   isSearchBtnClick.value = true
-  const msg = check()
+  const msg = check(cDtoItem.value.searchParams)
   if (msg) {
     alert(msg)
     isSearchBtnClick.value = false
     return
   }
 
-  // リクエスト、画面遷移用のクエリを作成する。
-  const requestQuery: TypeScoreSearchParams = new TypeScoreSearchParams()
-  if (cDtoItem.value.searchParams.isPoke) {
-    // ポケモン
-    requestQuery.name = cDtoItem.value.searchParams.name
-  } else {
-    // タイプ
-    const sp = cDtoItem.value.searchParams
-    if (sp.type1) { requestQuery.type1 = sp.type1 }
-    if (sp.type2) { requestQuery.type2 = sp.type2 }
-  }
+  // リクエスト、画面遷移用のクエリを作成する。（isPokeはリクエストに含まない。）
+  const requestQuery: TypeScoreSearchParams =
+   createRequestQuery(cDtoItem.value.searchParams) as TypeScoreSearchParams
 
   isLoading.value = true
-  const res: Record<string, any> = await get(requestQuery)
-  handleApiResult(res, requestQuery)
-}
-
-const check = () => {
-  let msg = ''
-  if (cDtoItem.value.searchParams.isPoke) {
-    msg += validateUtils().checkRequired({ item: cDtoItem.value.searchParams.name, itemName: 'ポケモン' })
-  } else if (!cDtoItem.value.searchParams.type1 && !cDtoItem.value.searchParams.type2) {
-    msg += '「タイプ」は少なくともどちらか一方を入力してください。'
-  }
-  return msg
-}
-
-const get = async (requestQuery: TypeScoreSearchParams) => {
-  return await fetchCommon('/api/typeScore', 'GET', {
-    query: requestQuery
-  })
-}
-
-/**
-   * APIのレスポンスを処理する。
-   *
-   * @param res
-   */
-const handleApiResult = (res: Record<string, any>, requestQuery: TypeScoreSearchParams) => {
-  const rd = res.data
-
-  // メッセージ、メッセージレベルによるハンドリング
-  let success = false
-  if (rd.executedType) {
-    // タイプで検索した場合
-    success = searchCommon().pushToast(
-      rd.message,
-      rd.msgLevel)
-  } else {
-    // ポケモンで検索した場合
-    success = searchCommon().handleApiMessage(rd)
-  }
-  if (!success) {
+  const res = await get(requestQuery)
+  if (!res) {
     isSearchBtnClick.value = false
     isLoading.value = false
     return
   }
+  handleApiResult(res, requestQuery)
+}
 
+/**
+ * APIのレスポンスを処理する。
+ *
+ * @param rd
+ */
+const handleApiResult = (rd: TypeScoreResponse, requestQuery: TypeScoreSearchParams) => {
   if (rd.success) {
     cDtoItem.value.resData = rd
     if (rd.executedType || rd.pokemonSearchResult.unique) {

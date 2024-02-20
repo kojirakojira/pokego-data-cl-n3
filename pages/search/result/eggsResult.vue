@@ -64,8 +64,12 @@
 </template>
 
 <script setup lang="ts">
-import { type RouteLocationNormalizedLoaded } from 'vue-router'
-import { type EggsResponse, EggsResultDtoItem } from '~/components/interface/eggs'
+import {
+  type EggsResponse,
+  EggsResultDtoItem,
+  EggsResultSearchParams,
+  get
+} from '~/components/interface/eggs'
 const searchPattern = 'eggs'
 // current dto item
 const cDtoItem = ref<EggsResultDtoItem>(new EggsResultDtoItem())
@@ -74,40 +78,30 @@ dto.params = cDtoItem
 
 const isLoading = ref<boolean>(true)
 
-// APIアクセス用get関数
-const get = async (): Promise<EggsResponse | void> => {
-  const res = await fetchCommon('/api/eggs', 'GET', {
-    query: cDtoItem.value.searchParams
-  })
-  const rd: Record<string, any> = res.data || {}
-  if (!searchCommon().pushToast(rd?.message, rd?.msgLevel)) {
-    return
+const init = async () => {
+  // route.queryからsearchParamsを復元
+  cDtoItem.value.searchParams = searchCommon()
+    .restoreSearchParams(useRoute().query, EggsResultSearchParams)
+  // dtoStoreからresDataを復元
+  const rd: EggsResponse | null = searchCommon().restoreResData() as EggsResponse
+
+  if (rd) {
+    cDtoItem.value.resData = rd
+  } else {
+    // 存在しない場合は取得する
+    // 入力チェック不要
+    const ret = await get(cDtoItem.value.searchParams)
+    if (!ret) { return }
+    cDtoItem.value.resData = ret
   }
-  return rd as EggsResponse
+
+  isLoading.value = !cDtoItem.value.resData
 }
 
-/**
- * searchParams, resDataのセット
- */
-const route: RouteLocationNormalizedLoaded = useRoute()
-cDtoItem.value.searchParams = {
-  pid: String(route.query.pid)
-}
-// dtoStoreからresDataを復元
-const rd: EggsResponse | null = searchCommon().restoreResData() as EggsResponse
+await init()
 
-if (rd) {
-  cDtoItem.value.resData = rd
-} else {
-  // 存在しない場合は取得する
-  const ret = await get()
-  if (ret) { cDtoItem.value.resData = ret }
-}
-
-isLoading.value = !cDtoItem.value.resData
-
-// Head情報
-const ogpName = cDtoItem.value.resData.name
+// Header
+const ogpName = cDtoItem.value.resData.name || ''
 const ogpImage = cDtoItem.value.resData.image || '/pokego/peripper-eyes.png'
 useHead({
   title: `${ogpName}のタマゴCP`,

@@ -66,3 +66,29 @@ export class ScpRankMaxMinResultDtoItem implements ResultDtoItem {
     this.resData = new ScpRankMaxMinResponse()
   }
 }
+
+/**
+ * APIアクセス用get関数
+ */
+export const get = async (
+  searchParams: ScpRankMaxMinSearchParams | ScpRankMaxMinResultSearchParams
+): Promise<ScpRankMaxMinResponse | void> => {
+  const res = await fetchCommon('/api/scpRankMaxMin', 'GET', {
+    query: searchParams
+  })
+  const rd: ScpRankMaxMinResponse | null = res.data as ScpRankMaxMinResponse
+  if (!searchCommon().handleApiMessage(rd)) {
+    return
+  }
+  return rd
+}
+
+/**
+ * 入力チェック関数
+ * @returns エラーメッセージ
+ */
+export const check = (searchParams: ScpRankMaxMinSearchParams): string => {
+  let msg = ''
+  msg += validateUtils().checkRequired({ item: searchParams.name, itemName: 'ポケモン' })
+  return msg
+}

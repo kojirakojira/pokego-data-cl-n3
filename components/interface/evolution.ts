@@ -66,3 +66,29 @@ export class EvolutionResultDtoItem implements ResultDtoItem {
     this.resData = new EvolutionResponse()
   }
 }
+
+/**
+ * APIアクセス用get関数
+ */
+export const get = async (
+  searchParams: EvolutionSearchParams | EvolutionResultSearchParams
+): Promise<EvolutionResponse | void> => {
+  const res = await fetchCommon('/api/evolution', 'GET', {
+    query: searchParams
+  })
+  const rd: EvolutionResponse | null = res.data as EvolutionResponse
+  if (!searchCommon().handleApiMessage(rd)) {
+    return
+  }
+  return rd
+}
+
+/**
+ * 入力チェック関数
+ * @returns エラーメッセージ
+ */
+export const check = (searchParams: EvolutionSearchParams) => {
+  let msg = ''
+  msg += validateUtils().checkRequired({ item: searchParams.name, itemName: 'ポケモン' })
+  return msg
+}

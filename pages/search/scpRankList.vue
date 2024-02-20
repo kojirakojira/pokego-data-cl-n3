@@ -11,6 +11,7 @@
               mdi-pen
             </v-icon>
             ポケモン
+            <span class="required-mark">必須</span>
           </v-col>
           <v-col cols="12" md="8" lg="8" xl="8">
             <SearchInputPokeName
@@ -25,6 +26,7 @@
               mdi-pen
             </v-icon>
             リーグ
+            <span class="required-mark">必須</span>
           </v-col>
           <v-col cols="12" md="8" lg="8" xl="8">
             <v-select
@@ -66,7 +68,12 @@
 </template>
 
 <script setup lang="ts">
-import { ScpRankListSearchDtoItem } from '~/components/interface/scpRankList'
+import {
+  ScpRankListSearchDtoItem,
+  type ScpRankListResponse,
+  get,
+  check
+} from '~/components/interface/scpRankList'
 
 const searchPattern = 'scpRankList'
 
@@ -92,48 +99,28 @@ searchCommon().restoreSearchScreen(['searchParams', 'resData'], cDtoItem.value)
  */
 const clickSearchBtn = async () => {
   isSearchBtnClick.value = true
-  const msg = check()
+  const msg = check(cDtoItem.value.searchParams)
   if (msg) {
     alert(msg)
     isSearchBtnClick.value = false
     return
   }
   isLoading.value = true
-  const res = await get()
+  const res = await get(cDtoItem.value.searchParams)
+  if (!res) {
+    isSearchBtnClick.value = false
+    isLoading.value = false
+    return
+  }
   handleApiResult(res)
-}
-const check = (): string => {
-  let msg = ''
-  msg += validateUtils().checkRequired({ item: cDtoItem.value.searchParams.name, itemName: 'ポケモン' })
-  msg += validateUtils().checkRequired({ item: cDtoItem.value.searchParams.league, itemName: 'リーグ' })
-  return msg
-}
-
-const get = async (): Promise<Record<string, any>> => {
-  return await fetchCommon('/api/scpRankList', 'GET', {
-    query: {
-      name: cDtoItem.value.searchParams.name,
-      league: cDtoItem.value.searchParams.league
-    }
-  })
 }
 
 /**
  * APIのレスポンスを処理する。
  *
- * @param res
+ * @param rd
  */
-const handleApiResult = (res: Record<string, any>) => {
-  const rd = res.data
-
-  // メッセージ、メッセージレベルによるハンドリング
-  const success = searchCommon().handleApiMessage(rd)
-  if (!success) {
-    isSearchBtnClick.value = false
-    isLoading.value = false
-    return
-  }
-
+const handleApiResult = (rd: ScpRankListResponse) => {
   if (rd.success) {
     cDtoItem.value.resData = rd
     if (rd.pokemonSearchResult.unique) {

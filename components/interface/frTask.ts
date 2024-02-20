@@ -64,3 +64,27 @@ export class FRTaskResultDtoItem implements ResultDtoItem {
     this.resData = new FRTaskResponse()
   }
 }
+
+/**
+ * APIアクセス用get関数
+ */
+export const get = async (
+  searchParams: FRTaskSearchParams | FRTaskResultSearchParams
+): Promise<FRTaskResponse | void> => {
+  const res = await fetchCommon('/api/fRTask', 'GET', {
+    query: searchParams
+  })
+  const rd: FRTaskResponse | null = res.data as FRTaskResponse
+  if (!searchCommon().handleApiMessage(rd)) {
+    return
+  }
+  return rd
+}
+
+/**
+ * 入力チェック関数
+ * @returns エラーメッセージ
+ */
+export const check = (searchParams: FRTaskSearchParams) => {
+  return validateUtils().checkRequired({ item: searchParams.name, itemName: 'ポケモン' })
+}

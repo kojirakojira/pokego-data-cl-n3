@@ -86,9 +86,15 @@
 </template>
 
 <script setup lang="ts">
-import { ThreeGalarBirdsSearchDtoItem } from '~/components/interface/threeGlarBirds'
+import {
+  ThreeGalarBirdsSearchDtoItem,
+  type ThreeGalarBirdsResponse,
+  get,
+  check
+} from '~/components/interface/threeGalarBirds'
 
 const searchPattern = 'threeGalarBirds'
+
 // current dto item
 const cDtoItem = ref<ThreeGalarBirdsSearchDtoItem>(new ThreeGalarBirdsSearchDtoItem())
 const dto: any = useAttrs().dto
@@ -100,51 +106,32 @@ const isLoading = ref<boolean>(false)
 const isSearchBtnClick = ref<boolean>(false)
 
 // created: 画面を復元する
-searchCommon().restoreSearchScreen(['searchParams', 'psr', 'resData'], cDtoItem.value)
+searchCommon().restoreSearchScreen(['searchParams', 'resData'], cDtoItem.value)
 
 const clickSearchBtn = async () => {
   isSearchBtnClick.value = true
-  const msg = check()
+  const msg = check(cDtoItem.value.searchParams)
   if (msg) {
     alert(msg)
     isSearchBtnClick.value = false
     return
   }
   isLoading.value = true
-  const res: Record<string, any> = await get()
-  handleApiResult(res)
-}
-
-const check = () => {
-  let msg = ''
-  msg += validateUtils().checkRequired({ item: cDtoItem.value.searchParams.name, itemName: 'ポケモン' })
-  msg += validateUtils().checkRequired({ item: cDtoItem.value.searchParams.cp, itemName: 'CP' })
-  msg += validateUtils().checkNumeric({ item: cDtoItem.value.searchParams.cp, itemName: 'CP' })
-  return msg
-}
-
-const get = async () => {
-  return await fetchCommon('/api/threeGalarBirds', 'GET', {
-    query: cDtoItem.value.searchParams
-  })
-}
-
-/**
-   * APIのレスポンスを処理する。
-   *
-   * @param res
-   */
-const handleApiResult = (res: Record<string, any>) => {
-  const rd = res.data
-
-  // メッセージ、メッセージレベルによるハンドリング
-  const success = searchCommon().handleApiMessage(rd)
-  if (!success) {
+  const res = await get(cDtoItem.value.searchParams)
+  if (!res) {
     isSearchBtnClick.value = false
     isLoading.value = false
     return
   }
+  handleApiResult(res)
+}
 
+/**
+ * APIのレスポンスを処理する。
+ *
+ * @param rd
+ */
+const handleApiResult = (rd: ThreeGalarBirdsResponse) => {
   if (rd.success) {
     cDtoItem.value.resData = rd
     if (rd.pokemonSearchResult.unique) {
@@ -176,3 +163,4 @@ useHead({
   ]
 })
 </script>
+~/components/interface/threeGalarBirds

@@ -7,6 +7,7 @@ import {
 import { toastStore } from '~/stores/toastStore'
 // import { historyStore, ScreenInfo } from '~/stores/historyStore'
 import { dtoStore, type ScreenInfo } from '~/stores/dtoStore'
+import type { Response, ResearchResponse } from '~/components/interface/api/response'
 
 export interface ResData extends Record<string, any> {}
 /**
@@ -223,14 +224,10 @@ export default () => {
    * @param {*} resData
    * @returns
    */
-  const handleApiMessage = (resData: {
-    message: string,
-    msgLevel: string,
-    pokemonSearchResult: {
-      message: string,
-      msgLevel: string
+  const handleApiMessage = (resData: Response | ResearchResponse | null | undefined) => {
+    if (!resData) {
+      throw createError({ statusCode: 500, message: 'An error occurred.', fatal: true })
     }
-  }) => {
     // 個別機能由来のメッセージ
     let success = pushToast(
       resData.message,
@@ -240,12 +237,14 @@ export default () => {
       return success
     }
 
-    // 検索機能由来のメッセージ
-    const searchSuccess = pushToast(
-      resData.pokemonSearchResult.message,
-      resData.pokemonSearchResult.msgLevel)
-    if (!searchSuccess) {
-      success = false
+    // 検索機能由来のメッセージ（ResearchResponse継承の場合のみ）
+    if ('pokemonSearchResult' in resData && resData.pokemonSearchResult) {
+      const searchSuccess = pushToast(
+        resData.pokemonSearchResult.message,
+        resData.pokemonSearchResult.msgLevel)
+      if (!searchSuccess) {
+        success = false
+      }
     }
     return success
   }
@@ -361,6 +360,36 @@ export default () => {
     return bool
   }
 
+  /**
+   * useRoute().queryから取得した値を使用し、～ResultSearchParamsクラスのインスタンスを生成する。
+   *
+   * @param routeQuery useRoute().query
+   * @param ResultSearchParams ～ResultSearchParamsの型
+   * @returns
+   */
+  const restoreSearchParams = <T>(routeQuery: LocationQuery, ResultSearchParams: new () => T): T => {
+    const rsp: T = new ResultSearchParams()
+    for (const k in rsp) {
+      if (routeQuery[k]) {
+        switch (typeof rsp[k]) {
+          case 'boolean':
+            rsp[k] = (routeQuery[k] === 'true') as any
+            break
+          case 'number':
+            rsp[k] = Number(routeQuery[k]) as any
+            break
+          case 'string':
+            rsp[k] = routeQuery[k] as any
+            break
+          default:
+            throw createError({ statusCode: 500, message: 'An unexpected type was specified', fatal: true })
+        }
+      }
+    }
+
+    return rsp
+  }
+
   return {
     searchPatternNames,
     rules,
@@ -374,6 +403,7 @@ export default () => {
     convQuery,
     makeQuery,
     spreadArray,
-    compareQuery
+    compareQuery,
+    restoreSearchParams
   }
 }

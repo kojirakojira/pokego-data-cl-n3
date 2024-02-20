@@ -99,8 +99,13 @@
 </template>
 
 <script setup lang="ts">
-import { type RouteLocationNormalizedLoaded } from 'vue-router'
-import { type AfterEvoScpRankResponse, AfterEvoScpRankResultDtoItem } from '~/components/interface/afterEvoScpRank'
+import {
+  type AfterEvoScpRankResponse,
+  AfterEvoScpRankResultSearchParams,
+  AfterEvoScpRankResultDtoItem,
+  get,
+  check
+} from '~/components/interface/afterEvoScpRank'
 const searchPattern = 'afterEvoScpRank'
 
 // current dto item
@@ -119,61 +124,37 @@ const headers = ref<any>([
 
 const isLoading = ref<boolean>(true)
 
-// APIアクセス用get関数
-const get = async (): Promise<AfterEvoScpRankResponse | void> => {
-  const res = await fetchCommon('/api/afterEvoScpRank', 'GET', {
-    query: {
-      pid: cDtoItem.value.searchParams.pid,
-      iva: cDtoItem.value.searchParams.iv.substring(0, 2),
-      ivd: cDtoItem.value.searchParams.iv.substring(2, 4),
-      ivh: cDtoItem.value.searchParams.iv.substring(4, 6),
-      cp: cDtoItem.value.searchParams.cp
-    }
-  })
-  const rd: Record<string, any> = res.data || {}
-  if (!searchCommon().pushToast(rd?.message, rd?.msgLevel)) {
-    return
-  }
-  return rd as AfterEvoScpRankResponse
-}
+const init = async () => {
+  // route.queryからsearchParamsを復元
+  cDtoItem.value.searchParams = searchCommon()
+    .restoreSearchParams(useRoute().query, AfterEvoScpRankResultSearchParams)
+  // dtoStoreからresDataを復元
+  const rd: AfterEvoScpRankResponse | null = searchCommon().restoreResData() as AfterEvoScpRankResponse
 
-/**
- * searchParams, resDataのセット
- */
-const route: RouteLocationNormalizedLoaded = useRoute()
-cDtoItem.value.searchParams = {
-  pid: String(route.query.pid),
-  iv: String(route.query.iv),
-  cp: String(route.query.cp)
-}
-// dtoStoreからresDataを復元
-const rd: AfterEvoScpRankResponse | null = searchCommon().restoreResData() as AfterEvoScpRankResponse
-
-if (rd) {
-  cDtoItem.value.resData = rd
-} else {
+  if (rd) {
+    cDtoItem.value.resData = rd
+  } else {
   // 存在しない場合は取得する
-  let msg = ''
-  msg += validateUtils().checkIv({ item: cDtoItem.value.searchParams.iv, itemName: '個体値' })
-  msg += cDtoItem.value.searchParams.cp
-    ? validateUtils().checkNumeric({ item: cDtoItem.value.searchParams.cp, itemName: 'CP' })
-    : ''
-  if (msg) {
-    throw createError({ statusCode: 400, message: '不正なパラメータが指定されました。', fatal: true })
+    if (check(cDtoItem.value.searchParams)) {
+      throw createError({ statusCode: 400, message: '不正なパラメータが指定されました。', fatal: true })
+    }
+
+    const ret = await get(cDtoItem.value.searchParams)
+    if (!ret) { return }
+    cDtoItem.value.resData = ret
   }
 
-  const ret = await get()
-  if (ret) { cDtoItem.value.resData = ret }
-}
-
-if (!cDtoItem.value.searchParams.cp && headers.value[headers.value.length - 1].key === 'cp') {
+  if (!cDtoItem.value.searchParams.cp && headers.value[headers.value.length - 1].key === 'cp') {
   // cpが未入力の場合はcp列を削除する。
-  headers.value.pop()
+    headers.value.pop()
+  }
+  isLoading.value = !cDtoItem.value.resData
 }
-isLoading.value = !cDtoItem.value.resData
 
-// Head情報
-const ogpName = cDtoItem.value.resData.name
+await init()
+
+// Header
+const ogpName = cDtoItem.value.resData.name || ''
 const ogpImage = cDtoItem.value.resData.image || '/pokego/peripper-eyes.png'
 useHead({
   title: `${ogpName}の進化後PvP順位`,

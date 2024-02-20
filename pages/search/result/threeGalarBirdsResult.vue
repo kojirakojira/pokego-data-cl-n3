@@ -96,8 +96,13 @@
 </template>
 
 <script setup lang="ts">
-import { type RouteLocationNormalizedLoaded } from 'vue-router'
-import { type ThreeGalarBirdsResponse, ThreeGalarBirdsResultDtoItem } from '~/components/interface/threeGlarBirds'
+import {
+  type ThreeGalarBirdsResponse,
+  ThreeGalarBirdsResultDtoItem,
+  ThreeGalarBirdsResultSearchParams,
+  get,
+  check
+} from '~/components/interface/threeGalarBirds'
 const searchPattern = 'threeGalarBirds'
 
 // current dto item
@@ -116,42 +121,33 @@ const headers = ref<any>([
 
 const isLoading = ref<boolean>(true)
 
-// APIアクセス用get関数
-const get = async (): Promise<ThreeGalarBirdsResponse | void> => {
-  const res = await fetchCommon('/api/threeGalarBirds', 'GET', {
-    query: cDtoItem.value.searchParams
-  })
-  const rd: Record<string, any> = res.data || {}
-  if (!searchCommon().pushToast(rd?.message, rd?.msgLevel)) {
-    return
+const init = async () => {
+  // route.queryからsearchParamsを復元
+  cDtoItem.value.searchParams = searchCommon()
+    .restoreSearchParams(useRoute().query, ThreeGalarBirdsResultSearchParams)
+  // dtoStoreからresDataを復元
+  const rd: ThreeGalarBirdsResponse | null = searchCommon().restoreResData() as ThreeGalarBirdsResponse
+
+  if (rd) {
+    cDtoItem.value.resData = rd
+  } else {
+    // 存在しない場合は取得する
+    if (check(cDtoItem.value.searchParams)) {
+      throw createError({ statusCode: 400, message: '不正なパラメータが指定されました。', fatal: true })
+    }
+
+    const ret = await get(cDtoItem.value.searchParams)
+    if (!ret) { return }
+    cDtoItem.value.resData = ret
   }
-  return rd as ThreeGalarBirdsResponse
+
+  isLoading.value = !cDtoItem.value.resData
 }
 
-/**
-  * searchParams, resDataのセット
-  */
-const route: RouteLocationNormalizedLoaded = useRoute()
-cDtoItem.value.searchParams = {
-  pid: String(route.query.pid),
-  cp: String(route.query.cp),
-  wbFlg: route.query.wbFlg === 'true'
-}
-// dtoStoreからresDataを復元
-const rd: ThreeGalarBirdsResponse | null = searchCommon().restoreResData() as ThreeGalarBirdsResponse
+await init()
 
-if (rd) {
-  cDtoItem.value.resData = rd
-} else {
-  // 存在しない場合は取得する
-  const ret = await get()
-  if (ret) { cDtoItem.value.resData = ret }
-}
-
-isLoading.value = !cDtoItem.value.resData
-
-// Head情報
-const ogpName = cDtoItem.value.resData.name
+// Header
+const ogpName = cDtoItem.value.resData.name || ''
 const ogpImage = cDtoItem.value.resData.image || '/pokego/peripper-eyes.png'
 useHead({
   title: `${ogpName}の野生個体値`,
@@ -165,3 +161,4 @@ useHead({
   ]
 })
 </script>
+~/components/interface/threeGalarBirds

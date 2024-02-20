@@ -11,6 +11,7 @@
               mdi-pen
             </v-icon>
             ポケモン
+            <span class="required-mark">必須</span>
           </v-col>
           <v-col cols="12" md="8" lg="8" xl="8">
             <SearchInputPokeName
@@ -25,6 +26,7 @@
               mdi-pen
             </v-icon>
             個体値
+            <span class="required-mark">必須</span>
           </v-col>
           <v-col cols="12" md="8" lg="8" xl="8">
             <SearchInputIv
@@ -61,9 +63,15 @@
 </template>
 
 <script setup lang="ts">
-import { ScpRankSearchDtoItem } from '~/components/interface/scpRank'
+import {
+  ScpRankSearchDtoItem,
+  type ScpRankResponse,
+  get,
+  check
+} from '~/components/interface/scpRank'
 
 const searchPattern = 'scpRank'
+
 // current dto item
 const cDtoItem = ref<ScpRankSearchDtoItem>(new ScpRankSearchDtoItem())
 const dto: any = useAttrs().dto
@@ -80,51 +88,28 @@ searchCommon().restoreSearchScreen(['searchParams', 'psr', 'resData'], cDtoItem.
  */
 const clickSearchBtn = async () => {
   isSearchBtnClick.value = true
-  const msg = check()
+  const msg = check(cDtoItem.value.searchParams)
   if (msg) {
     alert(msg)
     isSearchBtnClick.value = false
     return
   }
   isLoading.value = true
-  const res: Record<string, any> = await get()
+  const res = await get(cDtoItem.value.searchParams)
+  if (!res) {
+    isSearchBtnClick.value = false
+    isLoading.value = false
+    return
+  }
   handleApiResult(res)
-}
-const check = (): string => {
-  let msg = ''
-  msg += validateUtils().checkRequired({ item: cDtoItem.value.searchParams.name, itemName: 'ポケモン' })
-  msg += validateUtils().checkRequired({ item: cDtoItem.value.searchParams.iv, itemName: '個体値' })
-  msg += validateUtils().checkIv({ item: cDtoItem.value.searchParams.iv, itemName: '個体値' })
-  return msg
-}
-
-const get = async (): Promise<Record<string, any>> => {
-  return await fetchCommon('/api/scpRank', 'GET', {
-    query: {
-      name: cDtoItem.value.searchParams.name,
-      iva: cDtoItem.value.searchParams.iv.substring(0, 2),
-      ivd: cDtoItem.value.searchParams.iv.substring(2, 4),
-      ivh: cDtoItem.value.searchParams.iv.substring(4, 6)
-    }
-  })
 }
 
 /**
  * APIのレスポンスを処理する。
  *
- * @param res
+ * @param rd
  */
-const handleApiResult = (res: Record<string, any>) => {
-  const rd = res.data
-
-  // メッセージ、メッセージレベルによるハンドリング
-  const success = searchCommon().handleApiMessage(rd)
-  if (!success) {
-    isSearchBtnClick.value = false
-    isLoading.value = false
-    return
-  }
-
+const handleApiResult = (rd: ScpRankResponse) => {
   if (rd.success) {
     cDtoItem.value.resData = rd
     if (rd.pokemonSearchResult.unique) {

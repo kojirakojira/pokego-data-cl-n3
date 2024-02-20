@@ -165,9 +165,13 @@
 </template>
 
 <script setup lang="ts">
-import { type RouteLocationNormalizedLoaded } from 'vue-router'
 import type { ScpRank } from '~/components/interface/api/dto'
-import { type ScpRankMaxMinResponse, ScpRankMaxMinResultDtoItem } from '~/components/interface/scpRankMaxMin'
+import {
+  type ScpRankMaxMinResponse,
+  ScpRankMaxMinResultDtoItem,
+  ScpRankMaxMinResultSearchParams,
+  get
+} from '~/components/interface/scpRankMaxMin'
 const searchPattern = 'scpRankMaxMin'
 // current dto item
 const cDtoItem = ref<ScpRankMaxMinResultDtoItem>(new ScpRankMaxMinResultDtoItem())
@@ -195,18 +199,6 @@ const headers = ref<Record<string, string>[]>([
   { title: '%', key: 'percent' }])
 
 const isLoading = ref<boolean>(true)
-
-// APIアクセス用get関数
-const get = async (): Promise<ScpRankMaxMinResponse | void> => {
-  const res = await fetchCommon('/api/scpRankMaxMin', 'GET', {
-    query: cDtoItem.value.searchParams
-  })
-  const rd: Record<string, any> = res.data || {}
-  if (!searchCommon().pushToast(rd?.message, rd?.msgLevel)) {
-    return
-  }
-  return rd as ScpRankMaxMinResponse
-}
 
 /**
  * resDataのScpRankから、表示用の値を生成する。
@@ -236,29 +228,29 @@ const onClickScpSpBtn = () => {
   }
 }
 
-/**
- * searchParams, resDataのセット
- */
-const route: RouteLocationNormalizedLoaded = useRoute()
-cDtoItem.value.searchParams = {
-  pid: String(route.query.pid)
-}
-// dtoStoreからresDataを復元
-const rd: ScpRankMaxMinResponse | null = searchCommon().restoreResData() as ScpRankMaxMinResponse
+const init = async () => {
+  // route.queryからsearchParamsを復元
+  cDtoItem.value.searchParams = searchCommon()
+    .restoreSearchParams(useRoute().query, ScpRankMaxMinResultSearchParams)
+  // dtoStoreからresDataを復元
+  const rd: ScpRankMaxMinResponse | null = searchCommon().restoreResData() as ScpRankMaxMinResponse
 
-if (rd) {
-  cDtoItem.value.resData = rd
-} else {
-  // 存在しない場合は取得する
-  const ret = await get()
-  if (ret) { cDtoItem.value.resData = ret }
+  if (rd) {
+    cDtoItem.value.resData = rd
+  } else {
+    // 存在しない場合は取得する
+    // 入力チェック不要
+    const ret = await get(cDtoItem.value.searchParams)
+    if (!ret) { return }
+    cDtoItem.value.resData = ret
+  }
+  isLoading.value = !cDtoItem.value.resData
 }
-isLoading.value = !cDtoItem.value.resData
 
-/**
- * Head情報
- */
-const ogpName = cDtoItem.value.resData.name
+await init()
+
+// header
+const ogpName = cDtoItem.value.resData.name || ''
 const ogpImage = cDtoItem.value.resData.image || '/pokego/peripper-eyes.png'
 useHead({
   title: `${ogpName}のPvP順位の最高・最低`,

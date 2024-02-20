@@ -58,3 +58,29 @@ export class CpRankListResultDtoItem implements ResultDtoItem {
     this.resData = new CpRankListResponse()
   }
 }
+
+/**
+ * APIアクセス用get関数
+ */
+export const get = async (
+  searchParams: CpRankListSearchParams | CpRankListResultSearchParams
+): Promise<CpRankListResponse | void> => {
+  const res = await fetchCommon('/api/cpRankList', 'GET', {
+    query: searchParams
+  })
+  const rd: CpRankListResponse | null = res.data as CpRankListResponse
+  if (!searchCommon().handleApiMessage(rd)) {
+    return
+  }
+  return rd
+}
+
+/**
+ * 入力チェック関数
+ * @returns エラーメッセージ
+ */
+export const check = (searchParams: CpRankListSearchParams) => {
+  let msg = ''
+  msg += validateUtils().checkRequired({ item: searchParams.name, itemName: 'ポケモン' })
+  return msg
+}

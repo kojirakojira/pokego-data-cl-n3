@@ -142,12 +142,25 @@ export default () => {
     return url
   }
 
+  /**
+   * 連想配列を配列に変換する。
+   *
+   * @param dic
+   * @returns
+   */
   const toArrayFromDic = (dic: Record<any, any>): Array<any> => {
     const arr : Array<any> = []
     for (const [, v] of Object.entries(dic)) {
       arr.push(v)
     }
     return arr
+  }
+
+  /**
+   * String型に変換する。値が存在しない場合は、空文字を返却する。
+   */
+  const toString = (value: any): string => {
+    return value ? String(value) : ''
   }
 
   return {
@@ -160,6 +173,7 @@ export default () => {
     typeDecoration,
     getUrl,
     getPokemonImageUrl,
-    toArrayFromDic
+    toArrayFromDic,
+    toString
   }
 }

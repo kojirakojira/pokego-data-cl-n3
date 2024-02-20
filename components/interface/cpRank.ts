@@ -70,3 +70,37 @@ export class CpRankResultDtoItem implements ResultDtoItem {
     this.resData = new CpRankResponse()
   }
 }
+
+/**
+ * APIアクセス用get関数
+ */
+export const get = async (
+  searchParams: CpRankSearchParams | CpRankResultSearchParams
+): Promise<CpRankResponse | void> => {
+  const query: Record<string, any> = {
+    iva: searchParams.iv.substring(0, 2),
+    ivd: searchParams.iv.substring(2, 4),
+    ivh: searchParams.iv.substring(4, 6)
+  }
+
+  const res = await fetchCommon('/api/cpRank', 'GET', { query })
+  const rd: CpRankResponse | null = res.data as CpRankResponse
+  if (!searchCommon().handleApiMessage(rd)) {
+    return
+  }
+  return rd
+}
+
+/**
+ * 入力チェック関数
+ * @returns エラーメッセージ
+ */
+export const check = (searchParams: CpRankSearchParams | CpRankResultSearchParams) => {
+  let msg = ''
+  if ('name' in searchParams) {
+    msg += validateUtils().checkRequired({ item: searchParams.name, itemName: 'ポケモン' })
+  }
+  msg += validateUtils().checkRequired({ item: searchParams.iv, itemName: '個体値' })
+  msg += validateUtils().checkIv({ item: searchParams.iv, itemName: '個体値' })
+  return msg
+}
