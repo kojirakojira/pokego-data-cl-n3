@@ -133,6 +133,7 @@
 </template>
 
 <script setup lang="ts">
+import type { MetaObject } from 'nuxt/schema'
 import { type XTypeElement } from '~/components/interface/api/dto'
 import {
   type XTypeResponse,
@@ -219,21 +220,26 @@ const init = async () => {
 await init()
 
 // Header
-const ogpOwn1 = toJpn(cDtoItem.value.resData.own1) || ''
-const ogpOwn2 = toJpn(cDtoItem.value.resData.own2) || ''
-const ogpOpp1 = toJpn(cDtoItem.value.resData.opp1) || ''
-const ogpOpp2 = toJpn(cDtoItem.value.resData.opp2) || ''
-const ogpType = `${ogpOwn1}${ogpOwn2 ? ' ' + ogpOwn2 : ''}→${ogpOpp1}${ogpOpp2 ? ' ' + ogpOpp2 : ogpOpp2}`
-const ogpImage = cDtoItem.value.resData.image || '/pokego/peripper-eyes.png'
-useHead({
-  title: `${ogpType}のXタイプ検索の結果`,
-  meta: [
-    { property: 'og:type', content: 'article' },
-    { property: 'og:title', content: `${ogpType}のXタイプ検索の結果 - ペリずかん` },
-    { property: 'og:url', content: useRuntimeConfig().public.url + useRoute().path },
-    { property: 'og:site_name', content: 'ペリずかん' },
-    { property: 'og:description', content: 'じぶんのポケモン、あいてのポケモンのタイプのうち1つをXと仮定し、何のタイプであれば有利になるかを求めることができます。' },
-    { property: 'og:image', content: useRuntimeConfig().public.staticUrl + ogpImage }
-  ]
+const thisPath = useRuntimeConfig().public.url + useRoute().path
+const staticUrl = useRuntimeConfig().public.staticUrl
+const metaObject = computed((): MetaObject => {
+  const ogpOwn1 = toJpn(cDtoItem.value.resData.own1) || ''
+  const ogpOwn2 = toJpn(cDtoItem.value.resData.own2) || ''
+  const ogpOpp1 = toJpn(cDtoItem.value.resData.opp1) || ''
+  const ogpOpp2 = toJpn(cDtoItem.value.resData.opp2) || ''
+  const ogpType = `${ogpOwn1}${ogpOwn2 ? ' ' + ogpOwn2 : ''}→${ogpOpp1}${ogpOpp2 ? ' ' + ogpOpp2 : ogpOpp2}`
+
+  return {
+    title: `${ogpType}のXタイプ検索の結果`,
+    meta: [
+      { property: 'og:type', content: 'article' },
+      { property: 'og:title', content: `${ogpType}のXタイプ検索の結果 - ペリずかん` },
+      { property: 'og:url', content: thisPath },
+      { property: 'og:site_name', content: 'ペリずかん' },
+      { property: 'og:description', content: 'じぶんのポケモン、あいてのポケモンのタイプのうち1つをXと仮定し、何のタイプであれば有利になるかを求めることができます。' },
+      { property: 'og:image', content: staticUrl + '/pokego/peripper-eyes.png' }
+    ]
+  }
 })
+useHead(metaObject)
 </script>

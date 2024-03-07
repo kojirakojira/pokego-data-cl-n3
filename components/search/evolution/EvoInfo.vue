@@ -34,7 +34,7 @@
                       :name="raceMap[h.id].goPokedex.name"
                       :remarks="raceMap[h.id].goPokedex.remarks"
                       :link="h.id === pid"
-                      :click-action="() => { useRouter().replace({ name: routerLink, query: { pid: h.id }})}"
+                      :click-action="() => { useRouter().push({ name: routerLink, query: { pid: h.id }})}"
                       :marker="h.id === pid"
                     />
                   </template>
@@ -67,7 +67,7 @@
                   :pid="itemPid"
                   :name="raceMap[itemPid].goPokedex.name"
                   :remarks="raceMap[itemPid].goPokedex.remarks"
-                  :click-action="() => { useRouter().replace({ name: routerLink, query: { pid: itemPid }})}"
+                  :click-action="() => { useRouter().push({ name: routerLink, query: { pid: itemPid }})}"
                 />
               </div>
             </v-col>
@@ -93,7 +93,7 @@
                   :pid="itemPid"
                   :name="raceMap[itemPid].goPokedex.name"
                   :remarks="raceMap[itemPid].goPokedex.remarks"
-                  :click-action="() => { useRouter().replace({ name: routerLink, query: { itemPid } })}"
+                  :click-action="() => { useRouter().push({ name: routerLink, query: { pid: itemPid } })}"
                 />
               </div>
             </v-col>
@@ -141,8 +141,8 @@ const drawNode = (yArr: Array<Array<Hierarchy | null>>, raceMap: Record<string, 
   })
 }
 /**
-     * 進化ツリーのエッジを描画する。
-     */
+ * 進化ツリーのエッジを描画する。
+ */
 const drawEdge = (yArr: Array<Array<Hierarchy | null>>, i: number) => {
   yArr.forEach((xArr: Array<Hierarchy | null>) => {
     xArr.forEach((h: Hierarchy | null) => {

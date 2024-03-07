@@ -153,6 +153,7 @@
 </template>
 
 <script setup lang="ts">
+import type { MetaObject } from 'nuxt/schema'
 import {
   type TypeScoreResponse,
   TypeScoreResultDtoItem,
@@ -254,18 +255,23 @@ const init = async () => {
 await init()
 
 // Header
-const ogpType = typeDic.value.defender.jpn
-useHead({
-  title: `${ogpType}の評価`,
-  meta: [
-    { property: 'og:type', content: 'article' },
-    { property: 'og:title', content: `${ogpType}の評価 - ペリずかん` },
-    { property: 'og:url', content: useRuntimeConfig().public.url + useRoute().path },
-    { property: 'og:site_name', content: 'ペリずかん' },
-    { property: 'og:description', content: `${ogpType}のこうげき時、ぼうぎょ時のそれぞれの評価を知ることができます。` },
-    { property: 'og:image', content: useRuntimeConfig().public.staticUrl + '/pokego/peripper-eyes.png' }
-  ]
+const thisPath = useRuntimeConfig().public.url + useRoute().path
+const staticUrl = useRuntimeConfig().public.staticUrl
+const metaObject = computed((): MetaObject => {
+  const type = typeDic.value.defender.jpn
+  return {
+    title: `${type}の評価`,
+    meta: [
+      { property: 'og:type', content: 'article' },
+      { property: 'og:title', content: `${type}の評価 - ペリずかん` },
+      { property: 'og:url', content: thisPath },
+      { property: 'og:site_name', content: 'ペリずかん' },
+      { property: 'og:description', content: `${type}のこうげき時、ぼうぎょ時のそれぞれの評価を知ることができます。` },
+      { property: 'og:image', content: staticUrl + '/pokego/peripper-eyes.png' }
+    ]
+  }
 })
+useHead(metaObject)
 </script>
 
 <style lang="scss">

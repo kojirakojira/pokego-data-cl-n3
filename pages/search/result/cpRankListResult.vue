@@ -55,6 +55,7 @@
 </template>
 
 <script setup lang="ts">
+import type { MetaObject } from 'nuxt/schema'
 import {
   type CpRankListResponse,
   CpRankListResultDtoItem,
@@ -100,17 +101,22 @@ const init = async () => {
 await init()
 
 // Header
-const ogpName = cDtoItem.value.resData.name || ''
-const ogpImage = cDtoItem.value.resData.image || '/pokego/peripper-eyes.png'
-useHead({
-  title: `${ogpName}のCPランキング`,
-  meta: [
-    { property: 'og:type', content: 'article' },
-    { property: 'og:title', content: `${ogpName}のCPランキング - ペリずかん` },
-    { property: 'og:url', content: useRuntimeConfig().public.url + useRoute().path },
-    { property: 'og:site_name', content: 'ペリずかん' },
-    { property: 'og:description', content: `${ogpName}のCPランキングを確認することができます。` },
-    { property: 'og:image', content: useRuntimeConfig().public.staticUrl + ogpImage }
-  ]
+const thisPath = useRuntimeConfig().public.url + useRoute().path
+const staticUrl = useRuntimeConfig().public.staticUrl
+const metaObject = computed((): MetaObject => {
+  const pokeName = cDtoItem.value.resData.name || ''
+  const pokeImage = cDtoItem.value.resData.image || '/pokego/peripper-eyes.png'
+  return {
+    title: `${pokeName}のCPランキング`,
+    meta: [
+      { property: 'og:type', content: 'article' },
+      { property: 'og:title', content: `${pokeName}のCPランキング - ペリずかん` },
+      { property: 'og:url', content: thisPath },
+      { property: 'og:site_name', content: 'ペリずかん' },
+      { property: 'og:description', content: `${pokeName}のCPランキングを確認することができます。` },
+      { property: 'og:image', content: staticUrl + pokeImage }
+    ]
+  }
 })
+useHead(metaObject)
 </script>

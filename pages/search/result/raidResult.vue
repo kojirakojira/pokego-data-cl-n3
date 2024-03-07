@@ -86,6 +86,7 @@
 </template>
 
 <script setup lang="ts">
+import type { MetaObject } from 'nuxt/schema'
 import {
   type RaidResponse,
   RaidResultDtoItem,
@@ -122,17 +123,22 @@ const init = async () => {
 await init()
 
 // Header
-const ogpName = cDtoItem.value.resData.name || ''
-const ogpImage = cDtoItem.value.resData.image || '/pokego/peripper-eyes.png'
-useHead({
-  title: `${ogpName}のレイドCP`,
-  meta: [
-    { property: 'og:type', content: 'article' },
-    { property: 'og:title', content: `${ogpName}のレイドCP - ペリずかん` },
-    { property: 'og:url', content: useRuntimeConfig().public.url + useRoute().path },
-    { property: 'og:site_name', content: 'ペリずかん' },
-    { property: 'og:description', content: `${cDtoItem.value.resData.name}のレイドCPを確認できます。` },
-    { property: 'og:image', content: useRuntimeConfig().public.staticUrl + ogpImage }
-  ]
+const thisPath = useRuntimeConfig().public.url + useRoute().path
+const staticUrl = useRuntimeConfig().public.staticUrl
+const metaObject = computed((): MetaObject => {
+  const pokeName = cDtoItem.value.resData.name || ''
+  const pokeImage = cDtoItem.value.resData.image || '/pokego/peripper-eyes.png'
+  return {
+    title: `${pokeName}のレイドCP`,
+    meta: [
+      { property: 'og:type', content: 'article' },
+      { property: 'og:title', content: `${pokeName}のレイドCP - ペリずかん` },
+      { property: 'og:url', content: thisPath },
+      { property: 'og:site_name', content: 'ペリずかん' },
+      { property: 'og:description', content: `${pokeName}のレイドCPを確認できます。` },
+      { property: 'og:image', content: staticUrl + pokeImage }
+    ]
+  }
 })
+useHead(metaObject)
 </script>

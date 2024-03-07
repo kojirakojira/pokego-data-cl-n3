@@ -86,13 +86,16 @@
 </template>
 
 <script setup lang="ts">
+import type { MetaObject } from 'nuxt/schema'
 import {
   type RocketResponse,
   RocketResultDtoItem,
   RocketResultSearchParams,
   get
 } from '~/components/interface/rocket'
+
 const searchPattern = 'rocket'
+
 // current dto item
 const cDtoItem = ref<RocketResultDtoItem>(new RocketResultDtoItem())
 const dto: any = useAttrs().dto
@@ -123,17 +126,22 @@ const init = async () => {
 await init()
 
 // Header
-const ogpName = cDtoItem.value.resData.name || ''
-const ogpImage = cDtoItem.value.resData.image || '/pokego/peripper-eyes.png'
-useHead({
-  title: `${ogpName}のロケット団勝利ボーナスCP`,
-  meta: [
-    { property: 'og:type', content: 'article' },
-    { property: 'og:title', content: `${ogpName}のロケット団勝利ボーナスCP - ペリずかん` },
-    { property: 'og:url', content: useRuntimeConfig().public.url + useRoute().path },
-    { property: 'og:site_name', content: 'ペリずかん' },
-    { property: 'og:description', content: `ロケット団を倒した後にゲットできる、シャドウ${ogpName}のCPの振れ幅を確認できます。` },
-    { property: 'og:image', content: useRuntimeConfig().public.staticUrl + ogpImage }
-  ]
+const thisPath = useRuntimeConfig().public.url + useRoute().path
+const staticUrl = useRuntimeConfig().public.staticUrl
+const metaObject = computed((): MetaObject => {
+  const pokeName = cDtoItem.value.resData.name || ''
+  const pokeImage = cDtoItem.value.resData.image || '/pokego/peripper-eyes.png'
+  return {
+    title: `${pokeName}のロケット団勝利ボーナスCP`,
+    meta: [
+      { property: 'og:type', content: 'article' },
+      { property: 'og:title', content: `${pokeName}のロケット団勝利ボーナスCP - ペリずかん` },
+      { property: 'og:url', content: thisPath },
+      { property: 'og:site_name', content: 'ペリずかん' },
+      { property: 'og:description', content: `ロケット団を倒した後にゲットできる、シャドウ${pokeName}のCPの振れ幅を確認できます。` },
+      { property: 'og:image', content: staticUrl + pokeImage }
+    ]
+  }
 })
+useHead(metaObject)
 </script>

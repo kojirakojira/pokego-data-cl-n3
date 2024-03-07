@@ -64,6 +64,7 @@
 </template>
 
 <script setup lang="ts">
+import type { MetaObject } from 'nuxt/schema'
 import {
   type EggsResponse,
   EggsResultDtoItem,
@@ -101,17 +102,22 @@ const init = async () => {
 await init()
 
 // Header
-const ogpName = cDtoItem.value.resData.name || ''
-const ogpImage = cDtoItem.value.resData.image || '/pokego/peripper-eyes.png'
-useHead({
-  title: `${ogpName}のタマゴCP`,
-  meta: [
-    { property: 'og:type', content: 'article' },
-    { property: 'og:title', content: `${ogpName}のタマゴCP - ペリずかん` },
-    { property: 'og:url', content: useRuntimeConfig().public.url + useRoute().path },
-    { property: 'og:site_name', content: 'ペリずかん' },
-    { property: 'og:description', content: `タマゴから孵化した${cDtoItem.value.resData.name}のCPを確認できます。` },
-    { property: 'og:image', content: useRuntimeConfig().public.staticUrl + ogpImage }
-  ]
+const thisPath = useRuntimeConfig().public.url + useRoute().path
+const staticUrl = useRuntimeConfig().public.staticUrl
+const metaObject = computed((): MetaObject => {
+  const pokeName = cDtoItem.value.resData.name || ''
+  const pokeImage = cDtoItem.value.resData.image || '/pokego/peripper-eyes.png'
+  return {
+    title: `${pokeName}のタマゴCP`,
+    meta: [
+      { property: 'og:type', content: 'article' },
+      { property: 'og:title', content: `${pokeName}のタマゴCP - ペリずかん` },
+      { property: 'og:url', content: thisPath },
+      { property: 'og:site_name', content: 'ペリずかん' },
+      { property: 'og:description', content: `${pokeName}のCPを確認できます。` },
+      { property: 'og:image', content: staticUrl + pokeImage }
+    ]
+  }
 })
+useHead(metaObject)
 </script>
