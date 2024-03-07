@@ -78,7 +78,6 @@ const toSelector = (key: string) => {
     key === 'race' ||
     key === 'raceDiff' ||
     key === 'iroiroTypeRank' ||
-    key === 'unimplPokemon' ||
     key === 'evoCost') {
     return undefined
   }

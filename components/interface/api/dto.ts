@@ -192,3 +192,11 @@ export interface PlCp {
   pl: string,
   cp: number
 }
+
+export interface SimpPokemon {
+  pokedexId: string,
+  name: string,
+  image: string,
+  gen: string,
+  remarks: string
+}
