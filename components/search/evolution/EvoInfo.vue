@@ -184,58 +184,46 @@ const createEdge = (i: number, x: number, y: number, dist: number, addStyle: str
   editUtils().createStyleElem(idName, style, styleIdArr.value)
 }
 
-// evoTreeInfoが更新されたらstyleを再生成する
-watch(
-  props.evoTreeInfo,
-  (newValue: Array<Array<Array<Hierarchy | null>>>): void => {
-    styleIdArr.value = editUtils().deleteStyleElem(styleIdArr.value, 'evotree-index')
-
-    newValue.forEach((arr, i) => {
-    // エッジを描画する。
-      drawEdge(arr, i)
-      // ノードを描画する。（色を設定するだけ。）
-      drawNode(arr, props.raceMap, i)
-    })
-  },
-  { immediate: true })
-
 /**
- * 別のすがた
+ * パスが更新されたらstyleを生成・再生成する。
+ *
+ * ※本当はevoTreeInfo, anotherForms, bfAfAotFormsを監視して、変更がある場合にstyleを再生成したいが、
+ * それだと戻る・進むで生成済みの画面に遷移したときにstyleが更新されない。
+ * そのため、URL更新に紐づけて更新している。
  */
-watch(
-  props.anotherForms,
-  (newValue: Array<string>): void => {
-    // style追加前に、不要なスタイルが残っている場合は削除する。
-    styleIdArr.value = editUtils().deleteStyleElem(styleIdArr.value, 'aot-form-')
-    // 描画(styleの追加)
-    newValue.forEach((pid) => {
-      const idName = `aot-form-${pid}`
-      const color = props.raceMap[pid].color
-      const style = `.block.aot-form-${pid} .node {\
-            background-color: rgb(${color.r}, ${color.g}, ${color.b}); },`
-      editUtils().createStyleElem(idName, style, styleIdArr.value)
-    })
-  },
-  { immediate: true })
-
-/**
- * 同系統のポケモン
- */
-watch(
-  props.bfAfAotForms,
-  (newValue: Array<string>): void => {
+watch(() => useRoute().fullPath, () => {
   // style追加前に、不要なスタイルが残っている場合は削除する。
-    styleIdArr.value = editUtils().deleteStyleElem(styleIdArr.value, 'bfaf-aot-form-')
-    // 描画(styleの追加)
-    newValue.forEach((pid) => {
-      const idName = `bfaf-aot-form-${pid}`
-      const color = props.raceMap[pid].color
-      const style = `.block.bfaf-aot-form-${pid} .node {\
+  styleIdArr.value = editUtils().deleteStyleElem(styleIdArr.value, 'evotree-index')
+  styleIdArr.value = editUtils().deleteStyleElem(styleIdArr.value, 'aot-form-')
+  styleIdArr.value = editUtils().deleteStyleElem(styleIdArr.value, 'bfaf-aot-form-')
+
+  // 進化ツリー
+  props.evoTreeInfo.forEach((arr, i) => {
+    // エッジを描画する。
+    drawEdge(arr, i)
+    // ノードを描画する。（色を設定するだけ。）
+    drawNode(arr, props.raceMap, i)
+  })
+
+  // 別のすがた
+  props.anotherForms.forEach((pid) => {
+    const idName = `aot-form-${pid}`
+    const color = props.raceMap[pid].color
+    const style = `.block.aot-form-${pid} .node {\
+            background-color: rgb(${color.r}, ${color.g}, ${color.b}); },`
+    editUtils().createStyleElem(idName, style, styleIdArr.value)
+  })
+
+  // 同系統のポケモン
+  props.bfAfAotForms.forEach((pid) => {
+    const idName = `bfaf-aot-form-${pid}`
+    const color = props.raceMap[pid].color
+    const style = `.block.bfaf-aot-form-${pid} .node {\
           background-color: rgb(${color.r}, ${color.g}, ${color.b}); },`
-      editUtils().createStyleElem(idName, style, styleIdArr.value)
-    })
-  },
-  { immediate: true })
+    editUtils().createStyleElem(idName, style, styleIdArr.value)
+  })
+},
+{ immediate: true })
 
 /**
  * onDestroy
