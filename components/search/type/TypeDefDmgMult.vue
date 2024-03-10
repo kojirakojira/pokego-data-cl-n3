@@ -3,12 +3,12 @@
     <div class="pa-3">
       タイプ1:
       <span :style="`background-color: ${editUtils().getRGB(type1)};'}`" class="type">
-        {{ constantUtils().getValue(type1, constantUtils().value.TYPE) }}
+        {{ constantUtils().getTypeJpn(type1) }}
       </span>
       <div v-if="type2">
         タイプ2:
         <span :style="`background-color: ${editUtils().getRGB(type2)};'}`" class="type">
-          {{ constantUtils().getValue(type2, constantUtils().value.TYPE) }}
+          {{ constantUtils().getTypeJpn(type2) }}
         </span>
       </div>
     </div>

@@ -48,8 +48,8 @@
               <v-select
                 v-model="cDtoItem.searchParams.type1"
                 :items="constantUtils().value.TYPE"
-                item-value="k"
-                item-title="v"
+                item-value="type"
+                item-title="jpn"
                 label="タイプ1を入力"
                 clearable
                 hide-details
@@ -62,8 +62,8 @@
               <v-select
                 v-model="cDtoItem.searchParams.type2"
                 :items="constantUtils().value.TYPE"
-                item-value="k"
-                item-title="v"
+                item-value="type"
+                item-title="jpn"
                 label="タイプ2を入力"
                 clearable
                 hide-details
@@ -132,7 +132,7 @@ const clickSearchBtn = async () => {
 
   // リクエスト、画面遷移用のクエリを作成する。（isPokeはリクエストに含まない。）
   const requestQuery: TypeScoreSearchParams =
-   createRequestQuery(cDtoItem.value.searchParams) as TypeScoreSearchParams
+    createRequestQuery(cDtoItem.value.searchParams) as TypeScoreSearchParams
 
   isLoading.value = true
   const res = await get(requestQuery)

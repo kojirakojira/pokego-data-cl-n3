@@ -16,7 +16,7 @@
             <client-only>
               <v-select
                 v-model="cDtoItem.searchParams.situation"
-                :items="constantUtils().value.SITUATION"
+                :items="constant.SITUATION"
                 item-value="k"
                 item-title="v"
                 label="シチュエーションを選択"
@@ -131,6 +131,8 @@ dto.params = cDtoItem
 
 const isLoading = ref<boolean>(false)
 const isSearchBtnClick = ref<boolean>(false)
+
+const constant: ConstantValue = constantUtils().get()
 
 // created: 画面を復元する
 searchCommon().restoreSearchScreen(['searchParams', 'resData'], cDtoItem.value)

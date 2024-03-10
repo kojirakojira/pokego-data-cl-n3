@@ -2,20 +2,20 @@
 <template>
   <v-container class="basic-info-table def-dmg-mult-table">
     <v-row v-for="(ddm, ddmIdx) in defDmgMultArr" :key="`def-dmg-mult-${ddm.name}`">
-      <v-col cols="4" :style="`background: ${editUtils().getRGB(defType1, defType2)}`">
+      <v-col cols="4" :style="`background: ${typeColorUtils.getRGB(defType1, defType2)}`">
         <span>{{ ddm.dmgMult }}</span>
       </v-col>
       <v-col
         cols="8"
-        :style="ddmIdx % 2 === 0 ? `background: ${editUtils().getRGBA(0.1, defType1, defType2)}` : ''"
+        :style="ddmIdx % 2 === 0 ? `background: ${typeColorUtils.getRGBA(0.1, defType1, defType2)}` : ''"
       >
         <span
           v-for="(type, idx) in atkTypeDic[ddm.name]"
           :key="`def-dmg-mult-${type}`"
-          :style="`background-color: ${editUtils().getRGB(type)}; ${idx === 0 ? '': 'margin-left:5px;'}`"
+          :style="`background-color: ${typeColorUtils.getRGB(type)}; ${idx === 0 ? '': 'margin-left:5px;'}`"
           class="type"
         >
-          {{ constantUtils().getValue(type, constantUtils().value.TYPE) }}
+          {{ constantAccessor.getTypeJpn(type) }}
         </span>
       </v-col>
     </v-row>
@@ -23,12 +23,16 @@
 </template>
 
 <script setup lang="ts">
+import { TypeColorUtils } from '~/utils/editUtils'
+import { ConstantAccessor } from '~/utils/constantUtils'
+
 const defDmgMultArr: Array<Record<string, string>> = [
   { name: 'MAX', dmgMult: '×2.56' },
   { name: 'HIGH', dmgMult: '×1.6' },
   { name: 'LOW', dmgMult: '×0.625' },
   { name: 'VERY_LOW', dmgMult: '×0.390625' },
   { name: 'MIN', dmgMult: '×0.244140625' }]
+
 withDefaults(
   defineProps<{
     defType1: string,
@@ -37,6 +41,10 @@ withDefaults(
    }>(),
   { defType2: '' }
 )
+
+const constant: ConstantValue = constantUtils().get()
+const constantAccessor: ConstantAccessor = new ConstantAccessor(constant)
+const typeColorUtils: TypeColorUtils = new TypeColorUtils(constant.TYPE)
 </script>
 
 <style scoped lang="scss">

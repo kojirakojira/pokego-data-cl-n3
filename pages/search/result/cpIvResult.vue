@@ -50,7 +50,7 @@
                       シチュエーション
                     </v-col>
                     <v-col cols="5" md="6" lg="6" xl="6" class="pa-1">
-                      {{ constantUtils().getValue(cDtoItem.resData.situation, constantUtils().value.SITUATION) }}
+                      {{ constantAccessor.getValue(cDtoItem.resData.situation, 'SITUATION') }}
                     </v-col>
                   </v-row>
                 </v-container>
@@ -105,6 +105,7 @@ import {
   get,
   check
 } from '~/components/interface/cpIv'
+import { ConstantAccessor } from '~/utils/constantUtils'
 const searchPattern = 'cpIv'
 
 // current dto item
@@ -121,6 +122,9 @@ const headers = ref<any>([
 ])
 
 const isLoading = ref<boolean>(true)
+
+const constant: ConstantValue = constantUtils().get()
+const constantAccessor: ConstantAccessor = new ConstantAccessor(constant)
 
 const init = async () => {
 // route.queryからsearchParamsを復元

@@ -116,6 +116,7 @@ export const createRequestQuery = (
     if (sp.type1) { requestQuery.type1 = sp.type1 }
     if (sp.type2) { requestQuery.type2 = sp.type2 }
   }
+  return requestQuery
 }
 
 /**

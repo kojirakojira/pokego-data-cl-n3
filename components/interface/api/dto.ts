@@ -79,21 +79,42 @@ export interface Hierarchy {
   goEvo: boolean
 }
 
-export interface Color {
-  r: number,
-  g: number,
+export class Color {
+  r: number
+  g: number
   b: number
+
+  constructor () {
+    this.r = 0
+    this.g = 0
+    this.b = 0
+  }
 }
 
-export interface Race {
-  pokedexId: string,
-  name: string,
-  remarks: string,
-  pokedex: Pokedex | null | undefined,
-  goPokedex: GoPokedex,
-  color: Color,
-  type1Color: Color,
+export interface TypeInfo {
+  type: string,
+  jpn: string,
+  color: Color
+}
+
+export class Race {
+  pokedexId: string
+  name: string
+  remarks: string
+  pokedex: Pokedex | null | undefined
+  goPokedex: GoPokedex
+  color: Color
+  type1Color: Color
   type2Color: Color | null | undefined
+
+  constructor () {
+    this.pokedexId = ''
+    this.name = ''
+    this.remarks = ''
+    this.goPokedex = new GoPokedex()
+    this.color = new Color()
+    this.type1Color = new Color()
+  }
 }
 
 export class CpRank {
@@ -164,6 +185,12 @@ export interface TwoTypeKey {
   type2: string | null | undefined
 }
 
+export interface DispFilterParam {
+  name: string,
+  filterValue: string,
+  negate: string
+}
+
 export interface XTypeElement {
   twoTypeKey: TwoTypeKey,
   rank: number,
@@ -199,4 +226,58 @@ export interface SimpPokemon {
   image: string,
   gen: string,
   remarks: string
+}
+
+export class Statistics {
+  list: Array<number>
+  max: number
+  min: number
+  med: number
+
+  constructor () {
+    this.list = []
+    this.max = 0
+    this.min = 0
+    this.med = 0
+  }
+}
+
+export class PokedexStats {
+  hpStats: Statistics
+  atStats: Statistics
+  dfStats: Statistics
+  spAtStats: Statistics
+  spDfStats: Statistics
+  spStats: Statistics
+
+  constructor () {
+    this.hpStats = new Statistics()
+    this.atStats = new Statistics()
+    this.dfStats = new Statistics()
+    this.spAtStats = new Statistics()
+    this.spDfStats = new Statistics()
+    this.spStats = new Statistics()
+  }
+}
+
+export class GoPokedexStats {
+  goAtStats: Statistics
+  goDfStats: Statistics
+  goHpStats: Statistics
+
+  constructor () {
+    this.goAtStats = new Statistics()
+    this.goDfStats = new Statistics()
+    this.goHpStats = new Statistics()
+  }
+}
+
+export class PokemonStatisticsInfo {
+  pokedexStats: PokedexStats
+  goPokedexStats: GoPokedexStats
+
+  constructor () {
+    this.pokedexStats = new PokedexStats()
+    this.goPokedexStats = new GoPokedexStats()
+  }
 }

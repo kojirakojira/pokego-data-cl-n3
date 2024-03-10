@@ -13,17 +13,17 @@
           -->{{ name ? editUtils().appendRemarks(name, remarks) : 'こ' }}<!--
           -->のタイプ(<!--
           --><span
-                :style="`background-color: ${editUtils().getRGB(type1)};'}`"
+                :style="`background-color: ${typeColorUtils.getRGB(type1)};'}`"
                 class="type"
               >
-              {{ toJpn(type1) }}
+              {{ constantAccessor.getTypeJpn(type1) }}
           </span>
           <span
             v-if="type2"
-            :style="`background-color: ${editUtils().getRGB(type2)}; margin-left: 3px;`"
+            :style="`background-color: ${typeColorUtils.getRGB(type2)}; margin-left: 3px;`"
             class="type"
           >
-            {{ toJpn(type2) }}
+            {{ constantAccessor.getTypeJpn(type2) }}
           </span><!--
           -->)の特徴について簡単に説明します。
         </template>
@@ -35,7 +35,7 @@
           class="type-comments-text"
         >
           <!-- eslint-disable-next-line vue/no-v-html -->
-          <div v-html="editUtils().typeDecoration(comment)" />
+          <div v-html="typeColorUtils.typeDecoration(comment)" />
         </li>
       </ul>
     </div>
@@ -44,6 +44,9 @@
 
 <script setup lang="ts">
 import { useTheme } from 'vuetify'
+import { TypeColorUtils } from '~/utils/editUtils'
+import { ConstantAccessor } from '~/utils/constantUtils'
+
 withDefaults(
   defineProps<{
     type1?: string, // タイプ1(英字)
@@ -64,9 +67,9 @@ const theme = computed((): string => {
   return useTheme().global.name.value
 })
 
-const toJpn = (v: string) => {
-  return constantUtils().getValue(v, constantUtils().value.TYPE)
-}
+const constant: ConstantValue = constantUtils().get()
+const constantAccessor: ConstantAccessor = new ConstantAccessor(constant)
+const typeColorUtils: TypeColorUtils = new TypeColorUtils(constant.TYPE)
 </script>
 
 <style scoped>

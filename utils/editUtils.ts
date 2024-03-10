@@ -1,3 +1,69 @@
+import { Color, type TypeInfo } from '~/components/interface/api/dto'
+
+export class TypeColorUtils {
+  typeArr: Array<TypeInfo>
+
+  constructor (typeArr: Array<TypeInfo>) {
+    this.typeArr = typeArr
+  }
+
+  /**
+   * タイプのrgb(999, 999, 999)を取得します。
+   * 英語名、日本語名の両方から取得できます。
+   *
+   */
+  getRGB (type1: string, type2?: string | null | undefined) {
+    let rgb1: Color = new Color()
+    let rgb2: Color = new Color()
+    for (const t of this.typeArr) {
+      if (type1 === t.jpn || type1 === t.type) { rgb1 = t.color }
+      if (type2 === t.jpn || type2 === t.type) { rgb2 = t.color }
+    }
+    const createColor = (c1: number, c2: number) => { return (c1 * 1 + c2 * 1) / 2 }
+    const r = type2 ? createColor(rgb1.r, rgb2.r) : rgb1.r
+    const g = type2 ? createColor(rgb1.g, rgb2.g) : rgb1.g
+    const b = type2 ? createColor(rgb1.b, rgb2.b) : rgb1.b
+    return `rgb(${r}, ${g}, ${b})`
+  }
+
+  /**
+   * タイプのrgba(999, 999, 999, alpha)を取得します。
+   * 英語名、日本語名の両方から取得できます。
+   *
+   * @param typeArr TypeInfoの配列を設定する（データはAPI側で持つため、毎回渡す必要がある。）
+   * @param alpha 透明度
+   * @param type1 タイプ１
+   * @param type2 タイプ２
+   */
+  getRGBA (alpha: number, type1: string, type2: string | null | undefined) {
+    let rgb1: Color = new Color()
+    let rgb2: Color = new Color()
+    for (const t of this.typeArr) {
+      if (type1 === t.jpn || type1 === t.type) { rgb1 = t.color }
+      if (type2 === t.jpn || type2 === t.type) { rgb2 = t.color }
+    }
+    const createColor = (c1: number, c2: number) => { return (c1 * 1 + c2 * 1) / 2 }
+    const r = type2 ? createColor(rgb1.r, rgb2.r) : rgb1.r
+    const g = type2 ? createColor(rgb1.g, rgb2.g) : rgb1.g
+    const b = type2 ? createColor(rgb1.b, rgb2.b) : rgb1.b
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`
+  }
+
+  /**
+   * 引数に渡した文字列にタイプ名が含まれていた場合にデコレーションします。
+   *
+   * @param typeArr TypeInfoの配列を設定する（データはAPI側で持つため、毎回渡す必要がある。）
+   * @param value タイプコメントの1つ
+   */
+  typeDecoration (value: string) {
+    const regex = new RegExp(this.typeArr.map(elem => elem.jpn).join('|'), 'g')
+    return value.replace(regex, (match) => {
+      return '<span class="type" style="background-color: ' +
+      `${this.getRGB(match)}">${match}</span>`
+    }).replaceAll('>,', '>')
+  }
+}
+
 export default () => {
   /**
    * 図鑑IDから図鑑Noを取得する。
@@ -17,45 +83,6 @@ export default () => {
       val = val + `(${remarks})`
     }
     return val
-  }
-  /**
-   * タイプのrgb(999, 999, 999)を取得します。
-   * 英語名、日本語名の両方から取得できます。
-   *
-   */
-  const getRGB = (type1: string, type2?: string | null | undefined) => {
-    let rgb1: Record<string, any> = { r: 0, g: 0, b: 0 }
-    let rgb2: Record<string, any> = { r: 0, g: 0, b: 0 }
-    for (const t of (constantUtils()).value.TYPE) {
-      if (type1 === t.v || type1 === t.k) { rgb1 = t }
-      if (type2 === t.v || type2 === t.k) { rgb2 = t }
-    }
-    const createColor = (c1: number, c2: number) => { return (c1 * 1 + c2 * 1) / 2 }
-    const r = type2 ? createColor(rgb1.r, rgb2.r) : rgb1.r
-    const g = type2 ? createColor(rgb1.g, rgb2.g) : rgb1.g
-    const b = type2 ? createColor(rgb1.b, rgb2.b) : rgb1.b
-    return `rgb(${r}, ${g}, ${b})`
-  }
-  /**
-     * タイプのrgba(999, 999, 999, alpha)を取得します。
-     * 英語名、日本語名の両方から取得できます。
-     *
-     * @param alpha 透明度
-     * @param type1 タイプ１
-     * @param type2 タイプ２
-     */
-  const getRGBA = (alpha: number, type1: string, type2: string | null | undefined) => {
-    let rgb1: Record<string, any> = { r: 0, g: 0, b: 0 }
-    let rgb2: Record<string, any> = { r: 0, g: 0, b: 0 }
-    for (const t of (constantUtils()).value.TYPE) {
-      if (type1 === t.v || type1 === t.k) { rgb1 = t }
-      if (type2 === t.v || type2 === t.k) { rgb2 = t }
-    }
-    const createColor = (c1: number, c2: number) => { return (c1 * 1 + c2 * 1) / 2 }
-    const r = type2 ? createColor(Number(rgb1?.r), Number(rgb2?.r)) : rgb1.r
-    const g = type2 ? createColor(Number(rgb1?.g), Number(rgb2?.g)) : rgb1.g
-    const b = type2 ? createColor(Number(rgb1?.b), Number(rgb2?.b)) : rgb1.b
-    return `rgba(${r}, ${g}, ${b}, ${alpha})`
   }
   /**
    * styleを追加します。
@@ -96,19 +123,6 @@ export default () => {
 
     // styleIdArrからの該当のidの削除
     return styleIdArr.filter((id) => { return prefix && id.indexOf(prefix) })
-  }
-
-  /**
-     * 引数に渡した文字列にタイプ名が含まれていた場合にデコレーションします。
-     *
-     * @param {String} value タイプコメントの1つ
-     */
-  const typeDecoration = (value: string) => {
-    const regex = new RegExp((constantUtils()).value.TYPE.map(elem => elem.v).join('|'), 'g')
-    return value.replace(regex, (match) => {
-      return '<span class="type" style="background-color: ' +
-        `${getRGB(match)}">${match}</span>`
-    }).replaceAll('>,', '>')
   }
 
   /**
@@ -166,11 +180,8 @@ export default () => {
   return {
     getPdxNo,
     appendRemarks,
-    getRGB,
-    getRGBA,
     createStyleElem,
     deleteStyleElem,
-    typeDecoration,
     getUrl,
     getPokemonImageUrl,
     toArrayFromDic,

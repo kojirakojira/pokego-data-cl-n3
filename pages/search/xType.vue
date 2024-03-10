@@ -25,8 +25,8 @@
                   <v-select
                     v-model="cDtoItem.searchParams.own1"
                     :items="typeArr"
-                    item-title="v"
-                    item-value="k"
+                    item-title="jpn"
+                    item-value="type"
                     clearable
                   />
                 </v-col>
@@ -37,8 +37,8 @@
                   <v-select
                     v-model="cDtoItem.searchParams.own2"
                     :items="typeArr"
-                    item-title="v"
-                    item-value="k"
+                    item-title="jpn"
+                    item-value="type"
                     clearable
                     hide-details
                   />
@@ -77,8 +77,8 @@
                   <v-select
                     v-model="cDtoItem.searchParams.opp1"
                     :items="typeArr"
-                    item-title="v"
-                    item-value="k"
+                    item-title="jpn"
+                    item-value="type"
                     clearable
                     hide-details
                   />
@@ -90,8 +90,8 @@
                   <v-select
                     v-model="cDtoItem.searchParams.opp2"
                     :items="typeArr"
-                    item-title="v"
-                    item-value="k"
+                    item-title="jpn"
+                    item-value="type"
                     clearable
                     hide-details
                   />
@@ -138,6 +138,7 @@
 </template>
 
 <script setup lang="ts">
+import { type TypeInfo, Color } from '~/components/interface/api/dto'
 import {
   XTypeSearchDtoItem,
   type XTypeResponse,
@@ -155,9 +156,11 @@ dto.params = cDtoItem
 const isLoading = ref<boolean>(false)
 const isSearchBtnClick = ref<boolean>(false)
 
-const typeArr = ref<Array<{ k: string, v: string }>>([])
+const constant: ConstantValue = constantUtils().get()
+
+const typeArr = ref<Array<TypeInfo>>([])
 typeArr.value.splice(0)
-typeArr.value.push({ k: 'x', v: 'xで仮定' }, ...constantUtils().value.TYPE)
+typeArr.value.push({ type: 'x', jpn: 'xで仮定', color: new Color() }, ...constant.TYPE)
 
 // created: 画面を復元する
 searchCommon().restoreSearchScreen(['searchParams', 'resData'], cDtoItem.value)

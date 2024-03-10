@@ -20,14 +20,14 @@
                     <v-col cols="5" md="6" lg="6" xl="6" class="pa-1">
                       <span
                         v-if="cDtoItem.resData.own1"
-                        :style="`background-color: ${editUtils().getRGB(cDtoItem.resData.own1)};'}`"
+                        :style="`background-color: ${typeColorUtils.getRGB(cDtoItem.resData.own1)};'}`"
                         class="type"
                       >
                         {{ toJpn(cDtoItem.resData.own1) }}
                       </span>
                       <span
                         v-if="cDtoItem.resData.own2"
-                        :style="`background-color: ${editUtils().getRGB(cDtoItem.resData.own2)};;margin-left:3px;'}`"
+                        :style="`background-color: ${typeColorUtils.getRGB(cDtoItem.resData.own2)};margin-left:3px;'}`"
                         class="type"
                       >
                         {{ toJpn(cDtoItem.resData.own2) }}
@@ -41,14 +41,14 @@
                     <v-col cols="5" md="6" lg="6" xl="6" class="pa-1">
                       <span
                         v-if="cDtoItem.resData.opp1"
-                        :style="`background-color: ${editUtils().getRGB(cDtoItem.resData.opp1)};`"
+                        :style="`background-color: ${typeColorUtils.getRGB(cDtoItem.resData.opp1)};`"
                         class="type"
                       >
                         {{ toJpn(cDtoItem.resData.opp1) }}
                       </span>
                       <span
                         v-if="cDtoItem.resData.opp2"
-                        :style="`background-color: ${editUtils().getRGB(cDtoItem.resData.opp2)};margin-left:3px;`"
+                        :style="`background-color: ${typeColorUtils.getRGB(cDtoItem.resData.opp2)};margin-left:3px;`"
                         class="type"
                       >
                         {{ toJpn(cDtoItem.resData.opp2) }}
@@ -91,14 +91,14 @@
               <template #[`item.twoTypeKey`]="{ item }">
                 <span
                   v-if="item.twoTypeKey.type1"
-                  :style="`background-color: ${editUtils().getRGB(item.twoTypeKey.type1)};`"
+                  :style="`background-color: ${typeColorUtils.getRGB(item.twoTypeKey.type1)};`"
                   class="type"
                 >
                   {{ toJpn(item.twoTypeKey.type1) }}
                 </span>
                 <span
                   v-if="item.twoTypeKey.type2"
-                  :style="`background-color: ${editUtils().getRGB(item.twoTypeKey.type2)}; margin-left:3px;`"
+                  :style="`background-color: ${typeColorUtils.getRGB(item.twoTypeKey.type2)}; margin-left:3px;`"
                   class="type"
                 >
                   {{ toJpn(item.twoTypeKey.type2) }}
@@ -142,6 +142,8 @@ import {
   get,
   check
 } from '~/components/interface/xType'
+import { ConstantAccessor } from '~/utils/constantUtils'
+import { TypeColorUtils } from '~/utils/editUtils'
 
 const searchPattern = 'xType'
 
@@ -161,12 +163,16 @@ const headers = ref<any>([
 const definedXOwn = ref<boolean>(false)
 const isLoading = ref<boolean>(true)
 
-const toJpn = (v: string) => {
-  if (v === 'x') {
+const constant: ConstantValue = constantUtils().get()
+const constantAccessor: ConstantAccessor = new ConstantAccessor(constant)
+const typeColorUtils: TypeColorUtils = new TypeColorUtils(constant.TYPE)
+
+const toJpn = (type: string) => {
+  if (type === 'x') {
     return 'Xで仮定'
   }
 
-  return constantUtils().getValue(v, constantUtils().value.TYPE)
+  return constantAccessor.getTypeJpn(type)
 }
 /**
  * 引数に指定された値に'x'が含まれているかを判定する。
@@ -179,7 +185,7 @@ const isIncludeX = (...args: string[]): boolean => {
  * タイプを装飾する。
  */
 const combiDecoration = (msg: string, atkFlg: boolean) => {
-  let ret = editUtils().typeDecoration(msg)
+  let ret = typeColorUtils.typeDecoration(msg)
 
   const regex: RegExp = /（×.*）/
   ret = ret.replace(regex, (match: string) => {

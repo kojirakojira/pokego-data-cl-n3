@@ -46,7 +46,7 @@
           <v-col cols="12" md="8" lg="8" xl="8">
             <v-select
               v-model="cDtoItem.searchParams.pl"
-              :items="constantUtils().value.PL"
+              :items="constant.PL"
               label="PLを選択"
               dense
               outlined
@@ -97,6 +97,8 @@ dto.params = cDtoItem
 
 const isLoading = ref<boolean>(false)
 const isSearchBtnClick = ref<boolean>(false)
+
+const constant: ConstantValue = constantUtils().get()
 
 // created: 画面を復元する
 searchCommon().restoreSearchScreen(['searchParams', 'resData'], cDtoItem.value)

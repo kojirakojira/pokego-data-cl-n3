@@ -44,7 +44,7 @@
               :style="`background-color: ${typeDic.attacker1.color};'}`"
               class="type"
             >
-              {{ constantUtils().getValue(cDtoItem.searchParams.type1, constantUtils().value.TYPE) }}
+              {{ constantAccessor.getTypeJpn(cDtoItem.searchParams.type1) }}
             </span>
           </v-col>
           <v-col>
@@ -67,7 +67,7 @@
               :style="`background-color: ${typeDic.attacker2.color};'}`"
               class="type"
             >
-              {{ constantUtils().getValue(cDtoItem.searchParams.type2, constantUtils().value.TYPE) }}
+              {{ constantAccessor.getTypeJpn(cDtoItem.searchParams.type2) }}
             </span>
           </v-col>
           <v-col>
@@ -95,14 +95,14 @@
               :style="`background-color: ${typeDic.attacker1.color};'}`"
               class="type"
             >
-              {{ constantUtils().getValue(cDtoItem.searchParams.type1, constantUtils().value.TYPE) }}
+              {{ constantAccessor.getTypeJpn(cDtoItem.searchParams.type1) }}
             </span>
             <span
               v-if="cDtoItem.searchParams.type2"
               :style="typeDic.attacker2 && `background-color: ${typeDic.attacker2.color}; margin-left: 3px;'}`"
               class="type"
             >
-              {{ constantUtils().getValue(cDtoItem.searchParams.type2, constantUtils().value.TYPE) }}
+              {{ constantAccessor.getTypeJpn(cDtoItem.searchParams.type2) }}
             </span>
           </v-col>
           <v-col>
@@ -162,6 +162,8 @@ import {
   check,
   createRequestQuery
 } from '~/components/interface/typeScore'
+import { ConstantAccessor, type ConstantValue } from '~/utils/constantUtils'
+import { TypeColorUtils } from '~/utils/editUtils'
 
 const searchPattern = 'typeScore'
 
@@ -188,30 +190,34 @@ const typeDic = ref<TypeDic>({
 
 const isLoading = ref<boolean>(true)
 
+const constant: ConstantValue = constantUtils().get()
+const constantAccessor: ConstantAccessor = new ConstantAccessor(constant)
+const typeColorUtils: TypeColorUtils = new TypeColorUtils(constant.TYPE)
+
 /**
  * タイプを表す構造体を生成する。
  */
 const createTypeDic = (type1: string, type2: string | null, resData: Record<string, any>): TypeDic => {
   // 2捨3入の関数
   const round2to3 = (score: number) => { return Math.round(score * 2) / 2 }
-  const type1Jpn: string = constantUtils().getValue(type1, constantUtils().value.TYPE) as string
-  const type2Jpn: string | null | undefined = type2 && constantUtils().getValue(type2, constantUtils().value.TYPE)
+  const type1Jpn: string = constantAccessor.getTypeJpn(type1) as string
+  const type2Jpn: string | null | undefined = type2 && constantAccessor.getTypeJpn(type2)
   const attacker1: TypeInfo = {
     jpn: type1Jpn,
-    color: editUtils().getRGB(type1),
+    color: typeColorUtils.getRGB(type1),
     vRatingScore: round2to3(resData.attacker1Score)
   }
   let attacker2: TypeInfo | undefined
   if (type2) {
     attacker2 = {
       jpn: type2Jpn as string,
-      color: editUtils().getRGB(type2),
+      color: typeColorUtils.getRGB(type2),
       vRatingScore: round2to3(resData.attacker2Score)
     }
   }
   const defender: TypeInfo = {
     jpn: type1Jpn + (type2Jpn ? ',' + type2Jpn : ''),
-    color: editUtils().getRGB(type1, type2),
+    color: typeColorUtils.getRGB(type1, type2),
     vRatingScore: round2to3(resData.defenderScore)
   }
   return { attacker1, attacker2, defender }
