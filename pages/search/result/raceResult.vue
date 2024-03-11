@@ -1,0 +1,297 @@
+<template>
+  <div>
+    <MajorPartsH2Common>
+      {{ searchCommon().getSearchPatternName(searchPattern) }}
+    </MajorPartsH2Common>
+    <div v-if="!isLoading">
+      <SearchInputFilteredItems :items="cDtoItem.resData.filteredItems" />
+      <v-container>
+        <v-row>
+          <v-col>
+            <v-card max-width="500px" class="searched-items">
+              <v-card-title class="d-block pa-2 searched-params-title">
+                検索条件
+              </v-card-title>
+              <v-card-text class="caption text-left py-1">
+                <v-container>
+                  <v-row>
+                    <v-col cols="7" md="6" lg="6" xl="6" class="pa-1">
+                      図鑑№
+                    </v-col>
+                    <v-col cols="5" md="6" lg="6" xl="6" class="pa-1">
+                      {{ editUtils().getPdxNo(cDtoItem.resData.pokedexId) }}
+                    </v-col>
+                  </v-row>
+                  <v-row class="searched-param">
+                    <v-col cols="7" md="6" lg="6" xl="6" class="pa-1">
+                      ポケモン
+                    </v-col>
+                    <v-col cols="5" md="6" lg="6" xl="6" class="pa-1">
+                      {{ editUtils().appendRemarks(cDtoItem.resData.name, cDtoItem.resData.remarks) }}
+                    </v-col>
+                  </v-row>
+                  <v-row class="searched-param">
+                    <v-col cols="7" md="6" lg="6" xl="6" class="pa-1">
+                      タイプ
+                    </v-col>
+                    <v-col cols="5" md="6" lg="6" xl="6" class="pa-1">
+                      <span
+                        :style="`background-color: ${typeColorUtils.getRGB(cDtoItem.resData.race.goPokedex.type1)};`"
+                        class="type"
+                      >
+                        {{ cDtoItem.resData.race.goPokedex.type1 }}
+                      </span>
+                      <span
+                        v-if="cDtoItem.resData.race.goPokedex.type2"
+                        :style="`background-color: ${typeColorUtils.getRGB(cDtoItem.resData.race.goPokedex.type2)}; margin-left:5px;`"
+                        class="type"
+                      >
+                        {{ cDtoItem.resData.race.goPokedex.type2 }}
+                      </span>
+                    </v-col>
+                  </v-row>
+                  <v-row class="searched-param">
+                    <v-col cols="7" md="6" lg="6" xl="6" class="pa-1">
+                      強ポケ補正
+                      <v-tooltip bottom>
+                        <template #activator="{ props }">
+                          <v-icon v-bind="props" small>
+                            mdi-help-circle
+                          </v-icon>
+                        </template>
+                        <span>ポケモンGOの種族値は、原作の種族値から一定の変換式で算出されます。
+                          種族値が高すぎる一部のポケモンは算出された種族値から×0.91されます。</span>
+                      </v-tooltip>
+                    </v-col>
+                    <v-col cols="5" md="6" lg="6" xl="6" class="pa-1">
+                      <span v-if="cDtoItem.resData.tooStrong" class="red--text">対象</span>
+                      <span v-else>対象外</span>
+                    </v-col>
+                  </v-row>
+                  <v-row class="searched-param">
+                    <v-col cols="7" md="6" lg="6" xl="6" class="pa-1">
+                      ポケモンGO実装
+                    </v-col>
+                    <v-col cols="5" md="6" lg="6" xl="6" class="pa-1">
+                      <span v-if="cDtoItem.resData.race.goPokedex.implFlg">実装済み</span>
+                      <span v-else class="font-weight-bold red--text">未実装</span>
+                    </v-col>
+                  </v-row>
+                </v-container>
+              </v-card-text>
+            </v-card>
+          </v-col>
+        </v-row>
+      </v-container>
+      <h3>
+        GO種族値
+        <v-tooltip bottom>
+          <template #activator="{ props }">
+            <v-icon
+              small
+              v-bind="props"
+            >
+              mdi-help-circle
+            </v-icon>
+          </template>
+          <span>各ステータスの順位を基準として表示しています。そうです。この世の中は相対評価なのです。</span>
+        </v-tooltip>
+      </h3>
+      <v-container>
+        <v-row>
+          <v-col cols="12" md="6" lg="6" xl="6" align="right">
+            <GraphGoRadarGraph
+              :race="cDtoItem.resData.race"
+              :go-pokedex-stats="cDtoItem.resData.statistics.goPokedexStats"
+            />
+          </v-col>
+          <v-col cols="12" md="6" lg="6" xl="6" class="stats">
+            <v-row v-for="item in statsDic.goStatsItems" :key="`go-stats-${item.title}`">
+              <v-col cols="6" md="4" lg="4" xl="2" style="text-align: right">
+                {{ item.title }}
+              </v-col>
+              <v-col cols="6" md="8" lg="8" xl="10">
+                {{ item.value }}
+              </v-col>
+            </v-row>
+          </v-col>
+        </v-row>
+        <v-row v-for="item in statsDic.goStatsItems" :key="`go-line-${item.title}`">
+          <v-col>
+            <GraphLineGraph
+              :title="item.title"
+              :dataset="item.stats"
+              :point="item.value"
+              :color="item.color"
+              style="height: 200px;"
+            />
+          </v-col>
+        </v-row>
+      </v-container>
+      <h3>
+        原作種族値
+        <v-tooltip>
+          <template #activator="{ props }">
+            <v-icon
+              small
+              v-bind="props"
+            >
+              mdi-help-circle
+            </v-icon>
+          </template>
+          <span>各ステータスの順位を基準として表示しています。そうです。この世の中は相対評価なのです。</span>
+        </v-tooltip>
+      </h3>
+      <v-container v-if="cDtoItem.resData.race.pokedex">
+        <v-row>
+          <v-col cols="12" md="6" lg="6" xl="6" align="right">
+            <GraphOriRadarGraph
+              :race="cDtoItem.resData.race"
+              :pokedex-stats="cDtoItem.resData.statistics.pokedexStats"
+            />
+          </v-col>
+          <v-col cols="12" md="6" lg="6" xl="6" class="stats">
+            <v-row v-for="item in statsDic.oriStatsItems" :key="`go-stats-${item.title}`">
+              <v-col cols="6" md="4" lg="4" xl="2" style="text-align: right">
+                {{ item.title }}
+              </v-col>
+              <v-col cols="6" md="8" lg="8" xl="10">
+                {{ item.value }}
+              </v-col>
+            </v-row>
+          </v-col>
+        </v-row>
+        <v-row v-for="item in statsDic.oriStatsItems" :key="`ori-line-${item.title}`">
+          <v-col>
+            <GraphLineGraph
+              :title="item.title"
+              :dataset="item.stats"
+              :point="item.value"
+              :color="item.color"
+              style="height: 200px;"
+            />
+          </v-col>
+        </v-row>
+      </v-container>
+      <div v-else class="subtitle-2 text-center">
+        {{ `※${editUtils().appendRemarks(cDtoItem.resData.name, cDtoItem.resData.remarks)}は、原作種族値が存在しません。` }}
+      </div>
+    </div>
+    <div v-else>
+      <Loading full-page />
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+import type { MetaObject } from 'nuxt/schema'
+import type { GoPokedex, GoPokedexStats, Pokedex, PokedexStats } from '~/components/interface/api/dto'
+import {
+  type RaceResponse,
+  RaceResultDtoItem,
+  RaceResultSearchParams,
+  get
+} from '~/components/interface/race'
+import { TypeColorUtils } from '~/utils/editUtils'
+
+const searchPattern = 'race'
+// current dto item
+const cDtoItem = ref<RaceResultDtoItem>(new RaceResultDtoItem())
+const dto: any = useAttrs().dto
+dto.params = cDtoItem
+
+const isLoading = ref<boolean>(true)
+
+const constant: ConstantValue = constantUtils().get()
+const typeColorUtils: TypeColorUtils = new TypeColorUtils(constant.TYPE)
+
+const init = async () => {
+  // route.queryからsearchParamsを復元
+  cDtoItem.value.searchParams = searchCommon()
+    .restoreSearchParams(useRoute().query, RaceResultSearchParams)
+  // dtoStoreからresDataを復元
+  const rd: RaceResponse | null = searchCommon().restoreResData() as RaceResponse
+
+  if (rd) {
+    cDtoItem.value.resData = rd
+  } else {
+    // 存在しない場合は取得する
+    // 入力チェック不要
+    const ret = await get(cDtoItem.value.searchParams)
+    if (!ret) { return }
+    cDtoItem.value.resData = ret
+  }
+
+  isLoading.value = !cDtoItem.value.resData
+}
+
+await init()
+
+interface StatsValue {
+  title: string,
+  value: number,
+  stats: Array<number>,
+  color: { r: number, g: number, b: number }
+}
+// RadarGraph横のやつと、LineGraphを表示するための連想配列
+const statsDic = computed((): Record<string, Array<StatsValue>> => {
+  const goPokedex: GoPokedex = cDtoItem.value.resData.race.goPokedex
+  const goStats: GoPokedexStats = cDtoItem.value.resData.statistics.goPokedexStats
+  const dic = {
+    goStatsItems: [] as Array<StatsValue>,
+    oriStatsItems: [] as Array<StatsValue>
+  }
+
+  const goStatsItems: Array<StatsValue> = [
+    { title: 'HP', value: goPokedex.hp, stats: goStats.goHpStats.list, color: { r: 0, g: 0, b: 255 } },
+    { title: 'こうげき', value: goPokedex.attack, stats: goStats.goAtStats.list, color: { r: 255, g: 0, b: 0 } },
+    { title: 'ぼうぎょ', value: goPokedex.defense, stats: goStats.goDfStats.list, color: { r: 0, g: 255, b: 0 } }
+  ]
+  dic.goStatsItems.push(...goStatsItems)
+
+  const pokedex: Pokedex | null | undefined = cDtoItem.value.resData.race.pokedex
+  const pokeStats: PokedexStats = cDtoItem.value.resData.statistics.pokedexStats
+  if (!pokedex) {
+    // アーマードミュウツー等、ポケモンGOにのみ存在するポケモンの場合
+    return dic
+  }
+  const oriStatsItems: Array<StatsValue> = [
+    { title: 'HP', value: pokedex.hp, stats: pokeStats.hpStats.list, color: { r: 0, g: 0, b: 255 } },
+    { title: 'こうげき', value: pokedex.attack, stats: pokeStats.atStats.list, color: { r: 255, g: 0, b: 0 } },
+    { title: 'ぼうぎょ', value: pokedex.defense, stats: pokeStats.dfStats.list, color: { r: 0, g: 255, b: 0 } },
+    { title: 'とくこう', value: pokedex.specialAttack, stats: pokeStats.spAtStats.list, color: { r: 255, g: 20, b: 147 } },
+    { title: 'とくぼう', value: pokedex.specialDefense, stats: pokeStats.spDfStats.list, color: { r: 255, g: 255, b: 0 } },
+    { title: 'すばやさ', value: pokedex.speed, stats: pokeStats.spStats.list, color: { r: 199, g: 21, b: 133 } }
+  ]
+  dic.oriStatsItems.push(...oriStatsItems)
+
+  return dic
+})
+
+// Header
+const thisPath = useRuntimeConfig().public.url + useRoute().path
+const staticUrl = useRuntimeConfig().public.staticUrl
+const metaObject = computed((): MetaObject => {
+  const pokeName = cDtoItem.value.resData.name || ''
+  const pokeImage = cDtoItem.value.resData.image || '/pokego/peripper-eyes.png'
+  return {
+    title: `${pokeName}の種族値`,
+    meta: [
+      { property: 'og:type', content: 'article' },
+      { property: 'og:title', content: `${pokeName}の種族値 - ペリずかん` },
+      { property: 'og:url', content: thisPath },
+      { property: 'og:site_name', content: 'ペリずかん' },
+      { property: 'og:description', content: `${pokeName}の種族値を確認できます。` },
+      { property: 'og:image', content: staticUrl + pokeImage }
+    ]
+  }
+})
+useHead(metaObject)
+</script>
+
+<style>
+.stats {
+  vertical-align: middle;
+  margin: auto;
+}
+</style>
