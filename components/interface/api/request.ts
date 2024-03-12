@@ -34,22 +34,4 @@ export class ResearchRequest {
     this.negaGen = false
     this.enableCount = false
   }
-
-  clear () {
-    this.type1 = ''
-    this.type2 = ''
-    this.finEvo = false
-    this.negaFinEvo = false
-    this.mega = false
-    this.negaMega = false
-    this.impled = false
-    this.negaImpled = false
-    this.tooStrong = false
-    this.negaTooStrong = false
-    this.region = []
-    this.negaRegion = false
-    this.gen = []
-    this.negaGen = false
-    this.enableCount = false
-  }
 }

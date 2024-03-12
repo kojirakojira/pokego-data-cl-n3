@@ -48,7 +48,7 @@
         <v-switch
           v-model="(searchParams as ResearchRequest).finEvo"
           inset
-          dense
+          color="info"
           hide-details
           prepend-icon="mdi-filter-multiple"
           :label="(searchParams as ResearchRequest).finEvo ? 'filter' : 'not filter'"
@@ -61,7 +61,7 @@
         <v-switch
           v-model="(searchParams as ResearchRequest).negaFinEvo"
           inset
-          dense
+          color="info"
           hide-details
           prepend-icon="mdi-not-equal"
           :disabled="!(searchParams as ResearchRequest).finEvo"
@@ -82,7 +82,7 @@
         <v-switch
           v-model="(searchParams as ResearchRequest).mega"
           inset
-          dense
+          color="info"
           hide-details
           prepend-icon="mdi-filter-multiple"
           :label="(searchParams as ResearchRequest).mega ? 'filter' : 'not filter'"
@@ -95,7 +95,7 @@
         <v-switch
           v-model="(searchParams as ResearchRequest).negaMega"
           inset
-          dense
+          color="info"
           hide-details
           prepend-icon="mdi-not-equal"
           :disabled="!(searchParams as ResearchRequest).mega"
@@ -116,7 +116,7 @@
         <v-switch
           v-model="(searchParams as ResearchRequest).impled"
           inset
-          dense
+          color="info"
           hide-details
           prepend-icon="mdi-filter-multiple"
           :label="(searchParams as ResearchRequest).impled ? 'filter' : 'not filter'"
@@ -129,7 +129,7 @@
         <v-switch
           v-model="(searchParams as ResearchRequest).negaImpled"
           inset
-          dense
+          color="info"
           hide-details
           prepend-icon="mdi-not-equal"
           :disabled="!(searchParams as ResearchRequest).impled"
@@ -150,7 +150,7 @@
         <v-switch
           v-model="(searchParams as ResearchRequest).tooStrong"
           inset
-          dense
+          color="info"
           hide-details
           prepend-icon="mdi-filter-multiple"
           :label="(searchParams as ResearchRequest).tooStrong ? 'filter' : 'not filter'"
@@ -163,7 +163,7 @@
         <v-switch
           v-model="(searchParams as ResearchRequest).negaTooStrong"
           inset
-          dense
+          color="info"
           hide-details
           prepend-icon="mdi-not-equal"
           :disabled="!(searchParams as ResearchRequest).tooStrong"
@@ -198,7 +198,7 @@
         <v-switch
           v-model="(searchParams as ResearchRequest).negaRegion"
           inset
-          dense
+          color="info"
           hide-details
           prepend-icon="mdi-not-equal"
           :disabled="!(searchParams as ResearchRequest).region.length"
@@ -233,7 +233,7 @@
         <v-switch
           v-model="(searchParams as ResearchRequest).negaGen"
           inset
-          dense
+          color="info"
           hide-details
           prepend-icon="mdi-not-equal"
           :disabled="!(searchParams as ResearchRequest).gen.length"

@@ -4,13 +4,21 @@
       {{ searchCommon().getSearchPatternName(searchPattern) }}
     </MajorPartsH2Common>
     <div v-if="!isLoading">
-      <SearchInputFilteredItems :items="cDtoItem.resData.filteredItems" />
       <v-container>
+        <v-row v-if="cDtoItem.resData.filteredItems.length">
+          <v-col align="center">
+            <SearchInputFilteredItems
+              :items="cDtoItem.resData.filteredItems"
+              :title-style="cDtoItem.resData.included ? '' : 'background-color: yellow;'"
+            />
+            <span v-if="!cDtoItem.resData.included" class="caption">{{ '※' + cDtoItem.resData.message }}</span>
+          </v-col>
+        </v-row>
         <v-row>
           <v-col>
             <v-card max-width="500px" class="searched-items">
               <v-card-title class="d-block pa-2 searched-params-title">
-                検索条件
+                検索対象
               </v-card-title>
               <v-card-text class="caption text-left py-1">
                 <v-container>
@@ -53,15 +61,9 @@
                   <v-row class="searched-param">
                     <v-col cols="7" md="6" lg="6" xl="6" class="pa-1">
                       強ポケ補正
-                      <v-tooltip bottom>
-                        <template #activator="{ props }">
-                          <v-icon v-bind="props" small>
-                            mdi-help-circle
-                          </v-icon>
-                        </template>
-                        <span>ポケモンGOの種族値は、原作の種族値から一定の変換式で算出されます。
-                          種族値が高すぎる一部のポケモンは算出された種族値から×0.91されます。</span>
-                      </v-tooltip>
+                      <SearchInputHelpMsg>
+                        ポケモンGOの種族値は、原作の種族値から一定の変換式で算出されます。種族値が高すぎる一部のポケモンは算出された種族値から×0.91されます。
+                      </SearchInputHelpMsg>
                     </v-col>
                     <v-col cols="5" md="6" lg="6" xl="6" class="pa-1">
                       <span v-if="cDtoItem.resData.tooStrong" class="red--text">対象</span>
@@ -85,17 +87,9 @@
       </v-container>
       <h3>
         GO種族値
-        <v-tooltip bottom>
-          <template #activator="{ props }">
-            <v-icon
-              small
-              v-bind="props"
-            >
-              mdi-help-circle
-            </v-icon>
-          </template>
-          <span>各ステータスの順位を基準として表示しています。そうです。この世の中は相対評価なのです。</span>
-        </v-tooltip>
+        <SearchInputHelpMsg>
+          各ステータスの順位を基準として表示しています。そうです。この世の中は相対評価なのです。
+        </SearchInputHelpMsg>
       </h3>
       <v-container>
         <v-row>
@@ -130,17 +124,9 @@
       </v-container>
       <h3>
         原作種族値
-        <v-tooltip>
-          <template #activator="{ props }">
-            <v-icon
-              small
-              v-bind="props"
-            >
-              mdi-help-circle
-            </v-icon>
-          </template>
-          <span>各ステータスの順位を基準として表示しています。そうです。この世の中は相対評価なのです。</span>
-        </v-tooltip>
+        <SearchInputHelpMsg>
+          各ステータスの順位を基準として表示しています。そうです。この世の中は相対評価なのです。
+        </SearchInputHelpMsg>
       </h3>
       <v-container v-if="cDtoItem.resData.race.pokedex">
         <v-row>

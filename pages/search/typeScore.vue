@@ -47,7 +47,7 @@
             <v-col cols="12" md="8" lg="8" xl="8">
               <v-select
                 v-model="cDtoItem.searchParams.type1"
-                :items="constantUtils().value.TYPE"
+                :items="constant.TYPE"
                 item-value="type"
                 item-title="jpn"
                 label="タイプ1を入力"
@@ -61,7 +61,7 @@
             <v-col cols="12" md="8" lg="8" xl="8">
               <v-select
                 v-model="cDtoItem.searchParams.type2"
-                :items="constantUtils().value.TYPE"
+                :items="constant.TYPE"
                 item-value="type"
                 item-title="jpn"
                 label="タイプ2を入力"
@@ -117,6 +117,8 @@ dto.params = cDtoItem
 
 const isLoading = ref<boolean>(false)
 const isSearchBtnClick = ref<boolean>(false)
+
+const constant: ConstantValue = constantUtils().get()
 
 // created: 画面を復元する
 searchCommon().restoreSearchScreen(['searchParams', 'resData'], cDtoItem.value)

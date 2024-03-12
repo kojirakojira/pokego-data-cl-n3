@@ -44,14 +44,9 @@
             <div class="optional-mark">
               <span>任意</span>
             </div>
-            <v-tooltip bottom>
-              <template #activator="{ props }">
-                <v-icon v-bind="props" size="small">
-                  mdi-help-circle
-                </v-icon>
-              </template>
-              <span>入力すると、進化後のCPもいっしょに調べることができます。</span>
-            </v-tooltip>
+            <SearchInputHelpMsg>
+              入力すると、進化後のCPもいっしょに調べることができます。
+            </SearchInputHelpMsg>
           </v-col>
           <v-col cols="12" md="8" lg="8" xl="8">
             <v-text-field

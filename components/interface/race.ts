@@ -10,6 +10,7 @@ export class RaceResponse extends ResearchResponse {
   statistics: PokemonStatisticsInfo
   tooStrong: boolean
   filteredItems: Array<DispFilterParam>
+  included: boolean
 
   constructor () {
     super()
@@ -17,6 +18,7 @@ export class RaceResponse extends ResearchResponse {
     this.statistics = new PokemonStatisticsInfo()
     this.tooStrong = false
     this.filteredItems = []
+    this.included = true
   }
 }
 /**

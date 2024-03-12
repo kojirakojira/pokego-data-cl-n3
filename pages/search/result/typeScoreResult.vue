@@ -19,17 +19,9 @@
       </v-container>
       <h3>
         評価
-        <v-tooltip bottom>
-          <template #activator="{ props }">
-            <v-icon
-              small
-              v-bind="props"
-            >
-              mdi-help-circle
-            </v-icon>
-          </template>
-          <span>有利・不利タイプの数から加点・減点し、タイプごとの評価を算出しています。</span>
-        </v-tooltip>
+        <SearchInputHelpMsg>
+          有利・不利タイプの数から加点・減点し、タイプごとの評価を算出しています。
+        </SearchInputHelpMsg>
       </h3>
       <v-container>
         <v-row>
@@ -120,18 +112,12 @@
         </v-row>
       </v-container>
       <!-- こうげき倍率 -->
-      <v-tooltip bottom>
-        <template #activator="{ props }">
-          <h3 v-bind="props">
-            こうげき倍率
-            <v-icon small>
-              mdi-help-circle
-            </v-icon>
-          </h3>
-        </template>
-        <span>ポケモンGOにおけるダメージ倍率は、ポケモンの原作のシリーズとは少し違った考え方です。
-          しかし、こうげき時のダメージ倍率の考え方はほぼ同じであり、×1.6は抜群、×0.625は軽減、×0.390625は無効に対応します。また、タイプ一致のダメージ倍率は×1.2です。</span>
-      </v-tooltip>
+      <h3>
+        こうげき倍率
+        <SearchInputHelpMsg>
+          ポケモンGOでは、効果抜群は×1.6、軽減は×0.625、無効は×0.390625です。タイプ一致のダメージ倍率は×1.2です。
+        </SearchInputHelpMsg>
+      </h3>
       <SearchTypeAtkDmgMult
         :type1="cDtoItem.searchParams.type1"
         :type2="cDtoItem.searchParams.type2"

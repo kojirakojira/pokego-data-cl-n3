@@ -2,13 +2,13 @@
   <div>
     <div class="pa-3">
       タイプ1:
-      <span :style="`background-color: ${editUtils().getRGB(type1)};'}`" class="type">
-        {{ constantUtils().getTypeJpn(type1) }}
+      <span :style="`background-color: ${typeColorUtils.getRGB(type1)};'}`" class="type">
+        {{ constantAccessor.getTypeJpn(type1) }}
       </span>
       <div v-if="type2">
         タイプ2:
-        <span :style="`background-color: ${editUtils().getRGB(type2)};'}`" class="type">
-          {{ constantUtils().getTypeJpn(type2) }}
+        <span :style="`background-color: ${typeColorUtils.getRGB(type2)};'}`" class="type">
+          {{ constantAccessor.getTypeJpn(type2) }}
         </span>
       </div>
     </div>
@@ -22,6 +22,8 @@
 </template>
 
 <script setup lang="ts">
+import { TypeColorUtils, ConstantAccessor } from '#imports'
+
 withDefaults(
   defineProps<{
     type1: string,
@@ -30,4 +32,8 @@ withDefaults(
    }>(),
   { type2: '' }
 )
+
+const constant: ConstantValue = constantUtils().get()
+const constantAccessor: ConstantAccessor = new ConstantAccessor(constant)
+const typeColorUtils: TypeColorUtils = new TypeColorUtils(constant.TYPE)
 </script>

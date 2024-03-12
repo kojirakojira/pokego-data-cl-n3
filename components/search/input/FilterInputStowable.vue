@@ -16,17 +16,9 @@
           </v-icon>
           <span class="caption">絞り込む</span>
         </v-btn>
-        <v-tooltip v-if="helpMessage" bottom>
-          <template #activator="{ props }">
-            <v-icon
-              small
-              v-bind="props"
-            >
-              mdi-help-circle
-            </v-icon>
-          </template>
-          <span>{{ helpMessage }}</span>
-        </v-tooltip>
+        <SearchInputHelpMsg v-if="helpMessage">
+          {{ helpMessage }}
+        </SearchInputHelpMsg>
       </v-col>
       <v-col cols="4" align="right">
         <v-btn
@@ -68,7 +60,7 @@ withDefaults(
   { isSearchBtnClick: false, helpMessage: '' })
 
 const clear = () => {
-  (searchParams.value as ResearchRequest).clear()
+  searchParams.value = new ResearchRequest()
 }
 
 const emit = defineEmits<{(e: 'showArea'): void, (e: 'click'): void}>()

@@ -292,6 +292,9 @@ export default () => {
   const makeQuery = (pid: string | null | undefined, searchParams: Record<string, any>) => {
     const query: Record<string, any> = {}
     for (const [k, v] of Object.entries(searchParams)) {
+      if (!v) {
+        continue
+      }
       if (query[k]) {
         // queryパラメータにキーが重複している場合は、配列を表現している。
         if (Array.isArray(query[k])) {
