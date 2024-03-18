@@ -1,16 +1,20 @@
 import { PokemonSearchResult } from './dto'
 
-export interface Response extends ResData {
-    success: boolean,
-    message: string,
-    msgLevel: string
+export type MsgLevel = 'info' | 'warn' | 'error'
+
+export class Response implements ResData {
+  success: boolean
+  message: string
+  msgLevel: MsgLevel
+
+  constructor () {
+    this.success = false
+    this.message = ''
+    this.msgLevel = 'info'
+  }
 }
 
-export class ResearchResponse implements Response {
-  success = false
-  message = ''
-  msgLevel = ''
-
+export class ResearchResponse extends Response {
   pokemonSearchResult: PokemonSearchResult
   pokedexId: string
   name: string
@@ -18,6 +22,7 @@ export class ResearchResponse implements Response {
   remarks: string
 
   constructor () {
+    super()
     this.pokemonSearchResult = new PokemonSearchResult()
     this.pokedexId = ''
     this.name = ''

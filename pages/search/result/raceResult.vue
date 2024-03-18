@@ -94,7 +94,7 @@
       <v-container>
         <v-row>
           <v-col cols="12" md="6" lg="6" xl="6" align="right">
-            <GraphGoRadarGraph
+            <GraphRaceGoRadarGraph
               :race="cDtoItem.resData.race"
               :go-pokedex-stats="cDtoItem.resData.statistics.goPokedexStats"
             />
@@ -131,7 +131,7 @@
       <v-container v-if="cDtoItem.resData.race.pokedex">
         <v-row>
           <v-col cols="12" md="6" lg="6" xl="6" align="right">
-            <GraphOriRadarGraph
+            <GraphRaceOriRadarGraph
               :race="cDtoItem.resData.race"
               :pokedex-stats="cDtoItem.resData.statistics.pokedexStats"
             />

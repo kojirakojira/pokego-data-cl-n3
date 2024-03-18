@@ -1,3 +1,5 @@
+import type { MsgLevel } from './response'
+
 /**
  * API側で定義したDTO、Response等を表現するインターフェース
  */
@@ -43,6 +45,43 @@ export interface Pokedex {
   gen: string,
   implFlg: boolean
 }
+
+export class PokemonSearchResult {
+  message: string
+  msgLevel: MsgLevel
+  unique: boolean
+  goPokedexList: Array<GoPokedex>
+  goPokedex: GoPokedex
+  maybe: boolean
+  hit: boolean
+  searched: boolean
+
+  constructor () {
+    this.message = ''
+    this.msgLevel = 'info'
+    this.unique = false
+    this.goPokedexList = []
+    this.goPokedex = new GoPokedex()
+    this.maybe = false
+    this.hit = false
+    this.searched = false
+  }
+}
+
+export class MultiSearchResult {
+  message: string
+  msgLevel: MsgLevel
+  allUnique: boolean
+  psrArr: Array<PokemonSearchResult>
+
+  constructor () {
+    this.message = ''
+    this.msgLevel = 'info'
+    this.allUnique = false
+    this.psrArr = []
+  }
+}
+
 export class ScpRank {
   league: string
   rank: number
@@ -155,28 +194,6 @@ export class VersatilityIv {
     this.ivd = 0
     this.ivh = 0
     this.percent = 0
-  }
-}
-
-export class PokemonSearchResult {
-  message: string
-  msgLevel: string
-  unique: boolean
-  goPokedexList: Array<GoPokedex>
-  goPokedex: GoPokedex
-  maybe: boolean
-  hit: boolean
-  searched: boolean
-
-  constructor () {
-    this.message = ''
-    this.msgLevel = ''
-    this.unique = false
-    this.goPokedexList = []
-    this.goPokedex = new GoPokedex()
-    this.maybe = false
-    this.hit = false
-    this.searched = false
   }
 }
 

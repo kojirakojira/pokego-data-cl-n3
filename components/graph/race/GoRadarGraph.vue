@@ -10,8 +10,8 @@
 </template>
 
 <script setup lang="ts">
-import type { GoPokedexStats, Race } from '../interface/api/dto'
-import { reverseRank } from './graphCommon'
+import type { GoPokedexStats, Race } from '~/components/interface/api/dto'
+import { reverseRank } from '~/components/graph/graphCommon'
 
 const props = withDefaults(
   defineProps<{

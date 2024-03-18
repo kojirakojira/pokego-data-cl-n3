@@ -26,7 +26,7 @@
               @click="emit('clickRow', p.pokedexId)"
             >
               <v-list-item-title>
-                <v-avatar :image="p.image ? p.image : editUtils().getUrl('/img/no-image.png')" />
+                <v-avatar :image="editUtils().getPokemonImageUrl(p.image)" />
                 {{ editUtils().appendRemarks(p.name, p.remarks) }}
               </v-list-item-title>
             </v-list-item>

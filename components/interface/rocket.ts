@@ -83,7 +83,7 @@ export const get = async (
     query: searchParams
   })
   const rd: RocketResponse | null = res.data as RocketResponse
-  if (!searchCommon().pushToast(rd?.message, rd?.msgLevel)) {
+  if (!searchCommon().handleApiMessage(rd)) {
     return
   }
   return rd

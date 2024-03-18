@@ -7,7 +7,8 @@ import {
 import { toastStore } from '~/stores/toastStore'
 // import { historyStore, ScreenInfo } from '~/stores/historyStore'
 import { dtoStore, type ScreenInfo } from '~/stores/dtoStore'
-import type { Response, ResearchResponse } from '~/components/interface/api/response'
+import type { Response, ResearchResponse, MsgLevel } from '~/components/interface/api/response'
+import type { ResearchRequest } from '~/components/interface/api/request'
 
 export interface ResData extends Record<string, any> {}
 /**
@@ -175,36 +176,18 @@ export default () => {
   }
 
   /**
-   * ダイアログを表示する。
-   * resData.msgLevelが'error'の場合はfalseを返却する。
-   *
-   * @param {Object} resData
-   * @returns
-   */
-  const dispDialog = (resData: {
-    message: string,
-    msgLevel: string
-  }) => {
-    let success = true
-    if (resData.message) {
-      // メッセージがある場合はalertで表示する。
-      alert(resData.message)
-    }
-    if (resData.msgLevel === 'error') {
-      // errorの場合は画面を描画せず前画面に戻す。
-      useRouter().back()
-      success = false
-    }
-    return success
-  }
-  /**
-   * メッセージ(msg)が存在する場合、トーストを表示する。
-   * メッセージレベルがerrorの場合はfalseを返却する。（第2引数は省略可能）
+   * メッセージ(msg)が存在する場合、トーストを表示させる。
+   * メッセージレベルがerrorの場合はfalseを返却する。（第3引数は省略可能）
    *
    * @param msg
    * @param msgLevel
+   * @param isSearchBtnClick
    */
-  const pushToast = (msg: string, msgLevel: string, isSearchBtnClick?: Ref<boolean>) => {
+  const resErrHandle = (
+    msg: string | undefined,
+    msgLevel: MsgLevel | undefined,
+    isSearchBtnClick?: Ref<boolean>
+  ) => {
     let success = true
     if (msg) {
       toastStore().pushToast({ msg })
@@ -229,7 +212,7 @@ export default () => {
       throw createError({ statusCode: 500, message: 'An error occurred.', fatal: true })
     }
     // 個別機能由来のメッセージ
-    let success = pushToast(
+    let success = resErrHandle(
       resData.message,
       resData.msgLevel)
     if (!success) {
@@ -239,7 +222,7 @@ export default () => {
 
     // 検索機能由来のメッセージ（ResearchResponse継承の場合のみ）
     if ('pokemonSearchResult' in resData && resData.pokemonSearchResult) {
-      const searchSuccess = pushToast(
+      const searchSuccess = resErrHandle(
         resData.pokemonSearchResult.message,
         resData.pokemonSearchResult.msgLevel)
       if (!searchSuccess) {
@@ -257,7 +240,7 @@ export default () => {
   const clickRowResultList = (
     pid: string | null | undefined,
     searchPattern: string,
-    searchParams: Record<string, any>
+    searchParams: ResearchRequest
   ): void => {
     if (!pid) { return }
     // 遷移後の画面のqueryを作成する
@@ -289,7 +272,7 @@ export default () => {
    * 遷移前の画面のクエリからnameを削除。pidを追加して返却する。
    *
    */
-  const makeQuery = (pid: string | null | undefined, searchParams: Record<string, any>) => {
+  const makeQuery = (pid: string | null | undefined, searchParams: ResearchRequest) => {
     const query: Record<string, any> = {}
     for (const [k, v] of Object.entries(searchParams)) {
       if (!v) {
@@ -399,8 +382,7 @@ export default () => {
     restoreSearchScreen,
     restoreResData,
     getSearchPatternName,
-    dispDialog,
-    pushToast,
+    resErrHandle,
     handleApiMessage,
     clickRowResultList,
     convQuery,
