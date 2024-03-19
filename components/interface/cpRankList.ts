@@ -1,4 +1,5 @@
 import { CpRank, GoPokedex } from './api/dto'
+import { ResearchRequest } from './api/request'
 import { ResearchResponse } from './api/response'
 
 /**
@@ -17,10 +18,11 @@ export class CpRankListResponse extends ResearchResponse {
 /**
  * 検索画面用クエリパラメータの定義
  */
-export class CpRankListSearchParams {
+export class CpRankListSearchParams extends ResearchRequest {
   name: string
 
   constructor () {
+    super()
     this.name = ''
   }
 }

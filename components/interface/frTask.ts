@@ -1,4 +1,5 @@
 import { GoPokedex } from './api/dto'
+import { ResearchRequest } from './api/request'
 import { ResearchResponse } from './api/response'
 
 /**
@@ -23,10 +24,11 @@ export class FRTaskResponse extends ResearchResponse {
 /**
  * 検索画面用クエリパラメータの定義
  */
-export class FRTaskSearchParams {
+export class FRTaskSearchParams extends ResearchRequest {
   name: string
 
   constructor () {
+    super()
     this.name = ''
   }
 }

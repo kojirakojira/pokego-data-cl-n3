@@ -1,4 +1,5 @@
 import { type Hierarchy, type Race } from './api/dto'
+import { ResearchRequest } from './api/request'
 import { ResearchResponse } from './api/response'
 
 /**
@@ -25,10 +26,11 @@ export class EvolutionResponse extends ResearchResponse {
 /**
  * 検索画面用クエリパラメータの定義
  */
-export class EvolutionSearchParams {
+export class EvolutionSearchParams extends ResearchRequest {
   name: string
 
   constructor () {
+    super()
     this.name = ''
   }
 }

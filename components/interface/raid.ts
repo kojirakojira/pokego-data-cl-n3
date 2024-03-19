@@ -1,4 +1,5 @@
 import { GoPokedex } from './api/dto'
+import { ResearchRequest } from './api/request'
 import { ResearchResponse } from './api/response'
 
 /**
@@ -27,11 +28,12 @@ export class RaidResponse extends ResearchResponse {
 /**
  * 検索画面用クエリパラメータの定義
  */
-export class RaidSearchParams {
+export class RaidSearchParams extends ResearchRequest {
   name: string
   shadow: boolean
 
   constructor () {
+    super()
     this.name = ''
     this.shadow = false
   }

@@ -1,3 +1,4 @@
+import { ResearchRequest } from './api/request'
 import { ResearchResponse } from './api/response'
 
 /**
@@ -32,13 +33,14 @@ export class TypeScoreResponse extends ResearchResponse {
 /**
  * 検索画面用クエリパラメータの定義
  */
-export class TypeScoreSearchParams {
+export class TypeScoreSearchParams extends ResearchRequest {
   type1: string
   type2: string
   name: string
   isPoke: boolean
 
   constructor () {
+    super()
     this.type1 = ''
     this.type2 = ''
     this.name = ''

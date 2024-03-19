@@ -1,4 +1,5 @@
 import { ScpRank } from './api/dto'
+import { ResearchRequest } from './api/request'
 import { ResearchResponse } from './api/response'
 
 /**
@@ -19,11 +20,12 @@ export class ScpRankResponse extends ResearchResponse {
 /**
  * 検索画面用クエリパラメータの定義
  */
-export class ScpRankSearchParams {
+export class ScpRankSearchParams extends ResearchRequest {
   name: string
   iv: string
 
   constructor () {
+    super()
     this.name = ''
     this.iv = ''
   }

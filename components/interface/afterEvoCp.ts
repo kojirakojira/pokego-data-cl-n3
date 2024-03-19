@@ -1,4 +1,5 @@
 import { GoPokedex, type GoPokedexAndCp } from './api/dto'
+import { ResearchRequest } from './api/request'
 import { ResearchResponse } from './api/response'
 
 /**
@@ -29,12 +30,13 @@ export class AfterEvoCpResponse extends ResearchResponse {
 /**
  * 検索画面用クエリパラメータの定義
  */
-export class AfterEvoCpSearchParams {
+export class AfterEvoCpSearchParams extends ResearchRequest {
   name: string
   iv: string
   cp: string
 
   constructor () {
+    super()
     this.name = ''
     this.iv = ''
     this.cp = ''

@@ -1,4 +1,5 @@
 import { VersatilityIv } from './api/dto'
+import { ResearchRequest } from './api/request'
 import { ResearchResponse } from './api/response'
 
 /**
@@ -21,13 +22,14 @@ export class CpIvResponse extends ResearchResponse {
 /**
  * 検索画面用クエリパラメータの定義
  */
-export class CpIvSearchParams {
+export class CpIvSearchParams extends ResearchRequest {
   name: string
   situation: string
   cp: string
   wbFlg: boolean
 
   constructor () {
+    super()
     this.name = ''
     this.situation = ''
     this.cp = ''

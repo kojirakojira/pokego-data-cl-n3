@@ -1,4 +1,5 @@
 import { VersatilityIv } from './api/dto'
+import { ResearchRequest } from './api/request'
 import { ResearchResponse } from './api/response'
 
 /**
@@ -19,12 +20,13 @@ export class ThreeGalarBirdsResponse extends ResearchResponse {
 /**
  * 検索画面用クエリパラメータの定義
  */
-export class ThreeGalarBirdsSearchParams {
+export class ThreeGalarBirdsSearchParams extends ResearchRequest {
   name: string
   cp: string
   wbFlg: boolean
 
   constructor () {
+    super()
     this.name = ''
     this.cp = ''
     this.wbFlg = false

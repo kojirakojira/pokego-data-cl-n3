@@ -269,12 +269,25 @@ export default () => {
 
   /**
    * Result画面用のquery（連想配列）を作成する。
-   * 遷移前の画面のクエリからnameを削除。pidを追加して返却する。
-   *
+   * 使用方法は2パターンある。
+   * ①：makeQuery(string | null | undefined, ResearchRequest)
+   *  →遷移前の画面のクエリからnameを削除。pidを追加して返却する。
+   * ②：makeQuery(Record<string, any>)
    */
-  const makeQuery = (pid: string | null | undefined, searchParams: ResearchRequest) => {
+  const makeQuery = (arg1: string | null | undefined | Object, searchParams?: ResearchRequest) => {
+    let pid: string | null | undefined = null
+    let queryParams: Record<string, any> = {}
+    if (arg1 && typeof arg1 !== 'string') {
+      queryParams = arg1
+    } else if (searchParams) {
+      queryParams = searchParams
+      pid = arg1
+    } else {
+      throw createError({ statusCode: 500, message: 'An error occurred.', fatal: true })
+    }
+
     const query: Record<string, any> = {}
-    for (const [k, v] of Object.entries(searchParams)) {
+    for (const [k, v] of Object.entries(queryParams)) {
       if (!v) {
         continue
       }

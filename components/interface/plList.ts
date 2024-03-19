@@ -1,4 +1,5 @@
 import { type PlCp } from './api/dto'
+import { ResearchRequest } from './api/request'
 import { ResearchResponse } from './api/response'
 
 /**
@@ -21,11 +22,12 @@ export class PlListResponse extends ResearchResponse {
 /**
  * 検索画面用クエリパラメータの定義
  */
-export class PlListSearchParams {
+export class PlListSearchParams extends ResearchRequest {
   name: string
   iv: string
 
   constructor () {
+    super()
     this.name = ''
     this.iv = ''
   }

@@ -193,7 +193,7 @@ const handleApiResult = (rd: XTypeResponse) => {
     cDtoItem.value.resData = rd
     useRouter().push({
       name: 'search-result-xTypeResult',
-      query: searchCommon().makeQuery(null, cDtoItem.value.searchParams)
+      query: searchCommon().makeQuery(cDtoItem.value.searchParams)
     })
   }
 }
