@@ -87,7 +87,7 @@
 </template>
 
 <script setup lang="ts">
-// import type { MetaObject } from 'nuxt/schema'
+import type { MetaObject } from 'nuxt/schema'
 import { TypeColorUtils } from '~/utils/editUtils'
 import { ConstantAccessor } from '~/utils/constantUtils'
 import {
@@ -155,23 +155,23 @@ const dispMethods = () => {
 
 await screenControlMethods().init()
 
-// Header
-// const thisPath = useRuntimeConfig().public.url + useRoute().path
-// const staticUrl = useRuntimeConfig().public.staticUrl
-// const metaObject = computed((): MetaObject => {
-//   const pokeName = cDtoItem.value.resData.name || ''
-//   const pokeImage = cDtoItem.value.resData.image || '/pokego/peripper-eyes.png'
-//   return {
-//     title: `${pokeName}のタマゴCP`,
-//     meta: [
-//       { property: 'og:type', content: 'article' },
-//       { property: 'og:title', content: `${pokeName}のタマゴCP - ペリずかん` },
-//       { property: 'og:url', content: thisPath },
-//       { property: 'og:site_name', content: 'ペリずかん' },
-//       { property: 'og:description', content: `${pokeName}のCPを確認できます。` },
-//       { property: 'og:image', content: staticUrl + pokeImage }
-//     ]
-//   }
-// })
-// useHead(metaObject)
-// </script>
+/**
+ * Header
+ */
+const thisPath = useRuntimeConfig().public.url + useRoute().path
+const staticUrl = useRuntimeConfig().public.staticUrl
+const metaObject = computed((): MetaObject => {
+  return {
+    title: searchCommon().getSearchPatternName(searchPattern),
+    meta: [
+      { property: 'og:type', content: 'article' },
+      { property: 'og:title', content: `${searchCommon().getSearchPatternName(searchPattern)} - ペリずかん` },
+      { property: 'og:url', content: thisPath },
+      { property: 'og:site_name', content: 'ペリずかん' },
+      { property: 'og:description', content: 'タイプについての色々なランキングを確認することができます。' },
+      { property: 'og:image', content: staticUrl + staticUrl }
+    ]
+  }
+})
+useHead(metaObject)
+</script>

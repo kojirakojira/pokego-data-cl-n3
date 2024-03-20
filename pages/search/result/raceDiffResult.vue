@@ -331,10 +331,10 @@ const thisPath = useRuntimeConfig().public.url + useRoute().path
 const staticUrl = useRuntimeConfig().public.staticUrl
 const metaObject = computed((): MetaObject => {
   return {
-    title: `${searchCommon().getSearchPatternName(searchPattern)}結果`,
+    title: `${searchCommon().getSearchPatternName(searchPattern)}`,
     meta: [
       { property: 'og:type', content: 'article' },
-      { property: 'og:title', content: `${searchCommon().getSearchPatternName(searchPattern)}結果 - ペリずかん` },
+      { property: 'og:title', content: `${searchCommon().getSearchPatternName(searchPattern)} - ペリずかん` },
       { property: 'og:url', content: thisPath },
       { property: 'og:site_name', content: 'ペリずかん' },
       { property: 'og:description', content: 'ポケモンの種族値を比較し、どっちのポケモンが強いか調べることができます。' },
