@@ -156,7 +156,7 @@
                 </v-data-table>
               </div>
               <p align="right" class="subtitle-2">
-                {{ `※全ポケモン${cDtoItem.resData.statistics.goPokedexStats.goHpStats.list.length}体中(未実装、メガ、ゲンシ等含む)` }}
+                {{ `※全ポケモン${cDtoItem.resData.statistics.goPokedexStats.goHpStats.list.length}体中(メガ、ゲンシ等含む)` }}
               </p>
             </div>
           </v-col>

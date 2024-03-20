@@ -298,3 +298,9 @@ export class PokemonStatisticsInfo {
     this.goPokedexStats = new GoPokedexStats()
   }
 }
+
+export interface IroiroTypeRankElement {
+  twoTypeKey: TwoTypeKey,
+  rank: number,
+  msgs: Array<string>
+}
