@@ -30,12 +30,11 @@ export class TypeColorUtils {
    * タイプのrgba(999, 999, 999, alpha)を取得します。
    * 英語名、日本語名の両方から取得できます。
    *
-   * @param typeArr TypeInfoの配列を設定する（データはAPI側で持つため、毎回渡す必要がある。）
    * @param alpha 透明度
    * @param type1 タイプ１
    * @param type2 タイプ２
    */
-  getRGBA (alpha: number, type1: string, type2: string | null | undefined) {
+  getRGBA (alpha: number, type1: string, type2?: string | null | undefined) {
     let rgb1: Color = new Color()
     let rgb2: Color = new Color()
     for (const t of this.typeArr) {
@@ -47,6 +46,20 @@ export class TypeColorUtils {
     const g = type2 ? createColor(rgb1.g, rgb2.g) : rgb1.g
     const b = type2 ? createColor(rgb1.b, rgb2.b) : rgb1.b
     return `rgba(${r}, ${g}, ${b}, ${alpha})`
+  }
+
+  getColor (type1: string, type2?: string | null | undefined): Color {
+    let rgb1: Color = new Color()
+    let rgb2: Color = new Color()
+    for (const t of this.typeArr) {
+      if (type1 === t.jpn || type1 === t.type) { rgb1 = t.color }
+      if (type2 === t.jpn || type2 === t.type) { rgb2 = t.color }
+    }
+    const createColor = (c1: number, c2: number) => { return (c1 * 1 + c2 * 1) / 2 }
+    const r = type2 ? createColor(rgb1.r, rgb2.r) : rgb1.r
+    const g = type2 ? createColor(rgb1.g, rgb2.g) : rgb1.g
+    const b = type2 ? createColor(rgb1.b, rgb2.b) : rgb1.b
+    return { r, g, b }
   }
 
   /**

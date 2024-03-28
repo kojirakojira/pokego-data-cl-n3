@@ -40,53 +40,61 @@ const rgb = computed(() => {
   return `${props.color.r}, ${props.color.g}, ${props.color.b}`
 })
 
-const data = ref<ChartData<'radar'>>({
-  labels: props.labels,
-  datasets: [
-    {
-      backgroundColor: `rgba(${rgb.value}, 0.5)`,
-      borderColor: `rgb(${rgb.value})`,
-      pointBackgroundColor: `rgb(${rgb.value})`,
-      pointBorderColor: '#fff',
-      pointHoverBackgroundColor: '#fff',
-      pointHoverBorderColor: `rgb(${rgb.value})`,
-      data: props.dataset
-    }
-  ]
+const data = computed((): ChartData<'radar'> => {
+  return {
+    labels: props.labels,
+    datasets: [
+      {
+        backgroundColor: `rgba(${rgb.value}, 0.5)`,
+        borderColor: `rgb(${rgb.value})`,
+        pointBackgroundColor: `rgb(${rgb.value})`,
+        pointBorderColor: '#fff',
+        pointHoverBackgroundColor: '#fff',
+        pointHoverBorderColor: `rgb(${rgb.value})`,
+        data: props.dataset
+      }
+    ]
+  }
 })
-const options = ref<ChartOptions<'radar'>>({
-  plugins: {
-    title: {
-      display: true,
-      text: props.title,
-      font: { size: 18 }
-    },
-    legend: {
-      display: false
-    },
-    tooltip: {
-      callbacks: {
-        label: (arg) => {
-          const raw = arg.raw as number
-          return `${props.max - raw + 1}/${props.max}位`
+const options = computed((): ChartOptions<'radar'> => {
+  return {
+    plugins: {
+      title: {
+        display: true,
+        text: props.title,
+        font: { size: 18 }
+      },
+      legend: {
+        display: false
+      },
+      tooltip: {
+        callbacks: {
+          label: (arg) => {
+            const raw = arg.raw as number
+            return `${props.max - raw + 1}/${props.max}位`
+          }
         }
       }
-    }
-  },
-  scales: {
-    r: {
-      angleLines: {
-        display: true
-      },
-      min: props.min,
-      max: props.max,
-      ticks: {
-        stepSize: (props.max - props.min) / 4,
-        display: false
+    },
+    scales: {
+      r: {
+        angleLines: {
+          display: true
+        },
+        min: props.min,
+        max: props.max,
+        ticks: {
+          stepSize: (props.max - props.min) / 4,
+          display: false
+        }
       }
-    }
-  },
-  responsive: true,
-  maintainAspectRatio: false
+    },
+    responsive: true,
+    maintainAspectRatio: false
+  }
 })
+
+const init = () => {
+}
+init()
 </script>

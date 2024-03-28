@@ -9,14 +9,15 @@
         cols="8"
         :style="ddmIdx % 2 === 0 ? `background: ${typeColorUtils.getRGBA(0.1, defType1, defType2)}` : ''"
       >
-        <span
+        <template
           v-for="(type, idx) in atkTypeDic[ddm.name]"
           :key="`def-dmg-mult-${type}`"
-          :style="`background-color: ${typeColorUtils.getRGB(type)}; ${idx === 0 ? '': 'margin-left:5px;'}`"
-          class="type"
         >
-          {{ constantAccessor.getTypeJpn(type) }}
-        </span>
+          <SearchType
+            :type="constantAccessor.getTypeJpn(type)"
+            :style="idx === 0 ? '': 'margin-left:5px;'"
+          />
+        </template>
       </v-col>
     </v-row>
   </v-container>
@@ -47,21 +48,14 @@ const constantAccessor: ConstantAccessor = new ConstantAccessor(constant)
 const typeColorUtils: TypeColorUtils = new TypeColorUtils(constant.TYPE)
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
 .def-dmg-mult-table {
   max-width: 500px;
   margin: auto;
+  padding: 12px;
 
-  // v-rowへの適用
-  > * {
-    margin: 0px;
-
-    // v-colへの適用
-    > * {
-      padding: 4px;
-    }
-
-    > *:first-child {
+  .v-row {
+    .v-col:first-child {
       color: white;
       overflow-wrap: anywhere;
       display: grid;

@@ -5,13 +5,14 @@
     :dataset="rankArr"
     :min="0"
     :max="totalCount"
-    :color="race.color"
+    :color="typeColorUtils.getColor((race.pokedex as Pokedex).type1, (race.pokedex as Pokedex).type2)"
   />
 </template>
 
 <script setup lang="ts">
 import type { Pokedex, PokedexStats, Race } from '~/components/interface/api/dto'
 import { reverseRank } from '~/components/graph/graphCommon'
+import { TypeColorUtils } from '~/utils/editUtils'
 
 const props = withDefaults(
   defineProps<{
@@ -19,6 +20,9 @@ const props = withDefaults(
     pokedexStats: PokedexStats
   }>(),
   {})
+
+const constant: ConstantValue = constantUtils().get()
+const typeColorUtils: TypeColorUtils = new TypeColorUtils(constant.TYPE)
 
 const oriStatsItems: Array<Record<string, string>> = [
   { key: 'hp', statsKey: 'hpStats' },

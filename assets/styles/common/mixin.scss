@@ -54,9 +54,9 @@ h3 {
   border: medium solid grey;
   border-radius: 10px;
   overflow: hidden;
-  .row {
+  .v-row {
     /** "見出し列"だけに指定 */
-    .col:first-child {
+    .v-col:first-child {
       color: white;
       font-weight: bold;
       word-wrap: break-word;
@@ -64,8 +64,8 @@ h3 {
     }
   }
   /** 最後の行以外の"見出し列"だけに指定 */
-  .row:not(:last-child) {
-    .col:first-child {
+  .v-row:not(:last-child) {
+    .v-col:first-child {
       border-bottom: thin solid black;
     }
   }

@@ -8,18 +8,24 @@
       </v-col>
     </v-row>
     <v-row v-if="!isLoading" class="my-0">
-      <v-col cols="12" sm="6" md="6" lg="6" xl="6">
+      <v-col
+        :cols="prevGrid.cols"
+        :sm="prevGrid.sm"
+        :md="prevGrid.md"
+        :lg="prevGrid.lg"
+        :xl="prevGrid.xl"
+      >
         <nuxt-link v-if="prev" :to="{ name: routerLink, query: queryFunc(prev) }">
           {{ prevTextFunc(prev) }}
         </nuxt-link>
       </v-col>
       <v-col
         v-if="next"
-        cols="12"
-        sm="6"
-        md="6"
-        lg="6"
-        xl="6"
+        :cols="nextGrid.cols"
+        :sm="nextGrid.sm"
+        :md="nextGrid.md"
+        :lg="nextGrid.lg"
+        :xl="nextGrid.xl"
         align="right"
       >
         <nuxt-link :to="{ name: routerLink, query: queryFunc(next) }">
@@ -36,6 +42,7 @@
 </template>
 
 <script setup lang="ts">
+import type { Grid } from '../interface/common/layout'
 import { type GoPokedex } from '~/components/interface/api/dto'
 
 const props = withDefaults(
@@ -44,9 +51,15 @@ const props = withDefaults(
     prevTextFunc: Function,
     nextTextFunc: Function,
     routerLink: string,
-    queryFunc?: Function
+    queryFunc?: Function,
+    nextGrid?: Grid,
+    prevGrid?: Grid
    }>(),
-  { queryFunc: (gp: GoPokedex | null | undefined) => { return { pid: gp?.pokedexId } } }
+  {
+    queryFunc: (gp: GoPokedex | null | undefined) => { return { pid: gp?.pokedexId } },
+    nextGrid: () => { return { cols: 12, sm: 6, md: 6, lg: 6, xl: 6 } },
+    prevGrid: () => { return { cols: 12, sm: 6, md: 6, lg: 6, xl: 6 } }
+  }
 )
 const prev = ref<string>('')
 const next = ref<string>('')
@@ -59,7 +72,7 @@ const get = async () => {
   const rd: Record<string, any> | null = res.data
   return rd
 }
-watch(() => useRoute().fullPath, async () => {
+const refresh = async () => {
   isLoading.value = true
 
   const resData = await get()
@@ -67,6 +80,11 @@ watch(() => useRoute().fullPath, async () => {
   next.value = resData?.next
 
   isLoading.value = false
-},
-{ immediate: true })
+}
+defineExpose({
+  refresh
+})
+
+// created
+refresh()
 </script>

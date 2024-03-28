@@ -120,6 +120,31 @@ export default () => {
   }
 
   /**
+   * 現在画面の値を取得する。
+   *
+   * @param keys 取得する値のキー名
+   * @returns
+   */
+  const restoreCurrentScreen = (keys: Array<string>): Record<string, any> | null => {
+    const currentSi: ScreenInfo | null = dtoStore().currentScreenInfo()
+    // routeの取得
+    const routeName: string = useRoute().name as string
+
+    if (!(currentSi && currentSi.pathName === routeName && Object.keys(currentSi.params).length)) {
+      // currentSiがnull、または現在のrouteと違う、またはparamsが存在しない場合はnullを返す。
+      return null
+    }
+
+    const dic: Record<string, any> = {}
+    for (const [k, v] of Object.entries(currentSi.params)) {
+      if (keys.includes(k)) {
+        dic[k] = v
+      }
+    }
+    return dic
+  }
+
+  /**
    * resDataを復元する。主に結果画面を復元するために使用する。
    * dtoStoreにおける現在画面にresDataがあれば、それを返却する。（戻るボタンで戻ってきた場合）
    * 現在画面が無く、前画面にresDataがあれば、それを返却する。（画面遷移で遷移してきた場合）
@@ -394,6 +419,7 @@ export default () => {
     rules,
     restoreSearchScreen,
     restoreResData,
+    restoreCurrentScreen,
     getSearchPatternName,
     resErrHandle,
     handleApiMessage,

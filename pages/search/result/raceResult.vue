@@ -43,19 +43,12 @@
                       タイプ
                     </v-col>
                     <v-col cols="5" md="6" lg="6" xl="6" class="pa-1">
-                      <span
-                        :style="`background-color: ${typeColorUtils.getRGB(cDtoItem.resData.race.goPokedex.type1)};`"
-                        class="type"
-                      >
-                        {{ cDtoItem.resData.race.goPokedex.type1 }}
-                      </span>
-                      <span
+                      <SearchType :type="cDtoItem.resData.race.goPokedex.type1" />
+                      <SearchType
                         v-if="cDtoItem.resData.race.goPokedex.type2"
-                        :style="`background-color: ${typeColorUtils.getRGB(cDtoItem.resData.race.goPokedex.type2)}; margin-left:5px;`"
-                        class="type"
-                      >
-                        {{ cDtoItem.resData.race.goPokedex.type2 }}
-                      </span>
+                        :type="cDtoItem.resData.race.goPokedex.type2"
+                        style="margin-left:5px;"
+                      />
                     </v-col>
                   </v-row>
                   <v-row class="searched-param">
@@ -95,7 +88,7 @@
         <v-row>
           <v-col cols="12" md="6" lg="6" xl="6" align="right">
             <GraphRaceGoRadarGraph
-              :race="cDtoItem.resData.race"
+              :go-pokedex="cDtoItem.resData.race.goPokedex"
               :go-pokedex-stats="cDtoItem.resData.statistics.goPokedexStats"
             />
           </v-col>
@@ -178,7 +171,6 @@ import {
   RaceResultSearchParams,
   get
 } from '~/components/interface/race'
-import { TypeColorUtils } from '~/utils/editUtils'
 
 const searchPattern = 'race'
 // current dto item
@@ -187,9 +179,6 @@ const dto: any = useAttrs().dto
 dto.params = cDtoItem
 
 const isLoading = ref<boolean>(true)
-
-const constant: ConstantValue = constantUtils().get()
-const typeColorUtils: TypeColorUtils = new TypeColorUtils(constant.TYPE)
 
 const init = async () => {
   // route.queryからsearchParamsを復元

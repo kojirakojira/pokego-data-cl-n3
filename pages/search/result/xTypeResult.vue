@@ -18,20 +18,15 @@
                       じぶんのタイプ
                     </v-col>
                     <v-col cols="5" md="6" lg="6" xl="6" class="pa-1">
-                      <span
+                      <SearchType
                         v-if="cDtoItem.resData.own1"
-                        :style="`background-color: ${typeColorUtils.getRGB(cDtoItem.resData.own1)};'}`"
-                        class="type"
-                      >
-                        {{ toJpn(cDtoItem.resData.own1) }}
-                      </span>
-                      <span
+                        :type="toJpn(cDtoItem.resData.own1)"
+                      />
+                      <SearchType
                         v-if="cDtoItem.resData.own2"
-                        :style="`background-color: ${typeColorUtils.getRGB(cDtoItem.resData.own2)};margin-left:3px;'}`"
-                        class="type"
-                      >
-                        {{ toJpn(cDtoItem.resData.own2) }}
-                      </span>
+                        :type="toJpn(cDtoItem.resData.own2)"
+                        style="margin-left:3px;"
+                      />
                     </v-col>
                   </v-row>
                   <v-row class="searched-param">
@@ -39,20 +34,15 @@
                       あいてのタイプ
                     </v-col>
                     <v-col cols="5" md="6" lg="6" xl="6" class="pa-1">
-                      <span
+                      <SearchType
                         v-if="cDtoItem.resData.opp1"
-                        :style="`background-color: ${typeColorUtils.getRGB(cDtoItem.resData.opp1)};`"
-                        class="type"
-                      >
-                        {{ toJpn(cDtoItem.resData.opp1) }}
-                      </span>
-                      <span
+                        :type="toJpn(cDtoItem.resData.opp1)"
+                      />
+                      <SearchType
                         v-if="cDtoItem.resData.opp2"
-                        :style="`background-color: ${typeColorUtils.getRGB(cDtoItem.resData.opp2)};margin-left:3px;`"
-                        class="type"
-                      >
-                        {{ toJpn(cDtoItem.resData.opp2) }}
-                      </span>
+                        :type="toJpn(cDtoItem.resData.opp2)"
+                        style="margin-left:3px;"
+                      />
                     </v-col>
                   </v-row>
                   <v-row class="searched-param">
@@ -89,20 +79,15 @@
               items-per-page="-1"
             >
               <template #[`item.twoTypeKey`]="{ item }">
-                <span
+                <SearchType
                   v-if="item.twoTypeKey.type1"
-                  :style="`background-color: ${typeColorUtils.getRGB(item.twoTypeKey.type1)};`"
-                  class="type"
-                >
-                  {{ toJpn(item.twoTypeKey.type1) }}
-                </span>
-                <span
+                  :type="toJpn(item.twoTypeKey.type1)"
+                />
+                <SearchType
                   v-if="item.twoTypeKey.type2"
-                  :style="`background-color: ${typeColorUtils.getRGB(item.twoTypeKey.type2)}; margin-left:3px;`"
-                  class="type"
-                >
-                  {{ toJpn(item.twoTypeKey.type2) }}
-                </span>
+                  :type="toJpn(item.twoTypeKey.type2)"
+                  style="margin-left:3px;"
+                />
               </template>
               <template #[`item.atkMsgs`]="{ item }">
                 <v-list style="background-color: transparent;">

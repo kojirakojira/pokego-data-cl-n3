@@ -142,17 +142,12 @@ export class Race {
   remarks: string
   pokedex: Pokedex | null | undefined
   goPokedex: GoPokedex
-  color: Color
-  type1Color: Color
-  type2Color: Color | null | undefined
 
   constructor () {
     this.pokedexId = ''
     this.name = ''
     this.remarks = ''
     this.goPokedex = new GoPokedex()
-    this.color = new Color()
-    this.type1Color = new Color()
   }
 }
 
@@ -303,4 +298,24 @@ export interface IroiroTypeRankElement {
   twoTypeKey: TwoTypeKey,
   rank: number,
   msgs: Array<string>
+}
+
+export class CatchCp {
+  min: number
+  max: number
+  wbMin: number
+  wbMax: number
+  otherName: string
+  otherMin: number
+  otherMax: number
+
+  constructor () {
+    this.min = 0
+    this.max = 0
+    this.wbMin = 0
+    this.wbMax = 0
+    this.otherName = ''
+    this.otherMin = 0
+    this.otherMax = 0
+  }
 }

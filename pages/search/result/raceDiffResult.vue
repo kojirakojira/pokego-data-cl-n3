@@ -22,19 +22,12 @@
                 {{ editUtils().appendRemarks(race.goPokedex.name, race.goPokedex.remarks) }}
               </span>
               <div class="text-left" style="width: 10em;">
-                <span
-                  :style="`background-color: ${typeColorUtils.getRGB(race.goPokedex.type1)};`"
-                  class="type"
-                >
-                  {{ race.goPokedex.type1 }}
-                </span>
-                <span
+                <SearchType :type="race.goPokedex.type1" />
+                <SearchType
                   v-if="race.goPokedex.type2"
-                  :style="`background-color: ${typeColorUtils.getRGB(race.goPokedex.type2)}; margin-left:5px;`"
-                  class="type"
-                >
-                  {{ race.goPokedex.type2 }}
-                </span>
+                  :type="race.goPokedex.type2"
+                  style="margin-left:5px;"
+                />
               </div>
             </div>
           </v-col>
@@ -189,7 +182,7 @@ import {
   RaceDiffResultSearchParams,
   get
 } from '~/components/interface/raceDiff'
-import { TypeColorUtils } from '~/utils/editUtils'
+import { TypeColorUtils } from '#imports'
 
 const searchPattern = 'raceDiff'
 /**

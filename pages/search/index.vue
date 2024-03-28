@@ -73,8 +73,7 @@ onMounted(() => {
 })
 
 const toSelector = (key: string) => {
-  if (key === 'searchAll' ||
-    key === 'filterAll' ||
+  if (key === 'filterAll' ||
     key === 'evoCost') {
     return undefined
   }

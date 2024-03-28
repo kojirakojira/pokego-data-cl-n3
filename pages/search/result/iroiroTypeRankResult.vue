@@ -44,20 +44,15 @@
               no-results-text="該当するデータがありません。"
             >
               <template #[`item.twoTypeKey`]="{ item }">
-                <span
+                <SearchType
                   v-if="item.twoTypeKey.type1"
-                  :style="`background-color: ${typeColorUtils.getRGB(item.twoTypeKey.type1)};`"
-                  class="type"
-                >
-                  {{ constantAccessor.getTypeJpn(item.twoTypeKey.type1) }}
-                </span>
-                <span
+                  :type="constantAccessor.getTypeJpn(item.twoTypeKey.type1)"
+                />
+                <SearchType
                   v-if="item.twoTypeKey.type2"
-                  :style="`background-color: ${typeColorUtils.getRGB(item.twoTypeKey.type2)}; margin-left: 3px;`"
-                  class="type"
-                >
-                  {{ constantAccessor.getTypeJpn(item.twoTypeKey.type2) }}
-                </span>
+                  :type="constantAccessor.getTypeJpn(item.twoTypeKey.type2)"
+                  style="margin-left: 3px;"
+                />
               </template>
               <template #[`item.msgs`]="{ item }">
                 <v-list style="background-color: transparent;" dense>

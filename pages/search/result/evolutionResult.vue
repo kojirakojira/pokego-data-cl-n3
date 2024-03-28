@@ -39,6 +39,7 @@
         検索結果
       </h3>
       <SearchEvolutionEvoInfo
+        ref="evoInfoRef"
         :pid="cDtoItem.resData.pid"
         :evo-tree-info="cDtoItem.resData.evoTreeInfo"
         :another-forms="cDtoItem.resData.anotherForms"
@@ -104,10 +105,13 @@ const init = async () => {
 // created
 await init()
 
+// EvoInfoのref属性
+const evoInfoRef = ref()
 // 自画面遷移時
 watch(() => useRoute().fullPath, async () => {
   isLoading.value = true
   await init()
+  evoInfoRef.value.refresh()
   if (process.client) { scrollTo(0, 0) }
   isLoading.value = false
 })

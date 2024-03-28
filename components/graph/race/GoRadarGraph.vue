@@ -5,20 +5,24 @@
     :dataset="rankArr"
     :min="0"
     :max="totalCount"
-    :color="race.color"
+    :color="typeColorUtils.getColor(goPokedex.type1, goPokedex.type2)"
   />
 </template>
 
 <script setup lang="ts">
-import type { GoPokedexStats, Race } from '~/components/interface/api/dto'
+import type { GoPokedexStats, GoPokedex } from '~/components/interface/api/dto'
 import { reverseRank } from '~/components/graph/graphCommon'
+import { TypeColorUtils } from '~/utils/editUtils'
 
 const props = withDefaults(
   defineProps<{
-    race: Race,
+    goPokedex: GoPokedex,
     goPokedexStats: GoPokedexStats
   }>(),
   {})
+
+const constant: ConstantValue = constantUtils().get()
+const typeColorUtils: TypeColorUtils = new TypeColorUtils(constant.TYPE)
 
 const goStatsItems: Array<Record<string, string>> = [
   { key: 'hp', statsKey: 'goHpStats' },
@@ -33,7 +37,7 @@ const rankArr = computed((): Array<number> => {
   // ['HP', 'こうげき', 'ぼうぎょ']
   goStatsItems.forEach((s) => {
     const r = reverseRank(
-        props.race.goPokedex[s.key as keyof typeof props.race.goPokedex] as number,
+        props.goPokedex[s.key as keyof typeof props.goPokedex] as number,
         props.goPokedexStats[s.statsKey as keyof typeof props.goPokedexStats].list as Array<number>)
     goRadarElems.push(r + 1)
   })

@@ -2,14 +2,10 @@
   <div>
     <div class="pa-3">
       タイプ1:
-      <span :style="`background-color: ${typeColorUtils.getRGB(type1)};'}`" class="type">
-        {{ constantAccessor.getTypeJpn(type1) }}
-      </span>
+      <SearchType :type="constantAccessor.getTypeJpn(type1)" />
       <div v-if="type2">
         タイプ2:
-        <span :style="`background-color: ${typeColorUtils.getRGB(type2)};'}`" class="type">
-          {{ constantAccessor.getTypeJpn(type2) }}
-        </span>
+        <SearchType :type="constantAccessor.getTypeJpn(type2)" />
       </div>
     </div>
     <SearchTypeDefTable
@@ -22,7 +18,7 @@
 </template>
 
 <script setup lang="ts">
-import { TypeColorUtils, ConstantAccessor } from '#imports'
+import { ConstantAccessor } from '#imports'
 
 withDefaults(
   defineProps<{
@@ -35,5 +31,4 @@ withDefaults(
 
 const constant: ConstantValue = constantUtils().get()
 const constantAccessor: ConstantAccessor = new ConstantAccessor(constant)
-const typeColorUtils: TypeColorUtils = new TypeColorUtils(constant.TYPE)
 </script>

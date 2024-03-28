@@ -32,12 +32,7 @@
         <v-row>
           <v-col class="pa-3">
             タイプ1:
-            <span
-              :style="`background-color: ${typeDic.attacker1.color};'}`"
-              class="type"
-            >
-              {{ constantAccessor.getTypeJpn(cDtoItem.searchParams.type1) }}
-            </span>
+            <SearchType :type="constantAccessor.getTypeJpn(cDtoItem.searchParams.type1)" />
           </v-col>
           <v-col>
             <div class="rating">
@@ -55,12 +50,7 @@
         <v-row v-if="typeDic.attacker2">
           <v-col class="pa-3">
             タイプ2:
-            <span
-              :style="`background-color: ${typeDic.attacker2.color};'}`"
-              class="type"
-            >
-              {{ constantAccessor.getTypeJpn(cDtoItem.searchParams.type2) }}
-            </span>
+            <SearchType :type="constantAccessor.getTypeJpn(cDtoItem.searchParams.type2)" />
           </v-col>
           <v-col>
             <div class="rating">
@@ -83,19 +73,12 @@
         <v-row>
           <v-col class="pa-3">
             タイプ:
-            <span
-              :style="`background-color: ${typeDic.attacker1.color};'}`"
-              class="type"
-            >
-              {{ constantAccessor.getTypeJpn(cDtoItem.searchParams.type1) }}
-            </span>
-            <span
+            <SearchType :type="constantAccessor.getTypeJpn(cDtoItem.searchParams.type1)" />
+            <SearchType
               v-if="cDtoItem.searchParams.type2"
-              :style="typeDic.attacker2 && `background-color: ${typeDic.attacker2.color}; margin-left: 3px;'}`"
-              class="type"
-            >
-              {{ constantAccessor.getTypeJpn(cDtoItem.searchParams.type2) }}
-            </span>
+              :type="constantAccessor.getTypeJpn(cDtoItem.searchParams.type2)"
+              style="margin-left: 3px;"
+            />
           </v-col>
           <v-col>
             <div class="rating">
@@ -148,8 +131,7 @@ import {
   check,
   createRequestQuery
 } from '~/components/interface/typeScore'
-import { ConstantAccessor, type ConstantValue } from '~/utils/constantUtils'
-import { TypeColorUtils } from '~/utils/editUtils'
+import { ConstantAccessor, type ConstantValue, TypeColorUtils } from '#imports'
 
 const searchPattern = 'typeScore'
 

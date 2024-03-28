@@ -6,22 +6,22 @@
         <span>{{ adm.dmgMult }}</span>
       </v-col>
       <v-col cols="8" :style="admIdx % 2 === 0 ? `background: ${typeColorUtils.getRGBA(0.1, atkType, null)}` : ''">
-        <span
+        <template
           v-for="(type, idx) in defTypeDic[adm.name]"
           :key="`atk-dmg-mult-${type}`"
-          :style="`background-color: ${typeColorUtils.getRGB(type)}; ${idx === 0 ? '': 'margin-left:5px;'}`"
-          class="type"
         >
-          {{ constantAccessor.getTypeJpn(type) }}
-        </span>
+          <SearchType
+            :type="constantAccessor.getTypeJpn(type)"
+            :style="idx === 0 ? '': 'margin-left:5px;'"
+          />
+        </template>
       </v-col>
     </v-row>
   </v-container>
 </template>
 
 <script setup lang="ts">
-import { TypeColorUtils } from '~/utils/editUtils'
-import { ConstantAccessor } from '~/utils/constantUtils'
+import { TypeColorUtils, ConstantAccessor } from '#imports'
 
 const atkDmgMultArr: Array<Record<string, string>> = [
   { name: 'HIGH', dmgMult: '×1.6' },
@@ -41,21 +41,14 @@ const constantAccessor: ConstantAccessor = new ConstantAccessor(constant)
 const typeColorUtils: TypeColorUtils = new TypeColorUtils(constant.TYPE)
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
 .atk-dmg-mult-table {
   max-width: 500px;
   margin: auto;
+  padding: 12px;
 
-  // v-rowへの適用
-  > * {
-    margin: 0px;
-
-    // v-colへの適用
-    > * {
-      padding: 4px;
-    }
-
-    > *:first-child {
+  .v-row {
+    .v-col:first-child {
       color: white;
       overflow-wrap: anywhere;
       display: grid;

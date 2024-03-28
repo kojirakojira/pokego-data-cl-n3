@@ -12,19 +12,8 @@
           あ、どうも。<!--
           -->{{ name ? editUtils().appendRemarks(name, remarks) : 'こ' }}<!--
           -->のタイプ(<!--
-          --><span
-                :style="`background-color: ${typeColorUtils.getRGB(type1)};'}`"
-                class="type"
-              >
-              {{ constantAccessor.getTypeJpn(type1) }}
-          </span>
-          <span
-            v-if="type2"
-            :style="`background-color: ${typeColorUtils.getRGB(type2)}; margin-left: 3px;`"
-            class="type"
-          >
-            {{ constantAccessor.getTypeJpn(type2) }}
-          </span><!--
+          --><SearchType :type="constantAccessor.getTypeJpn(type1)" />
+          <SearchType v-if="type2" :type="constantAccessor.getTypeJpn(type2)" style="margin-left: 3px;" /><!--
           -->)の特徴について簡単に説明します。
         </template>
       </p>
