@@ -12,22 +12,24 @@
           進化ツリー
         </h4>
         <div style="justify-content: center; display: flex;">
-          <div :class="`evo-tree ${id || ''}`.trim()" style="overflow-x: auto;">
+          <div :class="$style.evo_tree" style="overflow-x: auto;">
             <div style="display: flex;">
               <div v-for="(yArr, i) in evoTreeInfo" :key="i">
-                <div v-for="(xArr, yIdx) in yArr" :key="`hierarchy-${yIdx + 1}`" class="hierarchy">
+                <div v-for="(xArr, yIdx) in yArr" :key="`hierarchy-${yIdx + 1}`" :class="$style.hierarchy">
                   <div
                     v-for="(h, xIdx) in xArr"
                     :key="`index${i}-${yIdx + 1}-${xIdx + 1}`"
-                    :class="`block index${i}-${yIdx + 1}-${xIdx + 1}`"
+                    :class="$style.block"
                   >
                     <template v-if="h">
-                      <div v-if="0 < yIdx" class="edge" />
+                      <div v-if="0 < yIdx" :class="$style.edge1" :style="styleFactoryMethods().edge1Style(h)">
+                        <div :class="$style.edge2" :style="styleFactoryMethods().edge2Style(h)" />
+                      </div>
                       <ul
                         v-if="0 < yIdx"
-                        class="costs"
-                        @mouseenter="eventMethods().onCostsEnter(`index${i}-${yIdx + 1}-${xIdx + 1}`)"
-                        @mouseleave="eventMethods().onCostsLeave(`index${i}-${yIdx + 1}-${xIdx + 1}`)"
+                        :class="$style.costs"
+                        @mouseenter="eventMethods().onCostsEnter($event)"
+                        @mouseleave="eventMethods().onCostsLeave($event)"
                       >
                         <li v-for="(c, ci) in h.costs" :key="`costs${i}-${yIdx + 1}-${xIdx + 1}-${ci}`">
                           <!-- text-overflow:ellipsisとliの中点は共存不可 -->
@@ -35,19 +37,18 @@
                         </li>
                       </ul>
                       <SearchEvolutionPokemon
-                        :pid="h.id"
-                        :name="raceMap[h.id].goPokedex.name"
-                        :remarks="raceMap[h.id].goPokedex.remarks"
+                        :go-pokedex="raceMap[h.id].goPokedex"
                         :link="h.id === pid"
                         :click-action="() => { useRouter().push({ name: routerLink, query: { pid: h.id }})}"
                         :marker="h.id === pid"
+                        :class="$style.pokemon"
                       />
                     </template>
                   </div>
                 </div>
               </div>
             </div>
-            <ul v-if="evoTreeAnnos.length" class="evo-tree-annos">
+            <ul v-if="evoTreeAnnos.length" :class="$style.evo_tree_annos">
               <li v-for="(anno, i) in evoTreeAnnos" :key="`anno-${i}`">
                 {{ anno }}
               </li>
@@ -66,14 +67,13 @@
           別のすがた
         </h4>
         <v-container v-if="anotherForms.length" style="justify-content: center; display: grid;">
-          <v-row :class="`another-form ${id || ''}`.trim()">
+          <v-row :class="$style.another_form">
             <v-col v-for="itemPid in anotherForms" :key="`aot-form-${itemPid}`" class="pa-0">
-              <div :class="`block aot-form-${itemPid}`">
+              <div :class="$style.block">
                 <SearchEvolutionPokemon
-                  :pid="itemPid"
-                  :name="raceMap[itemPid].goPokedex.name"
-                  :remarks="raceMap[itemPid].goPokedex.remarks"
+                  :go-pokedex="raceMap[itemPid].goPokedex"
                   :click-action="() => { useRouter().push({ name: routerLink, query: { pid: itemPid }})}"
+                  :class="$style.pokemon"
                 />
               </div>
             </v-col>
@@ -86,14 +86,13 @@
           同系統のポケモン
         </h4>
         <v-container v-if="bfAfAotForms.length" style="justify-content: center; display: grid;">
-          <v-row :class="`bfaf-another-form ${id || ''}`.trim()">
+          <v-row :class="$style.bfaf_another_form">
             <v-col v-for="itemPid in bfAfAotForms" :key="`aot-form-${itemPid}`" class="pa-0">
-              <div :class="`block bfaf-aot-form-${itemPid}`">
+              <div :class="$style.block">
                 <SearchEvolutionPokemon
-                  :pid="itemPid"
-                  :name="raceMap[itemPid].goPokedex.name"
-                  :remarks="raceMap[itemPid].goPokedex.remarks"
+                  :go-pokedex="raceMap[itemPid].goPokedex"
                   :click-action="() => { useRouter().push({ name: routerLink, query: { pid: itemPid } })}"
+                  :class="$style.pokemon"
                 />
               </div>
             </v-col>
@@ -108,13 +107,11 @@
 </template>
 
 <script setup lang="ts">
-import { TypeColorUtils } from '~/utils/editUtils'
-import type { Hierarchy, Race, GoPokedex } from '~/components/interface/api/dto'
+import type { Hierarchy, Race } from '~/components/interface/api/dto'
 import type { Grid } from '~/components/interface/common/layout'
 
-const props = withDefaults(
+withDefaults(
   defineProps<{
-    id?: string | null, // このコンポーネントの一意になるID
     pid: string, // 図鑑ID
     evoTreeInfo: Array<Array<Array<Hierarchy | null>>>, // 進化ツリー
     anotherForms: Array<string>, // 別のすがた
@@ -122,152 +119,53 @@ const props = withDefaults(
     raceMap: Record<string, Race>, // 種族値マップ
     evoTreeAnnos?: Array<any>, // 進化ツリーの注釈
     routerLink?: string, // ポケモンクリック時の遷移先
-    grid?: Array<Grid> // VuetifyのGrid。配列の要素数は固定3つ。
+    grid?: Array<Grid> // VuetifyのGrid。配列の要素数は固定2つ。
    }>(),
   {
-    id: null,
     evoTreeAnnos: () => [],
     routerLink: '',
-    grid: () => [{ cols: 12 }, { cols: 12 }, { cols: 12 }]
+    grid: () => [{ cols: 12 }, { cols: 12 }]
   }
 )
-const styleIdArr = ref<Array<string>>([]) // 追加したstyleのclass名の配列
-
-const constant: ConstantValue = constantUtils().get()
-const typeColorUtils: TypeColorUtils = new TypeColorUtils(constant.TYPE)
 
 /**
  * スタイル生成ファクトリ関数
  */
-const styleFuctoryMethods = () => {
-  const makePrefix = (id: string | null): string => {
-    return id ? id + '-' : ''
+const styleFactoryMethods = () => {
+  const edge1Style = (h: Hierarchy) => {
+    return {
+      width: `${80 * h.dist + 1}px`,
+      left: `${-80 * h.dist + 35}px`,
+      borderColor: h.goEvo ? undefined : 'grey',
+      zIndex: h.goEvo ? undefined : 49
+    }
   }
-  /** 進化ツリーのノードを描画する。 */
-  const drawNode = (yArr: Array<Array<Hierarchy | null>>, raceMap: Record<string, Race>, i: number) => {
-    yArr.forEach((xArr: Array<Hierarchy | null>) => {
-      xArr.forEach((v) => {
-        if (v) {
-          const gp: GoPokedex = raceMap[v.id].goPokedex
-          const idName = `${makePrefix(props.id)}evotree-index${i}-${v.y}-${v.x}-node`
-          let style = `.evo-tree${props.id ? '.' + props.id : ''}`
-          style += ` .block.index${i}-${v.y}-${v.x} .pokemon .node {`
-          style += `background-color: ${typeColorUtils.getRGB(gp.type1, gp.type2)}; },`
-          editUtils().createStyleElem(idName, style, styleIdArr.value)
-        }
-      })
-    })
-  }
-  /**
-   * 進化ツリーのエッジを描画する。
-   */
-  const drawEdge = (yArr: Array<Array<Hierarchy | null>>, i: number) => {
-    yArr.forEach((xArr: Array<Hierarchy | null>) => {
-      xArr.forEach((h: Hierarchy | null) => {
-        if (h) {
-          createEdge(
-            i,
-            h.x,
-            h.y,
-            h.dist,
-            h.goEvo ? '' : 'border-color: grey; z-index: 49;')
-        }
-      })
-    })
-  }
-  /**
-   * 進化ツリーのノードを結ぶ線（エッジ）のスタイルを作成します。
-   *
-   * @param i番目のツリー
-   * @param x軸
-   * @param y軸(上から数える)
-   * @param 上位階層からのx軸の距離
-   * @param 追加のstyle
-   */
-  const createEdge = (i: number, x: number, y: number, dist: number, addStyle: string) => {
-    // y=1の場合はedgeは生成しない。
-    if (y <= 1) { return }
-
-    const idName = `${makePrefix(props.id)}evotree-index${i}-${y}-${x}-edge`
-    let style = `.evo-tree${props.id ? '.' + props.id : ''}`
-    style += ` .block.index${i}-${y}-${x} .edge {`
-    style += `width: ${80 * dist + 1}px;`
-    style += `left: ${-80 * dist + 35}px;`
-    style += `${addStyle}}`
-    style += `.evo-tree${props.id ? '.' + props.id : ''}`
-    style += ` .block.index${i}-${y}-${x} .edge:before {`
-    style += `width: ${80 * dist + 1}px;`
-    style += `left: ${-80 * dist}px;`
-    style += `${addStyle}}`
-
-    editUtils().createStyleElem(idName, style, styleIdArr.value)
-  }
-
-  /**
-   * スタイルを生成・再生成する。
-   */
-  const refresh = () => {
-    // style追加前に、不要なスタイルが残っている場合は削除する。
-    styleIdArr.value = editUtils().deleteStyleElem(styleIdArr.value, 'evotree-index')
-    styleIdArr.value = editUtils().deleteStyleElem(styleIdArr.value, 'aot-form-')
-    styleIdArr.value = editUtils().deleteStyleElem(styleIdArr.value, 'bfaf-aot-form-')
-
-    // 進化ツリー
-    props.evoTreeInfo.forEach((arr, i) => {
-    // エッジを描画する。
-      drawEdge(arr, i)
-      // ノードを描画する。（色を設定するだけ。）
-      drawNode(arr, props.raceMap, i)
-    })
-
-    // 別のすがた
-    props.anotherForms.forEach((pid) => {
-      const gp: GoPokedex = props.raceMap[pid].goPokedex
-      const idName = `${makePrefix(props.id)}aot-form-${pid}`
-      let style = `.another-form${props.id ? '.' + props.id : ''}`
-      style += ` .block.aot-form-${pid} .node {`
-      style += `background-color: ${typeColorUtils.getRGB(gp.type1, gp.type2)}; },`
-      editUtils().createStyleElem(idName, style, styleIdArr.value)
-    })
-
-    // 同系統のポケモン
-    props.bfAfAotForms.forEach((pid) => {
-      const gp: GoPokedex = props.raceMap[pid].goPokedex
-      const idName = `${makePrefix(props.id)}bfaf-aot-form-${pid}`
-      let style = `.bfaf-another-form${props.id ? '.' + props.id : ''}`
-      style += ` .block.bfaf-aot-form-${pid} .node {`
-      style += `background-color: ${typeColorUtils.getRGB(gp.type1, gp.type2)}; },`
-      editUtils().createStyleElem(idName, style, styleIdArr.value)
-    })
+  const edge2Style = (h: Hierarchy) => {
+    return {
+      width: `${80 * h.dist + 1}px`,
+      left: `${-80 * h.dist}px`,
+      borderColor: h.goEvo ? undefined : 'grey',
+      zIndex: h.goEvo ? undefined : 49
+    }
   }
 
   return {
-    refresh
+    edge1Style,
+    edge2Style
   }
 }
-defineExpose({
-  refresh: styleFuctoryMethods().refresh
-})
-// created
-styleFuctoryMethods().refresh()
 
-/**
- * onDestroy
- */
-onBeforeUnmount(() => {
-  // 作成したstyleをすべて削除する
-  editUtils().deleteStyleElem(styleIdArr.value)
-})
+const evoStyle = useCssModule()
 const eventMethods = () => {
   /** costsにマウスカーソルを乗せた際のイベント */
-  const onCostsEnter = (className: string): void => {
-    const costs = document.getElementsByClassName(className)[0].getElementsByClassName('costs')[0]
-    costs.className += ' costs-enter'
+  const onCostsEnter = (event: MouseEvent): void => {
+    const elem: Element = event.target as Element
+    elem.className += ' ' + evoStyle.costs_enter
   }
   /** costsからマウスカーソルを外した際のイベント */
-  const onCostsLeave = (className: string): void => {
-    const costs = document.getElementsByClassName(className)[0].getElementsByClassName('costs')[0]
-    costs.className = 'costs'
+  const onCostsLeave = (event: MouseEvent): void => {
+    const elem: Element = event.target as Element
+    elem.className = evoStyle.costs
   }
 
   return {
@@ -277,8 +175,8 @@ const eventMethods = () => {
 }
 </script>
 
-<style lang="scss">
-.evo-tree {
+<style lang="scss" module>
+.evo_tree {
   background-color: black;
   width: fit-content;
 
@@ -287,7 +185,7 @@ const eventMethods = () => {
     display: flex;
   }
 
-  .evo-tree-annos {
+  .evo_tree_annos {
     color: white;
     padding: 0px 16px 8px;
     width: max-content;
@@ -298,7 +196,7 @@ const eventMethods = () => {
     }
   }
 }
-.another-form,.bfaf-another-form {
+.another_form,.bfaf_another_form {
   background-color: black;
   width: fit-content;
 
@@ -312,7 +210,7 @@ const eventMethods = () => {
   position: relative;
   align-items: center;
 
-  .edge {
+  .edge1 {
     content: '';
     position: absolute;
     height: 90px;
@@ -322,7 +220,7 @@ const eventMethods = () => {
     border-radius: 0 30px 0 0;
     z-index: 50;
   }
-  .edge:before {
+  .edge2 {
     content: '';
     position: absolute;
     height: 50px;
@@ -354,7 +252,7 @@ const eventMethods = () => {
       text-overflow: ellipsis;
     }
 
-    &-enter {
+    &_enter {
       background-color: #F5F5F5;
       color: black;
       border-radius: 2px;

@@ -47,6 +47,10 @@
         :race-map="cDtoItem.resData.raceMap"
         :evo-tree-annos="cDtoItem.resData.evoTreeAnnotations"
         router-link="search-result-evolutionResult"
+        :grid="[
+          { cols: 12, md: 7, lg: 7, xl: 7 },
+          { cols: 12, md: 5, lg: 5, xl: 5 }
+        ]"
       />
       <MajorPartsPrevNextPokemon
         :pid="cDtoItem.resData.pid"
@@ -111,7 +115,7 @@ const evoInfoRef = ref()
 watch(() => useRoute().fullPath, async () => {
   isLoading.value = true
   await init()
-  evoInfoRef.value.refresh()
+  // evoInfoRef.value.refresh()
   if (process.client) { scrollTo(0, 0) }
   isLoading.value = false
 })

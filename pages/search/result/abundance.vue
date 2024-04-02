@@ -242,7 +242,6 @@
           <div class="evolution">
             <SearchEvolutionEvoInfo
               v-if="isLoadedEvolution"
-              ref="evoInfoRef"
               :pid="cDtoItem.evoResData.pid"
               :evo-tree-info="cDtoItem.evoResData.evoTreeInfo"
               :another-forms="cDtoItem.evoResData.anotherForms"
@@ -404,9 +403,10 @@ const statsDic = computed((): Record<string, Array<StatsValue>> => {
 const isLoadedEvolution = computed(() => {
   return Object.keys(cDtoItem.value.evoResData).length
 })
-// EvoInfoのref属性
-const evoInfoRef = ref()
 
+/**
+ * typeScore
+ */
 /** typeScoreの読み込みが終わったらtrueになる。 */
 const isLoadedTypeScore = computed(() => {
   return Object.keys(cDtoItem.value.typeScoreResData).length
@@ -423,7 +423,6 @@ watch(
     // 初期表示処理
     await screenControlMethods().init()
     // EvoInfoの更新
-    evoInfoRef.value.refresh()
     prevNextRef.value.refresh()
     window.scrollTo(0, 0)
   })

@@ -86,5 +86,5 @@ defineExpose({
 })
 
 // created
-refresh()
+await refresh()
 </script>

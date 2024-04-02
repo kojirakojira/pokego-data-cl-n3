@@ -1,35 +1,41 @@
 <template>
   <div
-    class="pokemon"
+    :class="$style.pokemon"
     :style="link || clickAction ? 'cursor: pointer;' : 'pointer-events: none;'"
     @click="clickAction()"
   >
-    <div class="node" />
-    <div class="pokemon-name">
-      {{ name }}
-      <div v-if="remarks" class="remarks">
-        {{ `(${remarks})` }}
+    <div :class="$style.node" />
+    <div :class="$style.pokemon_name">
+      {{ goPokedex.name }}
+      <div v-if="goPokedex.remarks" :class="$style.remarks">
+        {{ `(${goPokedex.remarks})` }}
       </div>
     </div>
-    <div v-if="marker" class="marker" />
+    <div v-if="marker" :class="$style.marker" />
   </div>
 </template>
 
 <script setup lang="ts">
-withDefaults(
+import type { GoPokedex } from '~/components/interface/api/dto'
+import { TypeColorUtils } from '#imports'
+
+const props = withDefaults(
   defineProps<{
-    pid: string,
-    name: string,
-    remarks: string,
+    goPokedex: GoPokedex,
     link?: boolean,
     clickAction?: Function,
     marker?: boolean
    }>(),
   { link: false, clickAction: () => {}, marker: false }
 )
+
+const constant: ConstantValue = constantUtils().get()
+const typeColorUtils: TypeColorUtils = new TypeColorUtils(constant.TYPE)
+
+const rgb = computed(() => typeColorUtils.getRGB(props.goPokedex.type1, props.goPokedex.type2))
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss" module>
 .pokemon {
   display: flex;
   position: relative;
@@ -43,6 +49,7 @@ withDefaults(
     text-align: center;
     z-index: 51;
     position: relative;
+    background-color: v-bind(rgb);
 
     // nodeの球体表現(左上部のぼかし)
     &:before {
@@ -72,7 +79,7 @@ withDefaults(
       border-radius: 50%;
     }
   }
-  .pokemon-name {
+  .pokemon_name {
     color: white;
     margin-left: 10px;
     width: 90px;
