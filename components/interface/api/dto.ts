@@ -46,42 +46,6 @@ export interface Pokedex {
   implFlg: boolean
 }
 
-export class PokemonSearchResult {
-  message: string
-  msgLevel: MsgLevel
-  unique: boolean
-  goPokedexList: Array<GoPokedex>
-  goPokedex: GoPokedex
-  maybe: boolean
-  hit: boolean
-  searched: boolean
-
-  constructor () {
-    this.message = ''
-    this.msgLevel = 'info'
-    this.unique = false
-    this.goPokedexList = []
-    this.goPokedex = new GoPokedex()
-    this.maybe = false
-    this.hit = false
-    this.searched = false
-  }
-}
-
-export class MultiSearchResult {
-  message: string
-  msgLevel: MsgLevel
-  allUnique: boolean
-  psrArr: Array<PokemonSearchResult>
-
-  constructor () {
-    this.message = ''
-    this.msgLevel = 'info'
-    this.allUnique = false
-    this.psrArr = []
-  }
-}
-
 export class ScpRank {
   league: string
   rank: number
@@ -169,9 +133,14 @@ export class CpRank {
   }
 }
 
-export interface GoPokedexAndCp {
-  goPokedex: GoPokedex,
+export class GoPokedexAndCp {
+  goPokedex: GoPokedex
   cp: number
+
+  constructor () {
+    this.goPokedex = new GoPokedex()
+    this.cp = 0
+  }
 }
 
 export class VersatilityIv {
@@ -317,5 +286,61 @@ export class CatchCp {
     this.otherName = ''
     this.otherMin = 0
     this.otherMax = 0
+  }
+}
+
+export class PokemonSearchResult {
+  message: string
+  msgLevel: MsgLevel
+  unique: boolean
+  goPokedexList: Array<GoPokedex>
+  goPokedex: GoPokedex
+  maybe: boolean
+  hit: boolean
+  searched: boolean
+
+  constructor () {
+    this.message = ''
+    this.msgLevel = 'info'
+    this.unique = false
+    this.goPokedexList = []
+    this.goPokedex = new GoPokedex()
+    this.maybe = false
+    this.hit = false
+    this.searched = false
+  }
+}
+
+export class MultiSearchResult {
+  message: string
+  msgLevel: MsgLevel
+  allUnique: boolean
+  psrArr: Array<PokemonSearchResult>
+
+  constructor () {
+    this.message = ''
+    this.msgLevel = 'info'
+    this.allUnique = false
+    this.psrArr = []
+  }
+}
+
+export class PokemonFilterResult {
+  message: string
+  msgLevel: MsgLevel
+  unique: boolean
+  gpAndCpList: Array<GoPokedexAndCp>
+  goPokedex: GoPokedexAndCp
+  hit: boolean
+  filteredItems: Array<DispFilterParam>
+
+  constructor () {
+    this.message = ''
+    this.msgLevel = 'info'
+    this.unique = false
+    this.gpAndCpList = []
+    this.goPokedex = new GoPokedexAndCp()
+    this.hit = false
+    this.filteredItems = []
   }
 }

@@ -1,6 +1,11 @@
 <template>
   <v-container
-    :class="`${useTheme().global.name.value === 'dark' ? 'darken-3' : 'bg-grey-lighten-5'} filter-area pa-4 my-4`"
+    :class="
+      [useTheme().global.name.value === 'dark' ? 'bg-grey-darken-3' : 'bg-grey-lighten-5',
+       'filter-area',
+       'pa-4',
+       'my-4'
+      ]"
   >
     <v-row>
       <v-col cols="8">

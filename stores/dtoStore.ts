@@ -109,7 +109,7 @@ export const dtoStore = defineStore(
      *
      * @returns
      */
-    const beforeScreenInfo = (): ScreenInfo | null => {
+    const prevScreenInfo = (): ScreenInfo | null => {
       const index = indexOf(positionState.value)
       if (!history.length || index < 1) {
         // historyが0件、または前の画面が存在しない場合
@@ -171,7 +171,7 @@ export const dtoStore = defineStore(
       afterEachAction,
       beforeEachAction,
       clearHistory,
-      beforeScreenInfo,
+      prevScreenInfo,
       currentScreenInfo
     }
   }, {

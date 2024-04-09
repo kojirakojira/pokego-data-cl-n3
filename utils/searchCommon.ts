@@ -146,18 +146,23 @@ export default () => {
 
   /**
    * resDataを復元する。主に結果画面を復元するために使用する。
-   * dtoStoreにおける現在画面にresDataがあれば、それを返却する。（戻るボタンで戻ってきた場合）
-   * 現在画面が無く、前画面にresDataがあれば、それを返却する。（画面遷移で遷移してきた場合）
-   * resDataが現在画面、前画面の双方に存在しない場合は、nullを返却する。
+   * ①dtoStoreにおける現在画面にresDataがあれば、それを返却する。（戻るボタンで戻ってきた場合）
+   * ②現在画面が無く、前画面にresDataがあれば、それを返却する。（画面遷移で遷移してきた場合）
+   * ③resDataが現在画面、前画面の双方に存在しない場合は、nullを返却する。
    *
+   * @param prevScrConsistencyChkFlg 現在画面、前画面の整合性チェックをするかどうかのフラグ
+   * @returns
    */
-  const restoreResData = (): Record<string, any> | null => {
+  const restoreResData = (prevScrConsistencyChkFlg?: boolean): Record<string, any> | null => {
+    const pscChkFlg: boolean = typeof prevScrConsistencyChkFlg === 'boolean'
+      ? prevScrConsistencyChkFlg
+      : true
     // routeの取得
     const route: RouteLocationNormalizedLoaded = useRoute()
     const routeName: RouteRecordName | undefined | null = route.name
     const routeQuery: LocationQuery = route.query
 
-    const beforeSi: ScreenInfo | null = dtoStore().beforeScreenInfo()
+    const prevSi: ScreenInfo | null = dtoStore().prevScreenInfo()
     const currentSi: ScreenInfo | null = dtoStore().currentScreenInfo()
 
     // 現在画面からの復元
@@ -170,18 +175,18 @@ export default () => {
     }
 
     // 現在画面と前画面のsearchPatternNameを取得
-    const befSpnMatch: RegExpMatchArray | null | undefined = beforeSi?.pathName.match(/[^-]*$/)
-    const befSpn: string | null = befSpnMatch ? befSpnMatch[befSpnMatch.length - 1].toString() : null
+    const prevSpnMatch: RegExpMatchArray | null | undefined = prevSi?.pathName.match(/[^-]*$/)
+    const prevSpn: string | null = prevSpnMatch ? prevSpnMatch[prevSpnMatch.length - 1].toString() : null
     const spnMatch: RegExpMatchArray | null | undefined = routeName?.toString().match(/-([a-zA-Z]+)Result*$/)
     const spn: string | null = spnMatch ? spnMatch[1].toString() : null
 
     // 前画面からの復元
-    if (beforeSi &&
-        spn === befSpn &&
-        beforeSi.params.resData.pokedexId === routeQuery.pid &&
-        Object.keys(beforeSi.params.resData).length) {
+    if (prevSi &&
+        prevSi.params.resData &&
+        Object.keys(prevSi.params.resData).length &&
+        (!pscChkFlg || (spn === prevSpn && prevSi.params.resData.pokedexId === routeQuery.pid))) {
       // ちゃんと前画面が検索画面で、前画面DTOにparamsが存在する場合
-      return beforeSi.params.resData
+      return prevSi.params.resData
     }
 
     return null
@@ -313,7 +318,7 @@ export default () => {
 
     const query: Record<string, any> = {}
     for (const [k, v] of Object.entries(queryParams)) {
-      if (!v) {
+      if (!v || (Array.isArray(v) && v.length === 0)) {
         continue
       }
       if (query[k]) {
@@ -406,7 +411,11 @@ export default () => {
             rsp[k] = routeQuery[k] as any
             break
           default:
-            throw createError({ statusCode: 500, message: 'An unexpected type was specified', fatal: true })
+            if (Array.isArray(rsp[k])) {
+              (rsp[k] as Array<any>).push(routeQuery[k] as any)
+            } else {
+              throw createError({ statusCode: 500, message: 'An unexpected type was specified', fatal: true })
+            }
         }
       }
     }

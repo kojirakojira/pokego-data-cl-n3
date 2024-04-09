@@ -188,6 +188,7 @@
             :value="r.k"
             hide-details
             multiple
+            color="info"
           />
         </div>
       </v-col>
@@ -223,6 +224,7 @@
             :value="r.k"
             hide-details
             multiple
+            color="info"
           />
         </div>
       </v-col>

@@ -27,13 +27,11 @@ export class CpRankResponse extends ResearchResponse {
 export class CpRankSearchParams extends ResearchRequest {
   name: string
   iv: string
-  pl: string
 
   constructor () {
     super()
     this.name = ''
     this.iv = ''
-    this.pl = ''
   }
 }
 /**
