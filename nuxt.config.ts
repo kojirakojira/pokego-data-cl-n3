@@ -72,7 +72,6 @@ const defineNuxtConfig = async () => {
         preprocessorOptions: {
           scss: {
             additionalData:
-          '@import "@/assets/styles/variables.scss";' +
           '@import "@/assets/styles/common/common.scss";' +
           '@import "vuetify/styles";'
           }

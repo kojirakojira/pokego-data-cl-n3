@@ -1,4 +1,4 @@
-import { GoPokedex } from './api/dto'
+import { CatchCp, GoPokedex } from './api/dto'
 import { ResearchRequest } from './api/request'
 import { ResearchResponse } from './api/response'
 
@@ -8,21 +8,14 @@ import { ResearchResponse } from './api/response'
 export class RaidResponse extends ResearchResponse {
   mega: boolean
   befMegaGp: GoPokedex
-  shadow: boolean
-  maxCp: number
-  minCp: number
-  wbMaxCp: number
-  wbMinCp: number
+
+  catchCp: CatchCp
 
   constructor () {
     super()
     this.mega = false
     this.befMegaGp = new GoPokedex()
-    this.shadow = false
-    this.maxCp = 0
-    this.minCp = 0
-    this.wbMaxCp = 0
-    this.wbMinCp = 0
+    this.catchCp = new CatchCp()
   }
 }
 /**
@@ -30,12 +23,10 @@ export class RaidResponse extends ResearchResponse {
  */
 export class RaidSearchParams extends ResearchRequest {
   name: string
-  shadow: boolean
 
   constructor () {
     super()
     this.name = ''
-    this.shadow = false
   }
 }
 /**
@@ -55,11 +46,9 @@ export class RaidSearchDtoItem implements SearchDtoItem {
  */
 export class RaidResultSearchParams {
   pid: string
-  shadow: boolean
 
   constructor () {
     this.pid = ''
-    this.shadow = false
   }
 }
 /**

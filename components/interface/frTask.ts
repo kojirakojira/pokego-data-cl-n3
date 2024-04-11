@@ -1,4 +1,4 @@
-import { GoPokedex } from './api/dto'
+import { CatchCp, GoPokedex } from './api/dto'
 import { ResearchRequest } from './api/request'
 import { ResearchResponse } from './api/response'
 
@@ -8,17 +8,13 @@ import { ResearchResponse } from './api/response'
 export class FRTaskResponse extends ResearchResponse {
   mega: boolean
   befMegaGp: GoPokedex
-  shadow: boolean
-  maxCp: number
-  minCp: number
+  catchCp: CatchCp
 
   constructor () {
     super()
     this.mega = false
     this.befMegaGp = new GoPokedex()
-    this.shadow = false
-    this.maxCp = 0
-    this.minCp = 0
+    this.catchCp = new CatchCp()
   }
 }
 /**

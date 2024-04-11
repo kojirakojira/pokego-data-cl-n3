@@ -1,4 +1,4 @@
-import { GoPokedex } from './api/dto'
+import { CatchCp, GoPokedex } from './api/dto'
 import { ResearchRequest } from './api/request'
 import { ResearchResponse } from './api/response'
 
@@ -8,21 +8,13 @@ import { ResearchResponse } from './api/response'
 export class RocketResponse extends ResearchResponse {
   mega: boolean
   befMegaGp: GoPokedex
-  sakaki: boolean
-  maxCp: number
-  minCp: number
-  wbMaxCp: number
-  wbMinCp: number
+  catchCp: CatchCp
 
   constructor () {
     super()
     this.mega = false
     this.befMegaGp = new GoPokedex()
-    this.sakaki = false
-    this.maxCp = 0
-    this.minCp = 0
-    this.wbMaxCp = 0
-    this.wbMinCp = 0
+    this.catchCp = new CatchCp()
   }
 }
 /**
@@ -30,12 +22,10 @@ export class RocketResponse extends ResearchResponse {
  */
 export class RocketSearchParams extends ResearchRequest {
   name: string
-  sakaki: boolean
 
   constructor () {
     super()
     this.name = ''
-    this.sakaki = false
   }
 }
 /**
@@ -55,11 +45,9 @@ export class RocketSearchDtoItem implements SearchDtoItem {
  */
 export class RocketResultSearchParams {
   pid: string
-  sakaki: boolean
 
   constructor () {
     this.pid = ''
-    this.sakaki = false
   }
 }
 /**

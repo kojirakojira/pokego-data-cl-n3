@@ -125,9 +125,9 @@
                 </SearchInputHelpMsg>
               </v-col>
               <v-col cols="7">
-                {{ `${cDtoItem.resData.raid.min} ～ ${cDtoItem.resData.raid.max}` }}
+                {{ `${cDtoItem.resData.raid.normal.min} ～ ${cDtoItem.resData.raid.normal.max}` }}
                 <p class="caption my-0">
-                  {{ `天候ブースト時:${cDtoItem.resData.raid.wbMin} ～ ${cDtoItem.resData.raid.wbMax}` }}
+                  {{ `天候ブースト時:${cDtoItem.resData.raid.normal.wbMin} ～ ${cDtoItem.resData.raid.normal.wbMax}` }}
                 </p>
               </v-col>
             </v-row>
@@ -136,9 +136,9 @@
                 ロケット団勝利ボーナスCP
               </v-col>
               <v-col cols="7">
-                {{ `${cDtoItem.resData.rocket.min} ～ ${cDtoItem.resData.rocket.max}` }}
+                {{ `${cDtoItem.resData.rocket.normal.min} ～ ${cDtoItem.resData.rocket.normal.max}` }}
                 <p class="caption my-0">
-                  {{ `天候ブースト時:${cDtoItem.resData.rocket.wbMin} ～ ${cDtoItem.resData.rocket.wbMax}` }}
+                  {{ `天候ブースト時:${cDtoItem.resData.rocket.normal.wbMin} ～ ${cDtoItem.resData.rocket.normal.wbMax}` }}
                 </p>
               </v-col>
             </v-row>
@@ -147,7 +147,7 @@
                 フィールドリサーチCP
               </v-col>
               <v-col cols="7">
-                {{ `${cDtoItem.resData.fRTask.min} ～ ${cDtoItem.resData.fRTask.max}` }}
+                {{ `${cDtoItem.resData.fRTask.normal.min} ～ ${cDtoItem.resData.fRTask.normal.max}` }}
               </v-col>
             </v-row>
             <v-row>
@@ -155,7 +155,7 @@
                 タマゴCP
               </v-col>
               <v-col cols="7">
-                {{ `${cDtoItem.resData.egg.min} ～ ${cDtoItem.resData.egg.max}` }}
+                {{ `${cDtoItem.resData.egg.normal.min} ～ ${cDtoItem.resData.egg.normal.max}` }}
               </v-col>
             </v-row>
           </v-container>

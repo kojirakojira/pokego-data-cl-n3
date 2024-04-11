@@ -269,23 +269,29 @@ export interface IroiroTypeRankElement {
   msgs: Array<string>
 }
 
-export class CatchCp {
+export class IvRangeCp {
   min: number
   max: number
   wbMin: number
   wbMax: number
-  otherName: string
-  otherMin: number
-  otherMax: number
+  name: string
 
   constructor () {
     this.min = 0
     this.max = 0
     this.wbMin = 0
     this.wbMax = 0
-    this.otherName = ''
-    this.otherMin = 0
-    this.otherMax = 0
+    this.name = ''
+  }
+}
+
+export class CatchCp {
+  normal: IvRangeCp
+  others: Array<IvRangeCp>
+
+  constructor () {
+    this.normal = new IvRangeCp()
+    this.others = []
   }
 }
 

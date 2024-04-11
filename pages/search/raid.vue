@@ -20,24 +20,6 @@
           </v-col>
         </v-row>
         <v-row>
-          <v-col cols="4" md="4" lg="4" xl="4" class="col-title">
-            <v-icon>
-              mdi-pen
-            </v-icon>
-            シャドウ
-          </v-col>
-          <v-col cols="8" md="8" lg="8" xl="8">
-            <ClientOnly>
-              <v-switch
-                v-model="cDtoItem.searchParams.shadow"
-                inset
-                :label="cDtoItem.searchParams.shadow ? 'シャドウとして算出' : ''"
-                color="purple"
-              />
-            </ClientOnly>
-          </v-col>
-        </v-row>
-        <v-row>
           <v-col cols="12" class="text-center">
             <v-btn
               rounded
