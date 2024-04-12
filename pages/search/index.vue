@@ -34,7 +34,7 @@
                       v-for="(value, key) in largeScale.patternNames"
                       :key="key"
                       class="px-0"
-                      :to="toSelector(key)"
+                      :to="{ name: `search-${key}` }"
                     >
                       <v-list-item-title>
                         <v-icon large>
@@ -72,12 +72,6 @@ onMounted(() => {
   isLoading.value = false
 })
 
-const toSelector = (key: string) => {
-  if (key === 'evoCost') {
-    return undefined
-  }
-  return { name: `search-${key}` }
-}
 useHead({
   title: 'ホーム',
   meta: [

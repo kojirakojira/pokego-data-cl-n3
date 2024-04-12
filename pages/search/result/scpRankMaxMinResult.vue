@@ -234,7 +234,7 @@ const init = async () => {
   cDtoItem.value.searchParams = searchCommon()
     .restoreSearchParams(useRoute().query, ScpRankMaxMinResultSearchParams)
   // dtoStoreからresDataを復元
-  const rd: ScpRankMaxMinResponse | null = searchCommon().restoreResData() as ScpRankMaxMinResponse
+  const rd: ScpRankMaxMinResponse | null = searchCommon().restoreResearchResData() as ScpRankMaxMinResponse
 
   if (rd) {
     cDtoItem.value.resData = rd

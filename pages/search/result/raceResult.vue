@@ -185,7 +185,7 @@ const init = async () => {
   cDtoItem.value.searchParams = searchCommon()
     .restoreSearchParams(useRoute().query, RaceResultSearchParams)
   // dtoStoreからresDataを復元
-  const rd: RaceResponse | null = searchCommon().restoreResData() as RaceResponse
+  const rd: RaceResponse | null = searchCommon().restoreResearchResData() as RaceResponse
 
   if (rd) {
     cDtoItem.value.resData = rd

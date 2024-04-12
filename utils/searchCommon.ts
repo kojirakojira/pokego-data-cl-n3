@@ -26,6 +26,10 @@ export interface ResultDtoItem {
   searchParams: Record<string, any>
   resData: ResData
 }
+export interface RestoreCondition {
+  resDataKey: string,
+  routeKey: string
+}
 export default () => {
   const searchPatternNames = readonly({
     main: {
@@ -150,13 +154,14 @@ export default () => {
    * ②現在画面が無く、前画面にresDataがあれば、それを返却する。（画面遷移で遷移してきた場合）
    * ③resDataが現在画面、前画面の双方に存在しない場合は、nullを返却する。
    *
-   * @param prevScrConsistencyChkFlg 現在画面、前画面の整合性チェックをするかどうかのフラグ
+   * @param prevScrChkFlg 前画面の画面名との整合性をチェックするかどうかのフラグ
+   * @param rcArr 前画面を復元する条件
    * @returns
    */
-  const restoreResData = (prevScrConsistencyChkFlg?: boolean): Record<string, any> | null => {
-    const pscChkFlg: boolean = typeof prevScrConsistencyChkFlg === 'boolean'
-      ? prevScrConsistencyChkFlg
-      : true
+  const restoreResData = (
+    prevScrChkFlg: boolean,
+    prevScrRcArr?: Array<RestoreCondition>
+  ): Record<string, any> | null => {
     // routeの取得
     const route: RouteLocationNormalizedLoaded = useRoute()
     const routeName: RouteRecordName | undefined | null = route.name
@@ -180,16 +185,44 @@ export default () => {
     const spnMatch: RegExpMatchArray | null | undefined = routeName?.toString().match(/-([a-zA-Z]+)Result*$/)
     const spn: string | null = spnMatch ? spnMatch[1].toString() : null
 
+    const prevScrRcChkFlg = prevScrRcArr && prevScrRcArr.length
+
     // 前画面からの復元
-    if (prevSi &&
-        prevSi.params.resData &&
+    if (prevSi?.params.resData &&
         Object.keys(prevSi.params.resData).length &&
-        (!pscChkFlg || (spn === prevSpn && prevSi.params.resData.pokedexId === routeQuery.pid))) {
+        (!prevScrChkFlg || spn === prevSpn) &&
+        (!prevScrRcChkFlg || checkConsistency(prevScrRcArr, prevSi.params.resData))) {
       // ちゃんと前画面が検索画面で、前画面DTOにparamsが存在する場合
       return prevSi.params.resData
     }
 
     return null
+  }
+
+  /**
+   * 前画面が復元可能かを確認する。
+   *
+   * @param rcArr
+   * @param prevResData
+   * @returns
+   */
+  const checkConsistency = (rcArr: Array<RestoreCondition>, prevResData: Record<string, any>): boolean => {
+    const route: RouteLocationNormalizedLoaded = useRoute()
+    const routeQuery: Record<string, string> = route.query as Record<string, string>
+
+    const mismatchArr = rcArr.filter((rc) => {
+      return routeQuery[rc.routeKey] !== editUtils().getValueFromDic(rc.resDataKey, prevResData)
+    })
+    return !mismatchArr.length
+  }
+
+  /**
+   * ResData(ResearchResponse)を復元する。
+   *
+   * @returns
+   */
+  const restoreResearchResData = (): Record<string, any> | null => {
+    return restoreResData(true, [{ resDataKey: 'pokedexId', routeKey: 'pid' }])
   }
 
   /**
@@ -280,21 +313,6 @@ export default () => {
       name: `search-result-${searchPattern}Result`,
       query
     })
-  }
-
-  /**
-   * クエリパラメータをRecord<string, string>に変換する。
-   * TODO: 配列には対応していない。
-   *
-   * @param dic
-   * @returns
-   */
-  const convQuery = (dic: Record<string, any>): Record<string, string> => {
-    const retDic: Record<string, string> = {}
-    for (const [k, v] of Object.entries(dic)) {
-      retDic[k] = String(v)
-    }
-    return retDic
   }
 
   /**
@@ -427,16 +445,15 @@ export default () => {
     searchPatternNames,
     rules,
     restoreSearchScreen,
-    restoreResData,
+    restoreSearchParams,
     restoreCurrentScreen,
+    restoreResData,
+    restoreResearchResData,
     getSearchPatternName,
     resErrHandle,
     handleApiMessage,
     clickRowResultList,
-    convQuery,
     makeQuery,
-    spreadArray,
-    compareQuery,
-    restoreSearchParams
+    spreadArray
   }
 }

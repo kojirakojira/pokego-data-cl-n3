@@ -105,7 +105,7 @@ const screenControlMethods = () => {
     cDtoItem.value.searchParams = searchCommon()
       .restoreSearchParams(useRoute().query, IroiroTypeRankResultSearchParams)
     // dtoStoreからresDataを復元
-    const rd: IroiroTypeRankResponse | null = searchCommon().restoreResData() as IroiroTypeRankResponse
+    const rd: IroiroTypeRankResponse | null = searchCommon().restoreResData(true) as IroiroTypeRankResponse
 
     if (rd) {
       cDtoItem.value.resData = rd

@@ -196,7 +196,7 @@ const init = async () => {
   cDtoItem.value.searchParams = searchCommon()
     .restoreSearchParams(useRoute().query, TypeScoreResultSearchParams)
   // dtoStoreからresDataを復元
-  const rd: TypeScoreResponse | null = searchCommon().restoreResData() as TypeScoreResponse
+  const rd: TypeScoreResponse | null = searchCommon().restoreResData(true) as TypeScoreResponse
 
   if (rd) {
     cDtoItem.value.resData = rd

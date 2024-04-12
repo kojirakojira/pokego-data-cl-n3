@@ -189,7 +189,7 @@ const init = async () => {
   cDtoItem.value.searchParams = searchCommon()
     .restoreSearchParams(useRoute().query, XTypeResultSearchParams)
   // dtoStoreからresDataを復元
-  const rd: XTypeResponse = searchCommon().restoreResData() as XTypeResponse
+  const rd: XTypeResponse = searchCommon().restoreResData(true) as XTypeResponse
 
   if (rd) {
     cDtoItem.value.resData = rd

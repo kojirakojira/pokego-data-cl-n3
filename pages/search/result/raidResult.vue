@@ -133,7 +133,7 @@ const init = async () => {
   cDtoItem.value.searchParams = searchCommon()
     .restoreSearchParams(useRoute().query, RaidResultSearchParams)
   // dtoStoreからresDataを復元
-  const rd: RaidResponse | null = searchCommon().restoreResData() as RaidResponse
+  const rd: RaidResponse | null = searchCommon().restoreResearchResData() as RaidResponse
   if (rd) {
     cDtoItem.value.resData = rd
   } else {

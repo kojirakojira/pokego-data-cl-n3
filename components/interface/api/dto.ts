@@ -82,6 +82,14 @@ export interface Hierarchy {
   goEvo: boolean
 }
 
+export interface EvolutionEdge {
+  pokedexId: string,
+  beforePokedexId: string,
+  goPokedex: GoPokedex,
+  beforeGoPokedex: GoPokedex,
+  annos: Array<string>
+}
+
 export class Color {
   r: number
   g: number

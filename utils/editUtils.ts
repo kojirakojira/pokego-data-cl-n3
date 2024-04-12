@@ -184,6 +184,30 @@ export default () => {
   }
 
   /**
+   * 連想配列からkeyを指定して値を取得する。
+   * 例：
+   * key = 'aaa,bbb'
+   * dic = { aaa : { bbb: 'ccc' } }
+   * 返却値: 'ccc'
+   *
+   * @param key
+   * @param dic
+   * @returns
+   */
+  const getValueFromDic = (key: string, dic: Record<string, any>): any => {
+    const keyArr = key.split('.')
+    const digDic = (keyArr: Array<string>, dic: Record<string, any>): any => {
+      if (keyArr.length === 1) {
+        return dic[keyArr[0]]
+      } else {
+        const startElem: string = keyArr.shift() as string
+        return digDic(keyArr, dic[startElem])
+      }
+    }
+    return digDic(keyArr, dic)
+  }
+
+  /**
    * String型に変換する。値が存在しない場合は、空文字を返却する。
    */
   const toString = (value: any): string => {
@@ -198,6 +222,7 @@ export default () => {
     getUrl,
     getPokemonImageUrl,
     toArrayFromDic,
+    getValueFromDic,
     toString
   }
 }

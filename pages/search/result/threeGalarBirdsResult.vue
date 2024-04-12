@@ -127,7 +127,7 @@ const init = async () => {
   cDtoItem.value.searchParams = searchCommon()
     .restoreSearchParams(useRoute().query, ThreeGalarBirdsResultSearchParams)
   // dtoStoreからresDataを復元
-  const rd: ThreeGalarBirdsResponse | null = searchCommon().restoreResData() as ThreeGalarBirdsResponse
+  const rd: ThreeGalarBirdsResponse | null = searchCommon().restoreResearchResData() as ThreeGalarBirdsResponse
 
   if (rd) {
     cDtoItem.value.resData = rd

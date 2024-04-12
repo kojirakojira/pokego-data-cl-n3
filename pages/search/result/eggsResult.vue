@@ -86,7 +86,7 @@ const init = async () => {
   cDtoItem.value.searchParams = searchCommon()
     .restoreSearchParams(useRoute().query, EggsResultSearchParams)
   // dtoStoreからresDataを復元
-  const rd: EggsResponse | null = searchCommon().restoreResData() as EggsResponse
+  const rd: EggsResponse | null = searchCommon().restoreResearchResData() as EggsResponse
 
   if (rd) {
     cDtoItem.value.resData = rd

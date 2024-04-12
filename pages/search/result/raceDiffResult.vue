@@ -202,7 +202,7 @@ const screenControlMethods = () => {
     cDtoItem.value.searchParams = searchCommon()
       .restoreSearchParams(useRoute().query, RaceDiffResultSearchParams)
     // dtoStoreからresDataを復元
-    const rd: RaceDiffResponse | null = searchCommon().restoreResData() as RaceDiffResponse
+    const rd: RaceDiffResponse | null = searchCommon().restoreResearchResData() as RaceDiffResponse
     if (rd) {
       cDtoItem.value.resData = rd
     } else {

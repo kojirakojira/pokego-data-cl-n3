@@ -91,7 +91,7 @@ const init = async () => {
   cDtoItem.value.searchParams = searchCommon()
     .restoreSearchParams(useRoute().query, EvolutionResultSearchParams)
   // dtoStoreからresDataを復元
-  const rd: EvolutionResponse | null = searchCommon().restoreResData() as EvolutionResponse
+  const rd: EvolutionResponse | null = searchCommon().restoreResearchResData() as EvolutionResponse
 
   if (rd) {
     cDtoItem.value.resData = rd

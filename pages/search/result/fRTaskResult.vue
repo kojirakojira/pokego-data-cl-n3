@@ -87,7 +87,7 @@ const init = async () => {
   cDtoItem.value.searchParams = searchCommon()
     .restoreSearchParams(useRoute().query, FRTaskResultSearchParams)
   // dtoStoreからresDataを復元
-  const rd: FRTaskResponse | null = searchCommon().restoreResData() as FRTaskResponse
+  const rd: FRTaskResponse | null = searchCommon().restoreResearchResData() as FRTaskResponse
 
   if (rd) {
     cDtoItem.value.resData = rd

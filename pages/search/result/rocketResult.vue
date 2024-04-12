@@ -132,7 +132,7 @@ const init = async () => {
   cDtoItem.value.searchParams = searchCommon()
     .restoreSearchParams(useRoute().query, RocketResultSearchParams)
   // dtoStoreからresDataを復元
-  const rd: RocketResponse | null = searchCommon().restoreResData() as RocketResponse
+  const rd: RocketResponse | null = searchCommon().restoreResearchResData() as RocketResponse
 
   if (rd) {
     cDtoItem.value.resData = rd

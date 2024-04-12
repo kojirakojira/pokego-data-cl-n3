@@ -129,7 +129,7 @@ const init = async () => {
   cDtoItem.value.searchParams = searchCommon()
     .restoreSearchParams(useRoute().query, ScpRankResultSearchParams)
   // dtoStoreからresDataを復元
-  const rd: ScpRankResponse | null = searchCommon().restoreResData() as ScpRankResponse
+  const rd: ScpRankResponse | null = searchCommon().restoreResearchResData() as ScpRankResponse
 
   if (rd) {
     cDtoItem.value.resData = rd
