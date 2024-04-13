@@ -14,7 +14,7 @@ export const dtoStore = defineStore(
     })
     // 現在の画面のposition
     const positionState = ref<number>(0)
-    // 現在のwindow.historyの桁数
+    // 現在のwindow.historyの要素数
     const lenState = ref<number>(0)
     // 直前の操作
     const navigationState = ref<string>('reload')

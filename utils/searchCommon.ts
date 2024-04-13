@@ -5,7 +5,6 @@ import {
   type LocationQuery
 } from 'vue-router'
 import { toastStore } from '~/stores/toastStore'
-// import { historyStore, ScreenInfo } from '~/stores/historyStore'
 import { dtoStore, type ScreenInfo } from '~/stores/dtoStore'
 import type { Response, ResearchResponse, MsgLevel } from '~/components/interface/api/response'
 import type { ResearchRequest } from '~/components/interface/api/request'
@@ -155,7 +154,7 @@ export default () => {
    * ③resDataが現在画面、前画面の双方に存在しない場合は、nullを返却する。
    *
    * @param prevScrChkFlg 前画面の画面名との整合性をチェックするかどうかのフラグ
-   * @param rcArr 前画面を復元する条件
+   * @param rcArr 前画面のresDataを復元する条件
    * @returns
    */
   const restoreResData = (
