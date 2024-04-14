@@ -1,5 +1,6 @@
 <template>
-  <div>
+  <div />
+  <!-- <div>
     <MajorPartsH2Common>
       {{ searchCommon().getSearchPatternName(searchPattern) }}
     </MajorPartsH2Common>
@@ -43,81 +44,81 @@
     <div v-show="isLoading">
       <Loading full-page />
     </div>
-  </div>
+  </div> -->
 </template>
 
 <script setup lang="ts">
-import {
-  FRTaskSearchDtoItem,
-  type FRTaskResponse,
-  get,
-  check
-} from '~/components/interface/fRTask'
+// import {
+//   FRTaskSearchDtoItem,
+//   type FRTaskResponse,
+//   get,
+//   check
+// } from '~/components/interface/fRTask'
 
-const searchPattern = 'fRTask'
-// current dto item
-const cDtoItem = ref<FRTaskSearchDtoItem>(new FRTaskSearchDtoItem())
-const dto: any = useAttrs().dto
-dto.params = cDtoItem
+// const searchPattern = 'fRTask'
+// // current dto item
+// const cDtoItem = ref<FRTaskSearchDtoItem>(new FRTaskSearchDtoItem())
+// const dto: any = useAttrs().dto
+// dto.params = cDtoItem
 
-const isLoading = ref<boolean>(false)
-const isSearchBtnClick = ref<boolean>(false)
+// const isLoading = ref<boolean>(false)
+// const isSearchBtnClick = ref<boolean>(false)
 
-// created: 画面を復元する
-searchCommon().restoreSearchScreen(['searchParams', 'resData'], cDtoItem.value)
+// // created: 画面を復元する
+// searchCommon().restoreSearchScreen(['searchParams', 'resData'], cDtoItem.value)
 
-const clickSearchBtn = async () => {
-  isSearchBtnClick.value = true
-  const msg = check(cDtoItem.value.searchParams)
-  if (msg) {
-    alert(msg)
-    isSearchBtnClick.value = false
-    return
-  }
-  isLoading.value = true
-  const res = await get(cDtoItem.value.searchParams)
-  if (!res) {
-    isSearchBtnClick.value = false
-    isLoading.value = false
-    return
-  }
-  handleApiResult(res)
-}
+// const clickSearchBtn = async () => {
+//   isSearchBtnClick.value = true
+//   const msg = check(cDtoItem.value.searchParams)
+//   if (msg) {
+//     alert(msg)
+//     isSearchBtnClick.value = false
+//     return
+//   }
+//   isLoading.value = true
+//   const res = await get(cDtoItem.value.searchParams)
+//   if (!res) {
+//     isSearchBtnClick.value = false
+//     isLoading.value = false
+//     return
+//   }
+//   handleApiResult(res)
+// }
 
-/**
- * APIのレスポンスを処理する。
- *
- * @param rd
- */
-const handleApiResult = (rd: FRTaskResponse) => {
-  if (rd.success) {
-    cDtoItem.value.resData = rd
-    if (rd.pokemonSearchResult.unique) {
-      // 1件のみヒットした場合
-      useRouter().push({
-        name: 'search-result-fRTaskResult',
-        query: searchCommon().makeQuery(rd.pokedexId, cDtoItem.value.searchParams)
-      })
-    } else {
-      // 複数件 or 0件ヒットした場合
-      useRouter().replace({
-        name: 'search-fRTask'
-      })
-      isSearchBtnClick.value = false
-      isLoading.value = false
-    }
-  }
-}
+// /**
+//  * APIのレスポンスを処理する。
+//  *
+//  * @param rd
+//  */
+// const handleApiResult = (rd: FRTaskResponse) => {
+//   if (rd.success) {
+//     cDtoItem.value.resData = rd
+//     if (rd.pokemonSearchResult.unique) {
+//       // 1件のみヒットした場合
+//       useRouter().push({
+//         name: 'search-result-fRTaskResult',
+//         query: searchCommon().makeQuery(rd.pokedexId, cDtoItem.value.searchParams)
+//       })
+//     } else {
+//       // 複数件 or 0件ヒットした場合
+//       useRouter().replace({
+//         name: 'search-fRTask'
+//       })
+//       isSearchBtnClick.value = false
+//       isLoading.value = false
+//     }
+//   }
+// }
 
-useHead({
-  title: searchCommon().getSearchPatternName(searchPattern),
-  meta: [
-    { property: 'og:type', content: 'article' },
-    { property: 'og:title', content: `${searchCommon().getSearchPatternName(searchPattern)} - ペリずかん` },
-    { property: 'og:url', content: useRuntimeConfig().public.url + useRoute().path },
-    { property: 'og:site_name', content: 'ペリずかん' },
-    { property: 'og:description', content: 'フィールドリサーチでゲットできるポケモンにおけるCPの振れ幅を確認できます。' },
-    { property: 'og:image', content: useRuntimeConfig().public.staticUrl + '/pokego/peripper-eyes.png' }
-  ]
-})
+// useHead({
+//   title: searchCommon().getSearchPatternName(searchPattern),
+//   meta: [
+//     { property: 'og:type', content: 'article' },
+//     { property: 'og:title', content: `${searchCommon().getSearchPatternName(searchPattern)} - ペリずかん` },
+//     { property: 'og:url', content: useRuntimeConfig().public.url + useRoute().path },
+//     { property: 'og:site_name', content: 'ペリずかん' },
+//     { property: 'og:description', content: 'フィールドリサーチでゲットできるポケモンにおけるCPの振れ幅を確認できます。' },
+//     { property: 'og:image', content: useRuntimeConfig().public.staticUrl + '/pokego/peripper-eyes.png' }
+//   ]
+// })
 </script>
