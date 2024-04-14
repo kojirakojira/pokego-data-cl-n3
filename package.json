@@ -4,9 +4,9 @@
   "type": "module",
   "scripts": {
     "dev": "cross-env APP_ENV=development nuxt dev",
-    "build": "nuxt build --dotenv .env.production",
+    "build": "nuxt build",
     "build:dev": "cross-env APP_ENV=development nuxt build",
-    "start": "node .output/server/index.mjs",
+    "start": "nuxt start",
     "generate": "cross-env APP_ENV=production nuxt generate",
     "generate:dev": "cross-env APP_ENV=development nuxt generate",
     "preview": "nuxt preview --dotenv .env.development",

@@ -42,7 +42,7 @@ export default () => {
       name: '捕獲時CP',
       patternNames: {
         raid: 'レイドボス勝利ボーナスCP',
-        fRTask: 'フィールドリサーチCP',
+        frTask: 'フィールドリサーチCP',
         eggs: 'タマゴCP',
         rocket: 'ロケット団勝利ボーナスCP'
       }

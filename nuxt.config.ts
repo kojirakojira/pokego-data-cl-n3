@@ -7,6 +7,7 @@ const defineNuxtConfig = async () => {
   if (process.env.APP_ENV) {
     envVars = await import(`./env/${process.env.APP_ENV}`)
   }
+  console.log(`envVars=${JSON.stringify(envVars)}`)
   return {
   // devtools: { enabled: true },
     runtimeConfig: envVars,
@@ -49,7 +50,7 @@ const defineNuxtConfig = async () => {
       }
     },
     vite: {
-      logLevel: 'info',
+      logLevel: 'error',
       define: {
         __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: false,
         'process.env.DEBUG': false

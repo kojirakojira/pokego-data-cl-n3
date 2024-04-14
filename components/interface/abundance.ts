@@ -14,7 +14,7 @@ export class AbundanceResponse extends ResearchResponse {
   maxCp: number
   raid: CatchCp
   rocket: CatchCp
-  fRTask: CatchCp
+  frTask: CatchCp
   egg: CatchCp
   tooStrong: boolean
   type1Color: Color
@@ -29,7 +29,7 @@ export class AbundanceResponse extends ResearchResponse {
     this.maxCp = 0
     this.raid = new CatchCp()
     this.rocket = new CatchCp()
-    this.fRTask = new CatchCp()
+    this.frTask = new CatchCp()
     this.egg = new CatchCp()
     this.tooStrong = false
     this.type1Color = new Color()

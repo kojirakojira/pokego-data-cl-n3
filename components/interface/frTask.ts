@@ -5,7 +5,7 @@ import { ResearchResponse } from './api/response'
 /**
  * レスポンスの型（API依存の部分）
  */
-export class FRTaskResponse extends ResearchResponse {
+export class FrTaskResponse extends ResearchResponse {
   mega: boolean
   befMegaGp: GoPokedex
   catchCp: CatchCp
@@ -20,7 +20,7 @@ export class FRTaskResponse extends ResearchResponse {
 /**
  * 検索画面用クエリパラメータの定義
  */
-export class FRTaskSearchParams extends ResearchRequest {
+export class FrTaskSearchParams extends ResearchRequest {
   name: string
 
   constructor () {
@@ -31,19 +31,19 @@ export class FRTaskSearchParams extends ResearchRequest {
 /**
  * 検索画面用DTOの定義
  */
-export class FRTaskSearchDtoItem implements SearchDtoItem {
-  searchParams: FRTaskSearchParams
-  resData?: FRTaskResponse
+export class FrTaskSearchDtoItem implements SearchDtoItem {
+  searchParams: FrTaskSearchParams
+  resData?: FrTaskResponse
 
   constructor () {
-    this.searchParams = new FRTaskSearchParams()
+    this.searchParams = new FrTaskSearchParams()
   }
 }
 
 /**
  * 結果画面用クエリパラメータの定義
  */
-export class FRTaskResultSearchParams {
+export class FrTaskResultSearchParams {
   pid: string
 
   constructor () {
@@ -53,13 +53,13 @@ export class FRTaskResultSearchParams {
 /**
  * 結果画面用DTOの定義
  */
-export class FRTaskResultDtoItem implements ResultDtoItem {
-  searchParams: FRTaskResultSearchParams
-  resData: FRTaskResponse
+export class FrTaskResultDtoItem implements ResultDtoItem {
+  searchParams: FrTaskResultSearchParams
+  resData: FrTaskResponse
 
   constructor () {
-    this.searchParams = new FRTaskResultSearchParams()
-    this.resData = new FRTaskResponse()
+    this.searchParams = new FrTaskResultSearchParams()
+    this.resData = new FrTaskResponse()
   }
 }
 
@@ -67,12 +67,12 @@ export class FRTaskResultDtoItem implements ResultDtoItem {
  * APIアクセス用get関数
  */
 export const get = async (
-  searchParams: FRTaskSearchParams | FRTaskResultSearchParams
-): Promise<FRTaskResponse | void> => {
-  const res = await fetchCommon('/api/fRTask', 'GET', {
+  searchParams: FrTaskSearchParams | FrTaskResultSearchParams
+): Promise<FrTaskResponse | void> => {
+  const res = await fetchCommon('/api/frTask', 'GET', {
     query: searchParams
   })
-  const rd: FRTaskResponse | null = res.data as FRTaskResponse
+  const rd: FrTaskResponse | null = res.data as FrTaskResponse
   if (!searchCommon().handleApiMessage(rd)) {
     return
   }
@@ -83,6 +83,6 @@ export const get = async (
  * 入力チェック関数
  * @returns エラーメッセージ
  */
-export const check = (searchParams: FRTaskSearchParams) => {
+export const check = (searchParams: FrTaskSearchParams) => {
   return validateUtils().checkRequired({ item: searchParams.name, itemName: 'ポケモン' })
 }

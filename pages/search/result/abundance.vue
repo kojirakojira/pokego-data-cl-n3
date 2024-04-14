@@ -147,7 +147,7 @@
                 フィールドリサーチCP
               </v-col>
               <v-col cols="7">
-                {{ `${cDtoItem.resData.fRTask.normal.min} ～ ${cDtoItem.resData.fRTask.normal.max}` }}
+                {{ `${cDtoItem.resData.frTask.normal.min} ～ ${cDtoItem.resData.frTask.normal.max}` }}
               </v-col>
             </v-row>
             <v-row>
