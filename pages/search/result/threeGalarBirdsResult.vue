@@ -148,25 +148,10 @@ const init = async () => {
 await init()
 
 // Header
-const ogpName = cDtoItem.value.resData.name || ''
-const ogpImage = cDtoItem.value.resData.image || '/pokego/peripper-eyes.png'
-useHead({
-  title: `${ogpName}の野生個体値`,
-  meta: [
-    { property: 'og:type', content: 'article' },
-    { property: 'og:title', content: `${ogpName}の野生個体値 - ペリずかん` },
-    { property: 'og:url', content: useRuntimeConfig().public.url + useRoute().path },
-    { property: 'og:site_name', content: 'ペリずかん' },
-    { property: 'og:description', content: `野生で出現した${ogpName}のCPから、有り得る個体値を一覧で表示させることができます。` },
-    { property: 'og:image', content: useRuntimeConfig().public.staticUrl + ogpImage }
-  ]
-})
-// Header
 const thisPath = useRuntimeConfig().public.url + useRoute().path
-const staticUrl = useRuntimeConfig().public.staticUrl
 const metaObject = computed((): MetaObject => {
   const pokeName = cDtoItem.value.resData.name || ''
-  const pokeImage = cDtoItem.value.resData.image || '/pokego/peripper-eyes.png'
+  const pokeImage = editUtils().getUrl(cDtoItem.value.resData.image || 'pokego/peripper-eyes.png')
   return {
     title: `${pokeName}の野生個体値`,
     meta: [
@@ -175,7 +160,7 @@ const metaObject = computed((): MetaObject => {
       { property: 'og:url', content: thisPath },
       { property: 'og:site_name', content: 'ペリずかん' },
       { property: 'og:description', content: `野生で出現した${pokeName}のCPから、有り得る個体値を一覧で表示させることができます。` },
-      { property: 'og:image', content: staticUrl + pokeImage }
+      { property: 'og:image', content: pokeImage }
     ]
   }
 })

@@ -280,7 +280,7 @@
 </template>
 
 <script setup lang="ts">
-// import type { MetaObject } from 'nuxt/schema'
+import type { MetaObject } from 'nuxt/schema'
 import { ConstantAccessor, TypeColorUtils } from '#imports'
 import {
   type AbundanceResponse,
@@ -430,24 +430,22 @@ watch(
 await screenControlMethods().init()
 
 // Header
-// const thisPath = useRuntimeConfig().public.url + useRoute().path
-// const staticUrl = useRuntimeConfig().public.staticUrl
-// const metaObject = computed((): MetaObject => {
-//   const pokeName = cDtoItem.value.resData.name || ''
-//   const pokeImage = cDtoItem.value.resData.image || '/pokego/peripper-eyes.png'
-//   return {
-//     title: `${pokeName}のタマゴCP`,
-//     meta: [
-//       { property: 'og:type', content: 'article' },
-//       { property: 'og:title', content: `${pokeName}のタマゴCP - ペリずかん` },
-//       { property: 'og:url', content: thisPath },
-//       { property: 'og:site_name', content: 'ペリずかん' },
-//       { property: 'og:description', content: `${pokeName}のCPを確認できます。` },
-//       { property: 'og:image', content: staticUrl + pokeImage }
-//     ]
-//   }
-// })
-// useHead(metaObject)
+const thisPath = useRuntimeConfig().public.url + useRoute().path
+const metaObject = computed((): MetaObject => {
+  const pokeName = cDtoItem.value.resData.name || ''
+  return {
+    title: `${pokeName}の情報`,
+    meta: [
+      { property: 'og:type', content: 'article' },
+      { property: 'og:title', content: `${pokeName}の情報 - ペリずかん` },
+      { property: 'og:url', content: thisPath },
+      { property: 'og:site_name', content: 'ペリずかん' },
+      { property: 'og:description', content: `${pokeName}の情報を確認できます。` },
+      { property: 'og:image', content: editUtils().getPokemonImageUrl(cDtoItem.value.resData.image) }
+    ]
+  }
+})
+useHead(metaObject)
 </script>
 
 <style lang="scss">

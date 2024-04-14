@@ -1,4 +1,5 @@
 import { Color, type TypeInfo } from '~/components/interface/api/dto'
+import { commonStore } from '~/stores/commonStore'
 
 export class TypeColorUtils {
   typeArr: Array<TypeInfo>
@@ -145,12 +146,8 @@ export default () => {
    * @param pathname
    * @returns
    */
-  const getUrl = (pathname: string): string | null => {
-    let url: string | null = null
-    if (process.client) {
-      url = window.location.origin + import.meta.env.BASE_URL.slice(0, -1) + pathname
-    }
-    return url
+  const getUrl = (pathname: string): string => {
+    return commonStore().getStaticUrl() + '/' + pathname
   }
 
   /**
@@ -160,13 +157,7 @@ export default () => {
    * @returns
    */
   const getPokemonImageUrl = (pathname: string | null | undefined): string => {
-    let url: string = ''
-    if (pathname) {
-      url = useRuntimeConfig().public.staticUrl + pathname
-    } else {
-      url = getUrl('/img/no-image.png') || ''
-    }
-    return url
+    return getUrl(pathname || 'no-image.png')
   }
 
   /**

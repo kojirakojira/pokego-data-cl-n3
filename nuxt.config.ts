@@ -7,7 +7,7 @@ const defineNuxtConfig = async () => {
   if (process.env.APP_ENV) {
     envVars = await import(`./env/${process.env.APP_ENV}`)
   }
-  console.log(`envVars=${JSON.stringify(envVars)}`)
+  console.log(`envVars=${JSON.stringify(envVars)}`) // eslint-disable-line no-console
   return {
   // devtools: { enabled: true },
     runtimeConfig: envVars,

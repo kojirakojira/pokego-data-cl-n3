@@ -321,7 +321,6 @@ await screenControlMethods().init()
  * Header
  */
 const thisPath = useRuntimeConfig().public.url + useRoute().path
-const staticUrl = useRuntimeConfig().public.staticUrl
 const metaObject = computed((): MetaObject => {
   return {
     title: `${searchCommon().getSearchPatternName(searchPattern)}`,
@@ -331,7 +330,7 @@ const metaObject = computed((): MetaObject => {
       { property: 'og:url', content: thisPath },
       { property: 'og:site_name', content: 'ペリずかん' },
       { property: 'og:description', content: 'ポケモンの種族値を比較し、どっちのポケモンが強いか調べることができます。' },
-      { property: 'og:image', content: staticUrl + '/pokego/peripper-eyes.png' }
+      { property: 'og:image', content: editUtils().getUrl('pokego/peripper-eyes.png') }
     ]
   }
 })

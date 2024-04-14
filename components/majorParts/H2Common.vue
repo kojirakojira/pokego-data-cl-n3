@@ -17,7 +17,6 @@ const brainImages = [
   'brain-juice-cat2',
   'brain-juice'
 ]
-const imageLocation = '/img/'
 const className = 'h2-brain-icon'
 onBeforeMount(() => {
   createStyle()
@@ -55,7 +54,7 @@ const createStyle = () => {
  */
 const imageSelector = (flipFlg) => {
   const idx = Math.floor(Math.random() * brainImages.length)
-  let imgPath = useRuntimeConfig().public.url + imageLocation + brainImages[idx]
+  let imgPath = editUtils().getUrl('brainjuice/' + brainImages[idx])
   imgPath += (flipFlg ? '-flip' : '')
   imgPath += '.png'
   return imgPath

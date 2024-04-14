@@ -36,7 +36,7 @@
           Loading...
         </div>
         <img
-          src="/img/brain-juice.png"
+          :src="editUtils().getUrl('brainjuice/brain-juice.png')"
           class="center-1"
         >
       </div>
@@ -49,6 +49,7 @@
 import '@/assets/styles/spinners.css'
 import { type RouteLocationNormalized, type NavigationGuardNext } from 'vue-router'
 import { dtoStore, type ScreenInfo } from '~/stores/dtoStore'
+import { commonStore } from '~/stores/commonStore'
 // const theme = useTheme()
 const isLoading = ref(true)
 onMounted(() => {
@@ -56,6 +57,8 @@ onMounted(() => {
   // display.theme.dark = this.$store.getters.darkTheme
   isLoading.value = false
 })
+// commonStoreの初期化
+commonStore().setStaticUrl(useRuntimeConfig().public.staticUrl)
 // constantUtilsの初期化
 await constantUtils().init()
 

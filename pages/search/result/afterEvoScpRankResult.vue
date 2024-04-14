@@ -156,10 +156,9 @@ await init()
 
 // Header
 const thisPath = useRuntimeConfig().public.url + useRoute().path
-const staticUrl = useRuntimeConfig().public.staticUrl
 const metaObject = computed((): MetaObject => {
   const pokeName = cDtoItem.value.resData.name || ''
-  const pokeImage = cDtoItem.value.resData.image || '/pokego/peripper-eyes.png'
+  const pokeImage = editUtils().getUrl(cDtoItem.value.resData.image || 'pokego/peripper-eyes.png')
   return {
     title: `${pokeName}の進化後PvP順位`,
     meta: [
@@ -168,7 +167,7 @@ const metaObject = computed((): MetaObject => {
       { property: 'og:url', content: thisPath },
       { property: 'og:site_name', content: 'ペリずかん' },
       { property: 'og:description', content: `${pokeName}の進化後のPvP順位を確認できます。` },
-      { property: 'og:image', content: staticUrl + pokeImage }
+      { property: 'og:image', content: pokeImage }
     ]
   }
 })

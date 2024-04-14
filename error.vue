@@ -5,7 +5,7 @@
         <v-spacer />
         <v-col style="text-align: -webkit-center;">
           <v-img
-            :src="editUtils().getUrl('/img/brain-juice-r.png') || ''"
+            :src="editUtils().getUrl('brainjuice/brain-juice-r.png')"
             width="200"
             height="200"
           />

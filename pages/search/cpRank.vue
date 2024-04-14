@@ -138,8 +138,8 @@ useHead({
     { property: 'og:title', content: `${searchCommon().getSearchPatternName(searchPattern)} - ペリずかん` },
     { property: 'og:url', content: useRuntimeConfig().public.url + useRoute().path },
     { property: 'og:site_name', content: 'ペリずかん' },
-    { property: 'og:description', content: '個体値を入力することにより、その個体のCPが全個体値中の何番目に高いかを調べることができます。。' },
-    { property: 'og:image', content: useRuntimeConfig().public.staticUrl + '/pokego/peripper-eyes.png' }
+    { property: 'og:description', content: '個体値を入力することにより、その個体のCPが全個体値中の何番目に高いかを調べることができます。' },
+    { property: 'og:image', content: editUtils().getUrl('pokego/peripper-eyes.png') }
   ]
 })
 </script>

@@ -212,7 +212,6 @@ await init()
 
 // Header
 const thisPath = useRuntimeConfig().public.url + useRoute().path
-const staticUrl = useRuntimeConfig().public.staticUrl
 const metaObject = computed((): MetaObject => {
   const ogpOwn1 = toJpn(cDtoItem.value.resData.own1) || ''
   const ogpOwn2 = toJpn(cDtoItem.value.resData.own2) || ''
@@ -228,7 +227,7 @@ const metaObject = computed((): MetaObject => {
       { property: 'og:url', content: thisPath },
       { property: 'og:site_name', content: 'ペリずかん' },
       { property: 'og:description', content: 'じぶんのポケモン、あいてのポケモンのタイプのうち1つをXと仮定し、何のタイプであれば有利になるかを求めることができます。' },
-      { property: 'og:image', content: staticUrl + '/pokego/peripper-eyes.png' }
+      { property: 'og:image', content: editUtils().getUrl('pokego/peripper-eyes.png') }
     ]
   }
 })

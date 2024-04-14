@@ -1,4 +1,3 @@
-import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import type { TypeInfo } from '~/components/interface/api/dto'
 import type { ConstantItem, ConstantValue, SimpEntry } from '~/utils/constantUtils'

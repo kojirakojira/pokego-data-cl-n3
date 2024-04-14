@@ -230,7 +230,6 @@ await init()
 
 // Header
 const thisPath = useRuntimeConfig().public.url + useRoute().path
-const staticUrl = useRuntimeConfig().public.staticUrl
 const metaObject = computed((): MetaObject => {
   const type = typeDic.value.defender.jpn
   return {
@@ -241,7 +240,7 @@ const metaObject = computed((): MetaObject => {
       { property: 'og:url', content: thisPath },
       { property: 'og:site_name', content: 'ペリずかん' },
       { property: 'og:description', content: `${type}のこうげき時、ぼうぎょ時のそれぞれの評価を知ることができます。` },
-      { property: 'og:image', content: staticUrl + '/pokego/peripper-eyes.png' }
+      { property: 'og:image', content: editUtils().getUrl('pokego/peripper-eyes.png') }
     ]
   }
 })

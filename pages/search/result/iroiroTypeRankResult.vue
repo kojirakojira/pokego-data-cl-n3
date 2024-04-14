@@ -154,7 +154,6 @@ await screenControlMethods().init()
  * Header
  */
 const thisPath = useRuntimeConfig().public.url + useRoute().path
-const staticUrl = useRuntimeConfig().public.staticUrl
 const metaObject = computed((): MetaObject => {
   return {
     title: searchCommon().getSearchPatternName(searchPattern),
@@ -164,7 +163,7 @@ const metaObject = computed((): MetaObject => {
       { property: 'og:url', content: thisPath },
       { property: 'og:site_name', content: 'ペリずかん' },
       { property: 'og:description', content: 'タイプについての色々なランキングを確認することができます。' },
-      { property: 'og:image', content: staticUrl + staticUrl }
+      { property: 'og:image', content: editUtils().getUrl('pokego/peripper-eyes.png') }
     ]
   }
 })

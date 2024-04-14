@@ -159,7 +159,7 @@ useHead({
     { property: 'og:url', content: useRuntimeConfig().public.url + useRoute().path },
     { property: 'og:site_name', content: 'ペリずかん' },
     { property: 'og:description', content: '野生で出現したガラル三鳥のCPから個体値の一覧を閲覧できます。' },
-    { property: 'og:image', content: useRuntimeConfig().public.staticUrl + '/pokego/peripper-eyes.png' }
+    { property: 'og:image', content: editUtils().getUrl('pokego/peripper-eyes.png') }
   ]
 })
 </script>

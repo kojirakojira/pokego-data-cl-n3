@@ -19,7 +19,6 @@ export default async (
     ...argOptions
   }
   // url形式ならそのまま。なければAPIサーバへのアクセスとする。
-  console.log(useRuntimeConfig())
   const url = argEndpoint.search(/:\/\//) > 0 ? argEndpoint : useRuntimeConfig().public.apiUrl + argEndpoint
   if (process.server) {
     // サーバ側で実行する場合

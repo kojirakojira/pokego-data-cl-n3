@@ -132,7 +132,6 @@ await init()
 
 // Header
 const thisPath = useRuntimeConfig().public.url + useRoute().path
-const staticUrl = useRuntimeConfig().public.staticUrl
 const metaObject = computed((): MetaObject => {
   return {
     title: `${searchCommon().getSearchPatternName(searchPattern)}`,
@@ -142,7 +141,7 @@ const metaObject = computed((): MetaObject => {
       { property: 'og:url', content: thisPath },
       { property: 'og:site_name', content: 'ペリずかん' },
       { property: 'og:description', content: '進化条件（必要なアメの個数、進化アイテム等）から、ポケモンを逆引きすることができます。' },
-      { property: 'og:image', content: staticUrl + '/pokego/peripper-eyes.png' }
+      { property: 'og:image', content: editUtils().getUrl('pokego/peripper-eyes.png') }
     ]
   }
 })

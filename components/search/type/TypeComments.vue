@@ -1,6 +1,6 @@
 <template>
   <div id="type-comments-base">
-    <img src="/img/brain-juice-e.png" class="brain-icon">
+    <img :src="editUtils().getUrl('brainjuice/brain-juice-e.png')" class="brain-icon">
     <div :class="`triangle ' + ${theme}`" />
     <div :class="`type-comments-fukidashi ' + ${theme}`">
       <!-- eslint-disable-next-line vue/no-v-html -->

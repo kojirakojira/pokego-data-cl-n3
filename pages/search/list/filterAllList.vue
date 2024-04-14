@@ -263,7 +263,7 @@ useHead({
     { property: 'og:url', content: useRuntimeConfig().public.url + useRoute().path },
     { property: 'og:site_name', content: 'ペリずかん' },
     { property: 'og:description', content: '絞り込み条件を複合的に設定し、対象のポケモンの一覧を確認することができます。' },
-    { property: 'og:image', content: useRuntimeConfig().public.staticUrl + '/pokego/peripper-eyes.png' }
+    { property: 'og:image', content: editUtils().getUrl('pokego/peripper-eyes.png') }
   ]
 })
 </script>
