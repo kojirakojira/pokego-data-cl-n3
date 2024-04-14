@@ -49,9 +49,7 @@ const defineNuxtConfig = async () => {
       }
     },
     vite: {
-      build: {
-        outDir: './build'
-      },
+      logLevel: 'info',
       define: {
         __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: false,
         'process.env.DEBUG': false
