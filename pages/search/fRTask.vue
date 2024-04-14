@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
   <div>
     <MajorPartsH2Common>
       {{ searchCommon().getSearchPatternName(searchPattern) }}
@@ -121,4 +121,4 @@ useHead({
   ]
 })
 </script>
-~/components/interface/fRTask
+~/components/interface/fRTask -->
