@@ -9,11 +9,12 @@ export class GoPokedex {
   attack: number
   defense: number
   hp: number
-  image: string | null | undefined
   remarks: string
   type1: string
   type2: string | null | undefined
   gen: string
+  image1: string | null | undefined
+  image2: string | null | undefined
   implFlg: boolean
 
   constructor () {
@@ -38,11 +39,12 @@ export interface Pokedex {
   specialAttack: number,
   specialDefense: number,
   speed: number,
-  image: string | null | undefined,
   remarks: string,
   type1: string,
   type2: string | null | undefined,
   gen: string,
+  image1: string | null | undefined,
+  image2: string | null | undefined,
   implFlg: boolean
 }
 
@@ -212,7 +214,7 @@ export interface PlCp {
 export interface SimpPokemon {
   pokedexId: string,
   name: string,
-  image: string,
+  image1: string,
   gen: string,
   remarks: string
 }

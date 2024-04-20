@@ -5,7 +5,7 @@
     @click="clickAction()"
   >
     <v-avatar size="36" style="float:left">
-      <v-img :src="editUtils().getPokemonImageUrl(goPokedex.image)" />
+      <v-img :src="editUtils().getPokemonImageUrl(goPokedex.image1)" />
     </v-avatar>
     <span :class="$style.pokemon_name">
       {{ goPokedex.name }}

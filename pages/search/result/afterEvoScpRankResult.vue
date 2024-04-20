@@ -75,8 +75,8 @@
               <template #[`item.goPokedex.pokedexId`]="{ item }">
                 {{ editUtils().getPdxNo(item.goPokedex.pokedexId) }}
               </template>
-              <template #[`item.goPokedex.image`]="{ item }">
-                <v-avatar :image="editUtils().getPokemonImageUrl(item.goPokedex.image)" />
+              <template #[`item.goPokedex.image1`]="{ item }">
+                <v-avatar :image="editUtils().getPokemonImageUrl(item.goPokedex.image1)" />
               </template>
               <template #[`item.goPokedex.name`]="{ item }">
                 <div style="min-width:120px;">
@@ -116,7 +116,7 @@ dto.params = cDtoItem
 
 const headers = ref<any>([
   { title: '図鑑№', key: 'goPokedex.pokedexId', sortable: false },
-  { title: '', key: 'goPokedex.image', sortable: false, width: '52px' },
+  { title: '', key: 'goPokedex.image1', sortable: false, width: '52px' },
   { title: 'ポケモン', key: 'goPokedex.name', sortable: false },
   { title: 'スーパーリーグ順位', key: 'slRank', sortable: false },
   { title: 'ハイパーリーグ順位', key: 'hlRank', sortable: false },
@@ -158,7 +158,7 @@ await init()
 const thisPath = useRuntimeConfig().public.url + useRoute().path
 const metaObject = computed((): MetaObject => {
   const pokeName = cDtoItem.value.resData.name || ''
-  const pokeImage = editUtils().getUrl(cDtoItem.value.resData.image || 'pokego/peripper-eyes.png')
+  const pokeImage = editUtils().getUrl(cDtoItem.value.resData.image2 || 'pokego/peripper-eyes.png')
   return {
     title: `${pokeName}の進化後PvP順位`,
     meta: [

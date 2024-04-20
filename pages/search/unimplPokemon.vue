@@ -57,7 +57,7 @@ cDtoItem.value.resData = res
 const unimplList = computed(() => {
   const arr: Array<Record<string, any>> = cDtoItem.value.resData.unimplList.map((sp: SimpPokemon) => {
     return {
-      prependAvatar: editUtils().getPokemonImageUrl(sp.image),
+      prependAvatar: editUtils().getPokemonImageUrl(sp.image1),
       title: editUtils().appendRemarks(sp.name, sp.remarks),
       subtitle: sp.gen,
       id: sp.pokedexId

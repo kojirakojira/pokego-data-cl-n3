@@ -21,7 +21,7 @@
           >
             <v-list-item-title class="subtitle-2" :title="p.name">
               <div class="pokemon-icon">
-                <v-avatar :image="editUtils().getPokemonImageUrl(p.image)" />
+                <v-avatar :image="editUtils().getPokemonImageUrl(p.image1)" />
                 <v-icon v-if="index < 3" :color="getTrophyColor(index)" class="trophy">
                   mdi-trophy
                 </v-icon>
@@ -44,20 +44,20 @@
 </template>
 
 <script setup lang="ts">
-interface TopicPageIF {
+interface TopicPokemonIF {
   pokedexId: string,
-  image: string
+  image1: string
   name: string,
   count: number
 }
-const topicPokemons = ref<Record<string, Array<TopicPageIF>>>({
+const topicPokemons = ref<Record<string, Array<TopicPokemonIF>>>({
   arr: []
 })
 const isHit = ref<boolean>(true)
 const isLoading = ref<boolean>(true)
 
 onMounted(async () => {
-  const res: Array<TopicPageIF> = await $fetch(useRuntimeConfig().public.apiUrl + '/api/topicPokemon')
+  const res: Array<TopicPokemonIF> = await $fetch(useRuntimeConfig().public.apiUrl + '/api/topicPokemon')
   if (res) {
     topicPokemons.value.arr = res
   }

@@ -18,7 +18,8 @@ export class ResearchResponse extends Response {
   pokemonSearchResult: PokemonSearchResult
   pokedexId: string
   name: string
-  image: string | null | undefined
+  image1: string | null | undefined
+  image2: string | null | undefined
   remarks: string
 
   constructor () {

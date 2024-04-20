@@ -80,8 +80,8 @@
               <template #[`item.goPokedex.pokedexId`]="{ item }">
                 {{ editUtils().getPdxNo(item.goPokedex.pokedexId) }}
               </template>
-              <template #[`item.goPokedex.image`]="{ item }">
-                <v-avatar :image="editUtils().getPokemonImageUrl(item.goPokedex.image)" />
+              <template #[`item.goPokedex.image1`]="{ item }">
+                <v-avatar :image="editUtils().getPokemonImageUrl(item.goPokedex.image1)" />
               </template>
               <template #[`item.goPokedex.name`]="{ item }">
                 <div>
@@ -214,7 +214,7 @@ const disabledChkboxes = ref<Array<{ label: string, value: string }>>([
 /** 列が全部そろったv-data-tableのヘッダ */
 const baseHeaders = readonly<Array<any>>([
   { title: '図鑑№', key: 'goPokedex.pokedexId', align: 'center' },
-  { title: '', key: 'goPokedex.image', sortable: false, width: '52px' },
+  { title: '', key: 'goPokedex.image1', sortable: false, width: '52px' },
   { title: 'ポケモン', key: 'goPokedex.name' },
   { title: 'タイプ', key: 'goPokedex.type1', sortable: false },
   { title: 'こうげき', key: 'goPokedex.attack' },

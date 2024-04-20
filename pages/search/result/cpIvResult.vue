@@ -155,7 +155,7 @@ await init()
 const thisPath = useRuntimeConfig().public.url + useRoute().path
 const metaObject = computed((): MetaObject => {
   const pokeName = cDtoItem.value.resData.name || ''
-  const pokeImage = editUtils().getUrl(cDtoItem.value.resData.image || 'pokego/peripper-eyes.png')
+  const pokeImage = editUtils().getUrl(cDtoItem.value.resData.image2 || 'pokego/peripper-eyes.png')
   return {
     title: `${pokeName}のCP`,
     meta: [
