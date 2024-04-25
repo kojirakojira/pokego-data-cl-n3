@@ -103,7 +103,7 @@ useHead({
 }
 .peripper {
   position: absolute;
-  background-image: url(https://static.brainjuice.jp/pokego/peripper-eyes.png);
+  background-image: url(https://static.brainjuice.jp/public/pokego/peripper-eyes.png);
   width: 111.7px;
   height: 60px;
   background-size: contain;
@@ -124,7 +124,7 @@ useHead({
 }
 .peripper2 {
   position: absolute;
-  background-image: url(https://static.brainjuice.jp/pokego/peripper-eyes.png);
+  background-image: url(https://static.brainjuice.jp/public/pokego/peripper-eyes.png);
   width: 111.7px;
   height: 60px;
   background-size: contain;

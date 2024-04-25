@@ -213,7 +213,7 @@ const removeTag = (arg: string): string => {
 
       &::before {
         position: absolute;
-        background-image: url(https://static.brainjuice.jp/pokego/poke-ball.svg);
+        background-image: url(https://static.brainjuice.jp/public/pokego/poke-ball.svg);
         background-size: 52px;
         content: "";
         padding: 27px;
@@ -245,7 +245,7 @@ const removeTag = (arg: string): string => {
 
       &::before {
         position: absolute;
-        background-image: url(https://static.brainjuice.jp/pokego/super-ball.svg);
+        background-image: url(https://static.brainjuice.jp/public/pokego/super-ball.svg);
         background-size: 50px;
         content: "";
         padding: 26px;
@@ -266,7 +266,7 @@ const removeTag = (arg: string): string => {
 
       &::after {
         position: absolute;
-        background-image: url(https://static.brainjuice.jp/pokego/peri.gif);
+        background-image: url(https://static.brainjuice.jp/public/pokego/peri.gif);
         background-size: 36px;
         content: "";
         padding: 18px;
@@ -290,7 +290,7 @@ const removeTag = (arg: string): string => {
 
       &::before {
         position: absolute;
-        background-image: url(https://static.brainjuice.jp/pokego/peri.gif);
+        background-image: url(https://static.brainjuice.jp/public/pokego/peri.gif);
         background-size: 36px;
         transform: scaleX(-1);
         content: "";

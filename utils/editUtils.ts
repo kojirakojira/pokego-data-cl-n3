@@ -147,7 +147,7 @@ export default () => {
    * @returns
    */
   const getUrl = (pathname: string): string => {
-    return commonStore().getStaticUrl() + '/' + pathname
+    return commonStore().getStaticUrl() + '/public/' + pathname
   }
 
   /**
