@@ -243,11 +243,11 @@
             <SearchEvolutionEvoInfo
               v-if="isLoadedEvolution"
               :pid="cDtoItem.evoResData.pid"
-              :evo-tree-info="cDtoItem.evoResData.evoTreeInfo"
+              :evol-tree-info="cDtoItem.evoResData.evolTreeInfo"
               :another-forms="cDtoItem.evoResData.anotherForms"
               :bf-af-aot-forms="cDtoItem.evoResData.bfAfAotForms"
               :race-map="cDtoItem.evoResData.raceMap"
-              :evo-tree-annos="cDtoItem.evoResData.evoTreeAnnotations"
+              :evol-tree-annos="cDtoItem.evoResData.evolTreeAnnotations"
               router-link="search-result-abundance"
             />
             <div v-else>

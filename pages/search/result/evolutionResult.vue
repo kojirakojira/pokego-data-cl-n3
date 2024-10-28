@@ -41,11 +41,11 @@
       <SearchEvolutionEvoInfo
         ref="evoInfoRef"
         :pid="cDtoItem.resData.pid"
-        :evo-tree-info="cDtoItem.resData.evoTreeInfo"
+        :evol-tree-info="cDtoItem.resData.evolTreeInfo"
         :another-forms="cDtoItem.resData.anotherForms"
         :bf-af-aot-forms="cDtoItem.resData.bfAfAotForms"
         :race-map="cDtoItem.resData.raceMap"
-        :evo-tree-annos="cDtoItem.resData.evoTreeAnnotations"
+        :evol-tree-annos="cDtoItem.resData.evolTreeAnnotations"
         router-link="search-result-evolutionResult"
         :grid="[
           { cols: 12, md: 7, lg: 7, xl: 7 },

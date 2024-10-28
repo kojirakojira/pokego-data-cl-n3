@@ -14,7 +14,7 @@
         <div style="justify-content: center; display: flex;">
           <div :class="$style.evo_tree" style="overflow-x: auto;">
             <div style="display: flex;">
-              <div v-for="(yArr, i) in evoTreeInfo" :key="i">
+              <div v-for="(yArr, i) in evolTreeInfo" :key="i">
                 <div v-for="(xArr, yIdx) in yArr" :key="`hierarchy-${yIdx + 1}`" :class="$style.hierarchy">
                   <div
                     v-for="(h, xIdx) in xArr"
@@ -48,8 +48,8 @@
                 </div>
               </div>
             </div>
-            <ul v-if="evoTreeAnnos.length" :class="$style.evo_tree_annos">
-              <li v-for="(anno, i) in evoTreeAnnos" :key="`anno-${i}`">
+            <ul v-if="evolTreeAnnos.length" :class="$style.evo_tree_annos">
+              <li v-for="(anno, i) in evolTreeAnnos" :key="`anno-${i}`">
                 {{ anno }}
               </li>
             </ul>
@@ -113,16 +113,16 @@ import type { Grid } from '~/components/interface/common/layout'
 withDefaults(
   defineProps<{
     pid: string, // 図鑑ID
-    evoTreeInfo: Array<Array<Array<Hierarchy | null>>>, // 進化ツリー
+    evolTreeInfo: Array<Array<Array<Hierarchy | null>>>, // 進化ツリー
     anotherForms: Array<string>, // 別のすがた
     bfAfAotForms: Array<string>, // 同系統のポケモン（別のすがたの進化前、進化後）
     raceMap: Record<string, Race>, // 種族値マップ
-    evoTreeAnnos?: Array<any>, // 進化ツリーの注釈
+    evolTreeAnnos?: Array<any>, // 進化ツリーの注釈
     routerLink?: string, // ポケモンクリック時の遷移先
     grid?: Array<Grid> // VuetifyのGrid。配列の要素数は固定2つ。
    }>(),
   {
-    evoTreeAnnos: () => [],
+    evolTreeAnnos: () => [],
     routerLink: '',
     grid: () => [{ cols: 12 }, { cols: 12 }]
   }

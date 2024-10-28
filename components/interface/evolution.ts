@@ -7,20 +7,20 @@ import { ResearchResponse } from './api/response'
  */
 export class EvolutionResponse extends ResearchResponse {
   pid: string
-  evoTreeInfo: Array<Array<Array<Hierarchy>>>
+  evolTreeInfo: Array<Array<Array<Hierarchy>>>
   anotherForms: Array<string>
   bfAfAotForms: Array<string>
   raceMap: Record<string, Race>
-  evoTreeAnnotations: Array<string>
+  evolTreeAnnotations: Array<string>
 
   constructor () {
     super()
     this.pid = ''
-    this.evoTreeInfo = []
+    this.evolTreeInfo = []
     this.anotherForms = []
     this.bfAfAotForms = []
     this.raceMap = {}
-    this.evoTreeAnnotations = []
+    this.evolTreeAnnotations = []
   }
 }
 /**

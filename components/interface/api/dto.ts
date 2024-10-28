@@ -305,6 +305,64 @@ export class CatchCp {
   }
 }
 
+export interface FastGymParam {
+  gymPower: number,
+  dps: number,
+  eps: number,
+  damagedTime: number,
+  totalTime: number
+}
+
+export interface FastPvpParam {
+  pvpPower: number,
+  energy: number,
+  turns: number,
+  dpt: number,
+  ept: number
+}
+
+export interface DispFastAttack {
+  moveId: string,
+  name: string,
+  type: string,
+  gym: FastGymParam,
+  pvp: FastPvpParam
+}
+
+export interface ChargedGymParam {
+  gymPower: number,
+  dps: number,
+  damagedTime: number,
+  totalTime: number,
+  energyBar: number
+}
+
+export interface BuffContent {
+  target1: string,
+  target2: string,
+  buffEffect: number
+}
+
+export interface Buff {
+  buffList: Array<BuffContent>
+  activationChance: number
+}
+
+export interface ChargedPvpParam {
+  pvpPower: number,
+  energy: number,
+  dpe: number,
+  buff: Buff
+}
+
+export interface DispChargedAttack {
+  moveId: string,
+  name: string,
+  type: string,
+  gym: ChargedGymParam,
+  pvp: ChargedPvpParam
+}
+
 export class PokemonSearchResult {
   message: string
   msgLevel: MsgLevel
