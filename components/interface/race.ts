@@ -12,6 +12,9 @@ export class RaceResponse extends ResearchResponse {
   filteredItems: Array<DispFilterParam>
   included: boolean
 
+  goTotalCount: number
+  oriTotalCount: number
+
   constructor () {
     super()
     this.race = new Race()
@@ -19,6 +22,8 @@ export class RaceResponse extends ResearchResponse {
     this.tooStrong = false
     this.filteredItems = []
     this.included = true
+    this.goTotalCount = 1
+    this.oriTotalCount = 1
   }
 }
 /**
@@ -26,10 +31,13 @@ export class RaceResponse extends ResearchResponse {
  */
 export class RaceSearchParams extends ResearchRequest {
   name: string
+  statsRequired: boolean
 
-  constructor () {
+  constructor (statsRequired?: boolean) {
     super()
     this.name = ''
+    // trueまたは未設定の場合true
+    this.statsRequired = statsRequired || statsRequired === undefined
   }
 }
 /**
@@ -47,13 +55,18 @@ export class RaceSearchDtoItem implements SearchDtoItem {
 /**
  * 結果画面用クエリパラメータの定義
  */
-export class RaceResultSearchParams {
+export class RaceResultSearchParams extends ResearchRequest {
   pid: string
+  statsRequired: boolean
 
-  constructor () {
+  constructor (statsRequired?: boolean) {
+    super()
     this.pid = ''
+    // trueまたは未設定の場合true
+    this.statsRequired = statsRequired || statsRequired === undefined
   }
 }
+
 /**
  * 結果画面用DTOの定義
  */
@@ -71,10 +84,16 @@ export class RaceResultDtoItem implements ResultDtoItem {
  * APIアクセス用get関数
  */
 export const get = async (
-  searchParams: RaceSearchParams | RaceResultSearchParams
+  searchParams: RaceSearchParams | RaceResultSearchParams,
+  statsRequired?: boolean
 ): Promise<RaceResponse | void> => {
+  const query: RaceSearchParams = { ...searchParams } as RaceSearchParams
+  if (statsRequired !== undefined && statsRequired !== null) {
+    // 引数が設定されている場合、または明示的にnullを指定した場合
+    query.statsRequired = statsRequired
+  }
   const res = await fetchCommon('/api/race', 'GET', {
-    query: searchParams
+    query
   })
   const rd: RaceResponse | null = res.data as RaceResponse
   if (!searchCommon().handleApiMessage(rd)) {

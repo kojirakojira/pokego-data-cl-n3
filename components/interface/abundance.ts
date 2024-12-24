@@ -83,9 +83,10 @@ export type AbundanceResData = 'resData' | 'raceResData' | 'evoResData' | 'typeS
 export const get = async (
   endpoint: string,
   dtoItem: AbundanceResultDtoItem,
+  reqParam: Record<string, any>,
   resDataNm: AbundanceResData): Promise<void> => {
   const res = await fetchCommon(endpoint, 'GET', {
-    query: dtoItem.searchParams
+    query: reqParam
   })
   const rd: ResearchResponse | null = res.data as ResearchResponse
   if (!searchCommon().handleApiMessage(rd)) {

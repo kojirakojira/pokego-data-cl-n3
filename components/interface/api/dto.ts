@@ -110,12 +110,44 @@ export interface TypeInfo {
   color: Color
 }
 
+export class RaceGoRank {
+  hp: number
+  attack: number
+  defense: number
+
+  constructor () {
+    this.hp = 1
+    this.attack = 1
+    this.defense = 1
+  }
+}
+
+export class RaceOriRank {
+  hp: number
+  attack: number
+  defense: number
+  specialAttack: number
+  specialDefense: number
+  speed: number
+
+  constructor () {
+    this.hp = 1
+    this.attack = 1
+    this.defense = 1
+    this.specialAttack = 1
+    this.specialDefense = 1
+    this.speed = 1
+  }
+}
+
 export class Race {
   pokedexId: string
   name: string
   remarks: string
   pokedex: Pokedex | null | undefined
   goPokedex: GoPokedex
+  goRank?: RaceGoRank
+  oriRank?: RaceOriRank
 
   constructor () {
     this.pokedexId = ''

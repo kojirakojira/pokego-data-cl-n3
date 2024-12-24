@@ -169,7 +169,8 @@
               <v-col>
                 <GraphRaceGoRadarGraph
                   :go-pokedex="cDtoItem.raceResData.race.goPokedex"
-                  :go-pokedex-stats="cDtoItem.raceResData.statistics.goPokedexStats"
+                  :race-go-rank="cDtoItem.raceResData.race.goRank || new RaceGoRank()"
+                  :count="cDtoItem.raceResData.goTotalCount"
                 />
               </v-col>
               <v-col
@@ -181,7 +182,7 @@
                 class="stats"
               >
                 <v-container>
-                  <v-row v-for="item in statsDic.goStatsItems" :key="`go-col-${item.title}`">
+                  <v-row v-for="item in raceArr" :key="`go-col-${item.title}`">
                     <v-col cols="6" style="text-align: right">
                       {{ item.title }}
                     </v-col>
@@ -289,10 +290,10 @@ import {
   get
 } from '~/components/interface/abundance'
 import type { ResearchResponse } from '~/components/interface/api/response'
-import type { EvolutionResponse } from '~/components/interface/evolution'
-import type { RaceResponse } from '~/components/interface/race'
-import type { TypeScoreResponse } from '~/components/interface/typeScore'
-import type { GoPokedexStats, GoPokedex } from '~/components/interface/api/dto'
+import { EvolutionResultSearchParams, type EvolutionResponse } from '~/components/interface/evolution'
+import { RaceResultSearchParams, type RaceResponse } from '~/components/interface/race'
+import { TypeScoreResultSearchParams, type TypeScoreResponse } from '~/components/interface/typeScore'
+import { type GoPokedex, RaceGoRank } from '~/components/interface/api/dto'
 
 // current dto item
 const cDtoItem = ref<AbundanceResultDtoItem>(new AbundanceResultDtoItem())
@@ -311,12 +312,18 @@ const screenControlMethods = () => {
       setAllResData(rdDic)
     } else {
       // 存在しない場合は取得する
+      const abundanceReq = new AbundanceResultSearchParams()
+      const raceReq = new RaceResultSearchParams(false) // statisticsを取得しない。
+      const evoReq = new EvolutionResultSearchParams()
+      const typeScoreReq = new TypeScoreResultSearchParams()
+      abundanceReq.pid = raceReq.pid = evoReq.pid = typeScoreReq.pid = cDtoItem.value.searchParams.pid
+
       // 入力チェック不要
       await Promise.all([
-        get('/api/abundance', cDtoItem.value, 'resData'),
-        get('/api/race', cDtoItem.value, 'raceResData'),
-        get('/api/evolution', cDtoItem.value, 'evoResData'),
-        get('/api/typeScore', cDtoItem.value, 'typeScoreResData')
+        get('/api/abundance', cDtoItem.value, abundanceReq, 'resData'),
+        get('/api/race', cDtoItem.value, raceReq, 'raceResData'),
+        get('/api/evolution', cDtoItem.value, evoReq, 'evoResData'),
+        get('/api/typeScore', cDtoItem.value, typeScoreReq, 'typeScoreResData')
       ])
     }
   }
@@ -378,22 +385,18 @@ const isLoadedAbundance = computed(() => {
 const isLoadedRace = computed(() => {
   return Object.keys(cDtoItem.value.raceResData).length
 })
-interface StatsValue {
+interface RaceValue {
   title: string,
   value: number,
-  stats: Array<number>,
   color: { r: number, g: number, b: number }
 }
-const statsDic = computed((): Record<string, Array<StatsValue>> => {
+const raceArr = computed((): Array<RaceValue> => {
   const goPokedex: GoPokedex = cDtoItem.value.raceResData.race.goPokedex
-  const goStats: GoPokedexStats = cDtoItem.value.raceResData.statistics.goPokedexStats
-  return {
-    goStatsItems: [
-      { title: 'HP', value: goPokedex.hp, stats: goStats.goHpStats.list, color: { r: 0, g: 0, b: 255 } },
-      { title: 'こうげき', value: goPokedex.attack, stats: goStats.goAtStats.list, color: { r: 255, g: 0, b: 0 } },
-      { title: 'ぼうぎょ', value: goPokedex.defense, stats: goStats.goDfStats.list, color: { r: 0, g: 255, b: 0 } }
-    ]
-  }
+  return [
+    { title: 'HP', value: goPokedex.hp, color: { r: 0, g: 0, b: 255 } },
+    { title: 'こうげき', value: goPokedex.attack, color: { r: 255, g: 0, b: 0 } },
+    { title: 'ぼうぎょ', value: goPokedex.defense, color: { r: 0, g: 255, b: 0 } }
+  ]
 })
 
 /**
@@ -422,7 +425,7 @@ watch(
   async () => {
     // 初期表示処理
     await screenControlMethods().init()
-    // EvoInfoの更新
+
     prevNextRef.value.refresh()
     window.scrollTo(0, 0)
   })

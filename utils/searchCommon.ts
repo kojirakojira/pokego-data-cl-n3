@@ -437,7 +437,7 @@ export default () => {
             if (Array.isArray(rsp[k])) {
               (rsp[k] as Array<any>).push(routeQuery[k] as any)
             } else {
-              throw createError({ statusCode: 500, message: 'An unexpected type was specified', fatal: true })
+              throw createError({ statusCode: 500, message: `An unexpected type was specified. type:${typeof rsp[k]}`, fatal: true })
             }
         }
       }

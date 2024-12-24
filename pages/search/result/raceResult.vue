@@ -9,7 +9,7 @@
           <v-col align="center">
             <SearchInputFilteredItems
               :items="cDtoItem.resData.filteredItems"
-              :title-style="cDtoItem.resData.included ? '' : 'background-color: yellow;'"
+              :title-style="'background-color: yellow;'"
             />
             <span v-if="!cDtoItem.resData.included" class="caption">{{ '※' + cDtoItem.resData.message }}</span>
           </v-col>
@@ -81,7 +81,7 @@
       <h3>
         GO種族値
         <SearchInputHelpMsg>
-          各ステータスの順位を基準として表示しています。そうです。この世の中は相対評価なのです。
+          絞り込み条件を設定しなかった場合は、ポケモンGO未実装のポケモンも含みます。<br>グラフの表示は各ステータスの順位を基準としています。
         </SearchInputHelpMsg>
       </h3>
       <v-container>
@@ -89,7 +89,8 @@
           <v-col cols="12" md="6" lg="6" xl="6" align="right">
             <GraphRaceGoRadarGraph
               :go-pokedex="cDtoItem.resData.race.goPokedex"
-              :go-pokedex-stats="cDtoItem.resData.statistics.goPokedexStats"
+              :race-go-rank="cDtoItem.resData.race.goRank || new RaceGoRank()"
+              :count="cDtoItem.resData.goTotalCount"
             />
           </v-col>
           <v-col cols="12" md="6" lg="6" xl="6" class="stats">
@@ -118,15 +119,16 @@
       <h3>
         原作種族値
         <SearchInputHelpMsg>
-          各ステータスの順位を基準として表示しています。そうです。この世の中は相対評価なのです。
+          グラフの表示は各ステータスの順位を基準としています。そうです。この世の中は相対評価なのです。
         </SearchInputHelpMsg>
       </h3>
       <v-container v-if="cDtoItem.resData.race.pokedex">
         <v-row>
           <v-col cols="12" md="6" lg="6" xl="6" align="right">
             <GraphRaceOriRadarGraph
-              :race="cDtoItem.resData.race"
-              :pokedex-stats="cDtoItem.resData.statistics.pokedexStats"
+              :pokedex="cDtoItem.resData.race.pokedex"
+              :race-ori-rank="cDtoItem.resData.race.oriRank || new RaceOriRank()"
+              :count="cDtoItem.resData.oriTotalCount"
             />
           </v-col>
           <v-col cols="12" md="6" lg="6" xl="6" class="stats">
@@ -164,7 +166,7 @@
 
 <script setup lang="ts">
 import type { MetaObject } from 'nuxt/schema'
-import type { GoPokedex, GoPokedexStats, Pokedex, PokedexStats } from '~/components/interface/api/dto'
+import { RaceGoRank, RaceOriRank, type GoPokedex, type GoPokedexStats, type Pokedex, type PokedexStats } from '~/components/interface/api/dto'
 import {
   type RaceResponse,
   RaceResultDtoItem,
@@ -196,6 +198,7 @@ const init = async () => {
     if (!ret) { return }
     cDtoItem.value.resData = ret
   }
+  console.log(cDtoItem.value.resData)
 
   isLoading.value = !cDtoItem.value.resData
 }
