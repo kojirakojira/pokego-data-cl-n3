@@ -28,5 +28,6 @@ const rankArr = computed((): Array<number> => {
   const goRank = props.raceGoRank
   // ['HP', 'こうげき', 'ぼうぎょ']
   return [goRank.hp, goRank.attack, goRank.defense]
+    .map(num => props.count - num + 1)
 })
 </script>

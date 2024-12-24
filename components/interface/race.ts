@@ -89,7 +89,7 @@ export const get = async (
 ): Promise<RaceResponse | void> => {
   const query: RaceSearchParams = { ...searchParams } as RaceSearchParams
   if (statsRequired !== undefined && statsRequired !== null) {
-    // 引数が設定されている場合、または明示的にnullを指定した場合
+    // 引数が設定されている場合、または明示的にはnullが指定されていない場合
     query.statsRequired = statsRequired
   }
   const res = await fetchCommon('/api/race', 'GET', {

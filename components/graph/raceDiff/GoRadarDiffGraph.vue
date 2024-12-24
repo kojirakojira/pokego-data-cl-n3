@@ -4,30 +4,28 @@
     :labels="['HP', 'こうげき', 'ぼうぎょ']"
     :datasets="datasets"
     :min="0"
-    :max="goPokedexStats.goHpStats.list.length"
+    :max="count"
   />
 </template>
 
 <script setup lang="ts">
-import type { GoPokedexStats, Race } from '~/components/interface/api/dto'
+import { RaceGoRank, type Race } from '~/components/interface/api/dto'
 import type { RadarDataset } from '~/components/graph/RadarDiffGraph.vue'
-import { colorArr, reverseRank } from '~/components/graph/graphCommon'
+import { colorArr } from '~/components/graph/graphCommon'
 
 const props = withDefaults(
   defineProps<{
     raceArr: Array<Race>,
-    goPokedexStats: GoPokedexStats
+    count: number
   }>(),
   {})
 
 const datasets = computed((): Array<RadarDataset> => {
   return props.raceArr.map((race, i) => {
+    const rank: RaceGoRank = race.goRank || new RaceGoRank()
     return {
-      elems: [
-        reverseRank(race.goPokedex.hp, props.goPokedexStats.goHpStats.list),
-        reverseRank(race.goPokedex.attack, props.goPokedexStats.goAtStats.list),
-        reverseRank(race.goPokedex.defense, props.goPokedexStats.goDfStats.list)
-      ],
+      elems: [rank.hp, rank.attack, rank.defense]
+        .map(num => props.count - num + 1),
       label: editUtils().appendRemarks(race.name, race.remarks),
       color: colorArr[i]
     }

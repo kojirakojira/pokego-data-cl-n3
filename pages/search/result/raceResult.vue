@@ -198,7 +198,6 @@ const init = async () => {
     if (!ret) { return }
     cDtoItem.value.resData = ret
   }
-  console.log(cDtoItem.value.resData)
 
   isLoading.value = !cDtoItem.value.resData
 }

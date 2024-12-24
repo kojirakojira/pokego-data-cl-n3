@@ -39,5 +39,6 @@ const rankArr = computed((): Array<number> => {
     oriRank.specialDefense,
     oriRank.specialAttack
   ]
+    .map(num => props.count - num + 1)
 })
 </script>

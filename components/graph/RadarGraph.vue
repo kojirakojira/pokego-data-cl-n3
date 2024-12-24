@@ -40,10 +40,6 @@ const rgb = computed(() => {
   return `${props.color.r}, ${props.color.g}, ${props.color.b}`
 })
 
-const dataset = computed((): Array<number> => {
-  return props.dataset.map(d => props.max - d + 1)
-})
-
 const data = computed((): ChartData<'radar'> => {
   return {
     labels: props.labels,
@@ -55,7 +51,7 @@ const data = computed((): ChartData<'radar'> => {
         pointBorderColor: '#fff',
         pointHoverBackgroundColor: '#fff',
         pointHoverBorderColor: `rgb(${rgb.value})`,
-        data: dataset.value
+        data: props.dataset
       }
     ]
   }

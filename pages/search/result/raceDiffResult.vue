@@ -36,7 +36,8 @@
       <h3>
         GO種族値
         <SearchInputHelpMsg>
-          レーダーチャートの凡例をタップすると、特定のポケモンを非表示にできます。
+          レーダーチャートの凡例をタップすると、特定のポケモンを非表示にできます。<br>
+          順位はポケモンGO未実装のポケモンも含みます。
         </SearchInputHelpMsg>
       </h3>
       <v-container>
@@ -51,7 +52,7 @@
           >
             <GraphRaceDiffGoRadarDiffGraph
               :race-arr="cDtoItem.resData.raceArr"
-              :go-pokedex-stats="cDtoItem.resData.statistics.goPokedexStats"
+              :count="cDtoItem.resData.goTotalCount"
             />
           </v-col>
           <v-col cols="12" sm="12" md="6" lg="6" xl="6">
@@ -83,7 +84,7 @@
                   <template #bottom />
                 </v-data-table>
                 <p align="right" class="subtitle-2">
-                  {{ `※全ポケモン${cDtoItem.resData.statistics.goPokedexStats.goHpStats.list.length}体中(未実装、メガ、ゲンシ等含む)` }}
+                  {{ `※全ポケモン${cDtoItem.resData.goTotalCount}体中(未実装、メガ、ゲンシ等含む)` }}
                 </p>
               </div>
             </div>
@@ -108,7 +109,7 @@
           >
             <GraphRaceDiffOriRadarDiffGraph
               :race-arr="cDtoItem.resData.raceArr"
-              :pokedex-stats="cDtoItem.resData.statistics.pokedexStats"
+              :count="cDtoItem.resData.oriTotalCount"
             />
           </v-col>
           <v-col cols="12" sm="12" md="12" lg="12" xl="6">
@@ -149,7 +150,7 @@
                 </v-data-table>
               </div>
               <p align="right" class="subtitle-2">
-                {{ `※全ポケモン${cDtoItem.resData.statistics.goPokedexStats.goHpStats.list.length}体中(メガ、ゲンシ等含む)` }}
+                {{ `※全ポケモン${cDtoItem.resData.oriTotalCount}体中(メガ、ゲンシ等含む)` }}
               </p>
             </div>
           </v-col>
@@ -174,8 +175,7 @@
 
 <script setup lang="ts">
 import type { MetaObject } from 'nuxt/schema'
-import { reverseRank } from '~/components/graph/graphCommon'
-import type { Pokedex } from '~/components/interface/api/dto'
+import { GoPokedex, RaceGoRank, RaceOriRank, type Pokedex } from '~/components/interface/api/dto'
 import {
   type RaceDiffResponse,
   RaceDiffResultDtoItem,
@@ -241,19 +241,18 @@ const goHeaders = [
 ]
 const goTableData = computed((): Array<GoTableData> => {
   const raceArr = cDtoItem.value.resData.raceArr
-  const goPokedexStats = cDtoItem.value.resData.statistics.goPokedexStats
-  const count = cDtoItem.value.resData.statistics.goPokedexStats.goHpStats.list.length
   return raceArr.map((race) => {
-    const gp = race.goPokedex
+    const gp: GoPokedex = race.goPokedex
+    const rank: RaceGoRank = race.goRank || new RaceGoRank()
     return {
       name: gp.name,
       remarks: gp.remarks,
       hp: gp.hp,
       at: gp.attack,
       df: gp.defense,
-      hpRank: count - reverseRank(gp.hp, goPokedexStats.goHpStats.list),
-      atRank: count - reverseRank(gp.attack, goPokedexStats.goAtStats.list),
-      dfRank: count - reverseRank(gp.defense, goPokedexStats.goDfStats.list)
+      hpRank: rank.hp,
+      atRank: rank.attack,
+      dfRank: rank.defense
     }
   })
 })
@@ -292,10 +291,9 @@ const oriTableData = computed((): Array<OriTableData> => {
     // 原作種族値が存在しないポケモンが指定された場合
     return []
   }
-  const pokedexStats = cDtoItem.value.resData.statistics.pokedexStats
-  const count = cDtoItem.value.resData.statistics.pokedexStats.hpStats.list.length
   return raceArr.map((race) => {
     const pdx: Pokedex = race.pokedex as Pokedex
+    const rank: RaceOriRank = race.oriRank || new RaceOriRank()
     return {
       name: pdx.name,
       remarks: pdx.remarks,
@@ -305,12 +303,12 @@ const oriTableData = computed((): Array<OriTableData> => {
       spAt: pdx.specialAttack,
       spDf: pdx.specialDefense,
       sp: pdx.defense,
-      hpRank: count - reverseRank(pdx.hp, pokedexStats.hpStats.list),
-      atRank: count - reverseRank(pdx.attack, pokedexStats.atStats.list),
-      dfRank: count - reverseRank(pdx.defense, pokedexStats.dfStats.list),
-      spAtRank: count - reverseRank(pdx.specialAttack, pokedexStats.spAtStats.list),
-      spDfRank: count - reverseRank(pdx.specialDefense, pokedexStats.spDfStats.list),
-      spRank: count - reverseRank(pdx.speed, pokedexStats.spStats.list)
+      hpRank: rank.hp,
+      atRank: rank.attack,
+      dfRank: rank.defense,
+      spAtRank: rank.specialAttack,
+      spDfRank: rank.specialDefense,
+      spRank: rank.speed
     }
   })
 })

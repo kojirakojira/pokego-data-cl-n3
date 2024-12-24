@@ -1,4 +1,4 @@
-import { Race, PokemonStatisticsInfo, MultiSearchResult } from './api/dto'
+import { Race, MultiSearchResult } from './api/dto'
 import { Response } from './api/response'
 
 /**
@@ -15,15 +15,17 @@ export interface TextFieldValue {
 export class RaceDiffResponse extends Response {
   msr?: MultiSearchResult
   raceArr: Array<Race>
-  statistics: PokemonStatisticsInfo
   searchedById: boolean
+  goTotalCount: number
+  oriTotalCount: number
 
   constructor () {
     super()
     this.msr = new MultiSearchResult()
     this.raceArr = []
-    this.statistics = new PokemonStatisticsInfo()
     this.searchedById = false
+    this.goTotalCount = 1
+    this.oriTotalCount = 1
   }
 }
 /**
@@ -135,6 +137,8 @@ export const get = async (
   searchCommon().resErrHandle(rd.message, rd.msgLevel)
   // 検索機能由来のメッセージ
   searchCommon().resErrHandle(rd.msr?.message, rd.msr?.msgLevel)
+
+  console.log(rd)
 
   return rd
 }
