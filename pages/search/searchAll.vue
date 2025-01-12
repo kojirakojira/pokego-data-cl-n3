@@ -68,7 +68,7 @@ const screenControlMethods = () => {
   /** 初期表示時の処理 */
   const init = (): void => {
     // created: 画面を復元する
-    searchCommon().restoreSearchScreen(['searchParams'], cDtoItem.value)
+    searchCommon().restoreSearchScreen(['searchParams', 'resData'], cDtoItem.value)
   }
 
   const clickSearchBtn = async () => {
