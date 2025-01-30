@@ -16,6 +16,13 @@
         </h2>
       </v-container>
       <v-container>
+        <v-row v-if="isHitAdminComments">
+          <v-col>
+            <MajorPartsAdminComments
+              @is-hit="updateHitAdminComments"
+            />
+          </v-col>
+        </v-row>
         <v-row>
           <v-col class="subtitle-2">
             ペリずかんは、ポケモンGOの個体値を検索したり、種族値を比較したりするためのサイトです。研究目的の使用、豆知識の蓄積に便利です。（多分）
@@ -71,6 +78,12 @@ const isLoading = ref<boolean>(true)
 onMounted(() => {
   isLoading.value = false
 })
+
+const isHitAdminComments = ref<boolean>(true)
+
+const updateHitAdminComments = ($event: boolean) => {
+  isHitAdminComments.value = $event
+}
 
 useHead({
   title: 'ホーム',
