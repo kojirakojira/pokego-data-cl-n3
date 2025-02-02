@@ -34,7 +34,6 @@ const isLoading = ref<boolean>(true)
 const comments = ref<Array<string>>([])
 
 const res: Array<string> = await $fetch(useRuntimeConfig().public.apiUrl + '/api/adminComment')
-console.log(res)
 if (res) {
   comments.value = res
 }
