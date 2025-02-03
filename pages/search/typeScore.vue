@@ -171,6 +171,15 @@ const handleApiResult = (rd: TypeScoreResponse, requestQuery: TypeScoreSearchPar
   }
 }
 
+watch(() => cDtoItem.value.searchParams.isPoke, (newValue) => {
+  if (newValue) {
+    cDtoItem.value.searchParams.type1 = ''
+    cDtoItem.value.searchParams.type2 = ''
+  } else {
+    cDtoItem.value.searchParams.name = ''
+  }
+})
+
 useHead({
   title: searchCommon().getSearchPatternName(searchPattern),
   meta: [

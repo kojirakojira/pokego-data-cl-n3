@@ -49,10 +49,11 @@ export class EvolutionSearchDtoItem implements SearchDtoItem {
 /**
  * 結果画面用クエリパラメータの定義
  */
-export class EvolutionResultSearchParams {
+export class EvolutionResultSearchParams extends ResearchRequest {
   pid: string
 
   constructor () {
+    super()
     this.pid = ''
   }
 }

@@ -34,16 +34,16 @@ export class TypeScoreResponse extends ResearchResponse {
  * 検索画面用クエリパラメータの定義
  */
 export class TypeScoreSearchParams extends ResearchRequest {
+  name: string | null | undefined
   type1: string
   type2: string
-  name: string
   isPoke: boolean
 
   constructor () {
     super()
+    this.name = ''
     this.type1 = ''
     this.type2 = ''
-    this.name = ''
     this.isPoke = false
   }
 }
@@ -62,16 +62,17 @@ export class TypeScoreSearchDtoItem implements SearchDtoItem {
 /**
  * 結果画面用クエリパラメータの定義
  */
-export class TypeScoreResultSearchParams {
+export class TypeScoreResultSearchParams extends ResearchRequest {
+  pid: string | null | undefined
   type1: string
   type2: string
-  pid: string
   isPoke: boolean
 
   constructor () {
+    super()
+    this.pid = ''
     this.type1 = ''
     this.type2 = ''
-    this.pid = ''
     this.isPoke = false
   }
 }
@@ -96,28 +97,32 @@ export const createRequestQuery = (
   searchParams: TypeScoreSearchParams | TypeScoreResultSearchParams
 ): TypeScoreSearchParams | TypeScoreResultSearchParams | void => {
   let requestQuery: TypeScoreSearchParams | TypeScoreResultSearchParams
-  if ('name' in searchParams) {
-    // 検索画面
-    requestQuery = new TypeScoreSearchParams()
-
+  if (searchParams.pid || searchParams.name || searchParams.isPoke) {
     // ポケモンでの検索
-    if (searchParams.isPoke) { requestQuery.name = searchParams.name }
-  } else if ('pid' in searchParams) {
-    // 結果画面
-    requestQuery = new TypeScoreResultSearchParams()
+    // isPokeなしも許容する
+    if (searchParams.name) {
+      // 検索画面
+      requestQuery = new TypeScoreSearchParams()
+      requestQuery.name = searchParams.name
+    } else if (searchParams.pid) {
+      // 結果画面
+      requestQuery = new TypeScoreResultSearchParams()
 
-    // ポケモンでの検索
-    if (searchParams.isPoke) { requestQuery.pid = searchParams.pid }
+      // searchParamsは、pid, nameどっちものプロパティを持つため、上の分岐に入ってることになってるっぽい。
+      // それでnever型扱いになってしまうため、asで型を明示している。
+      requestQuery.pid = (searchParams as TypeScoreResultSearchParams).pid
+    } else {
+      throw createError({ statusCode: 500, message: 'Failed to create RequestQuery', fatal: true })
+    }
   } else {
-    throw createError({ statusCode: 500, message: 'Failed to create RequestQuery', fatal: true })
-  }
-
-  if (!searchParams.isPoke) {
     // タイプでの検索
     const sp = searchParams
+    requestQuery = new TypeScoreResultSearchParams()
+
     if (sp.type1) { requestQuery.type1 = sp.type1 }
     if (sp.type2) { requestQuery.type2 = sp.type2 }
   }
+
   return requestQuery
 }
 
@@ -145,8 +150,9 @@ export const check = (
   searchParams: TypeScoreSearchParams | TypeScoreResultSearchParams
 ) => {
   let msg = ''
-  if (searchParams.isPoke) {
-    if ('name' in searchParams) {
+  if (searchParams.pid || searchParams.name || searchParams.isPoke) {
+    // isPokeなしも許容する
+    if (!searchParams.pid && !searchParams.name) {
       msg += validateUtils().checkRequired({ item: searchParams.name, itemName: 'ポケモン' })
     }
   } else if (!searchParams.type1 && !searchParams.type2) {

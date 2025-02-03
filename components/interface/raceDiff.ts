@@ -138,8 +138,6 @@ export const get = async (
   // 検索機能由来のメッセージ
   searchCommon().resErrHandle(rd.msr?.message, rd.msr?.msgLevel)
 
-  console.log(rd)
-
   return rd
 }
 

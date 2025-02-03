@@ -263,12 +263,8 @@
       <MajorPartsPrevNextPokemon
         ref="prevNextRef"
         :pid="cDtoItem.resData.goPokedex.pokedexId"
-        :prev-text-func="
-          (gp: GoPokedex) =>
-            `&lt; ${editUtils().appendRemarks(gp.name, gp.remarks)}(図鑑№${editUtils().getPdxNo(gp.pokedexId)})`"
-        :next-text-func="
-          (gp: GoPokedex) =>
-            `${editUtils().appendRemarks(gp.name, gp.remarks)}(図鑑№${editUtils().getPdxNo(gp.pokedexId)}) &gt;`"
+        :prev-text-func="commonMethods().prevTextFunc"
+        :next-text-func="commonMethods().nextTextFunc"
         router-link="search-result-abundance"
         :prev-grid="{ cols: 12 }"
         :next-grid="{ cols: 12 }"
@@ -317,6 +313,10 @@ const screenControlMethods = () => {
       const evoReq = new EvolutionResultSearchParams()
       const typeScoreReq = new TypeScoreResultSearchParams()
       abundanceReq.pid = raceReq.pid = evoReq.pid = typeScoreReq.pid = cDtoItem.value.searchParams.pid
+
+      raceReq.enableCount = true
+      evoReq.enableCount = true
+      typeScoreReq.enableCount = true
 
       // 入力チェック不要
       await Promise.all([
@@ -431,6 +431,20 @@ watch(
   })
 
 await screenControlMethods().init()
+
+const commonMethods = () => {
+  const prevTextFunc = (gp: GoPokedex): string => {
+    return `< ${editUtils().appendRemarks(gp.name, gp.remarks)}(図鑑№${editUtils().getPdxNo(gp.pokedexId)})`
+  }
+  const nextTextFunc = (gp: GoPokedex) => {
+    return `${editUtils().appendRemarks(gp.name, gp.remarks)}(図鑑№${editUtils().getPdxNo(gp.pokedexId)}) >`
+  }
+
+  return {
+    prevTextFunc,
+    nextTextFunc
+  }
+}
 
 // Header
 const thisPath = useRuntimeConfig().public.url + useRoute().path
