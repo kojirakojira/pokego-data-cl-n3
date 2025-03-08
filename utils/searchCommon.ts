@@ -70,12 +70,12 @@ export default () => {
         cpRankList: 'CPランキング'
       }
     },
-    moves: {
-      name: '技',
-      patternNames: {
-        moveList: '技一覧'
-      }
-    },
+    // moves: {
+    //   name: '技',
+    //   patternNames: {
+    //     moveList: '技一覧'
+    //   }
+    // },
     type: {
       name: 'タイプ',
       patternNames: {
