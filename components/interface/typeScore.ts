@@ -8,9 +8,10 @@ export class TypeScoreResponse extends ResearchResponse {
   executedType: boolean
   type1: string
   type2: string
-  attacker1Score: boolean
-  attacker2Score: boolean
-  defenderScore: boolean
+  totalScore: number
+  attacker1Score: number
+  attacker2Score: number
+  defenderScore: number
   attackerType1Map: Record<string, Array<string>>
   attackerType2Map: Record<string, Array<string>>
   defenderTypeMap: Record<string, Array<string>>
@@ -21,9 +22,10 @@ export class TypeScoreResponse extends ResearchResponse {
     this.executedType = false
     this.type1 = ''
     this.type2 = ''
-    this.attacker1Score = false
-    this.attacker2Score = false
-    this.defenderScore = false
+    this.totalScore = 0
+    this.attacker1Score = 0
+    this.attacker2Score = 0
+    this.defenderScore = 0
     this.attackerType1Map = {}
     this.attackerType2Map = {}
     this.defenderTypeMap = {}

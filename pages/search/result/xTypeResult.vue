@@ -59,7 +59,7 @@
           </v-col>
         </v-row>
       </v-container>
-      <v-container v-if="cDtoItem.resData.typeComments.length">
+      <v-container v-if="cDtoItem.resData.typeComments?.length">
         <v-row>
           <v-col>
             <SearchTypeComments
@@ -75,7 +75,7 @@
           <v-col>
             <v-data-table
               :headers="headers"
-              :items="(cDtoItem.resData.typeRankList as Array<XTypeElement>)"
+              :items="cDtoItem.resData.typeRankList"
               items-per-page="-1"
             >
               <template #[`item.twoTypeKey`]="{ item }">
@@ -119,7 +119,7 @@
 
 <script setup lang="ts">
 import type { MetaObject } from 'nuxt/schema'
-import { type XTypeElement } from '~/components/interface/api/dto'
+// import { type XTypeElement } from '~/components/interface/api/dto'
 import {
   type XTypeResponse,
   XTypeResultDtoItem,
@@ -208,6 +208,7 @@ const init = async () => {
   isLoading.value = !cDtoItem.value.resData
 }
 
+console.log(cDtoItem)
 await init()
 
 // Header

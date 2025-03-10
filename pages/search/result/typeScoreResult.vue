@@ -20,10 +20,41 @@
       <h3>
         評価
         <SearchInputHelpMsg>
-          有利・不利タイプの数から加点・減点し、タイプごとの評価を算出しています。
+          有利なタイプ・不利なタイプの数から加点・減点し、タイプごとの評価を算出しています。<br>
+          総合評価はぼうぎょをかなり重視して算出しています。理由は、こうげき時はタイプ一致でない技も撃つことができるからです。
         </SearchInputHelpMsg>
       </h3>
       <v-container>
+        <!-- 総合評価 -->
+        <v-row>
+          <v-col class="col-title">
+            総合評価
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col class="pa-3">
+            タイプ:
+            <SearchType :type="constantAccessor.getTypeJpn(cDtoItem.searchParams.type1)" />
+            <SearchType
+              v-if="cDtoItem.searchParams.type2"
+              :type="constantAccessor.getTypeJpn(cDtoItem.searchParams.type2)"
+              style="margin-left: 3px;"
+            />
+          </v-col>
+          <v-col>
+            <div class="rating">
+              <v-rating
+                v-model="typeDic.total.vRatingScore"
+                half-increments
+                readonly
+                density="comfortable"
+                :active-color="typeDic.total.color"
+              />
+              <span class="pl-2">{{ cDtoItem.resData.totalScore + '点' }}</span>
+            </div>
+          </v-col>
+        </v-row>
+        <!-- こうげき -->
         <v-row>
           <v-col class="col-title">
             こうげき時のタイプ評価
@@ -65,6 +96,7 @@
             </div>
           </v-col>
         </v-row>
+        <!-- ぼうぎょ -->
         <v-row>
           <v-col class="col-title">
             ぼうぎょ時のタイプ評価
@@ -146,11 +178,13 @@ interface TypeInfo {
   vRatingScore: number
 }
 interface TypeDic {
+  total: TypeInfo,
   attacker1: TypeInfo,
   attacker2: TypeInfo | null | undefined,
   defender: TypeInfo
 }
 const typeDic = ref<TypeDic>({
+  total: { jpn: '', color: '', vRatingScore: 0 },
   attacker1: { jpn: '', color: '', vRatingScore: 0 },
   attacker2: { jpn: '', color: '', vRatingScore: 0 },
   defender: { jpn: '', color: '', vRatingScore: 0 }
@@ -170,6 +204,12 @@ const createTypeDic = (type1: string, type2: string | null, resData: Record<stri
   const round2to3 = (score: number) => { return Math.round(score * 2) / 2 }
   const type1Jpn: string = constantAccessor.getTypeJpn(type1) as string
   const type2Jpn: string | null | undefined = type2 && constantAccessor.getTypeJpn(type2)
+
+  const total: TypeInfo = {
+    jpn: type1Jpn + (type2Jpn ? ',' + type2Jpn : ''),
+    color: typeColorUtils.getRGB(type1, type2),
+    vRatingScore: round2to3(resData.totalScore)
+  }
   const attacker1: TypeInfo = {
     jpn: type1Jpn,
     color: typeColorUtils.getRGB(type1),
@@ -188,7 +228,7 @@ const createTypeDic = (type1: string, type2: string | null, resData: Record<stri
     color: typeColorUtils.getRGB(type1, type2),
     vRatingScore: round2to3(resData.defenderScore)
   }
-  return { attacker1, attacker2, defender }
+  return { total, attacker1, attacker2, defender }
 }
 
 const init = async () => {
