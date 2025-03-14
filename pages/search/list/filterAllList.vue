@@ -16,6 +16,7 @@
         <v-row class="body-1">
           <v-col cols="8">
             <v-btn
+              id="row-hidden-bar"
               rounded
               class="px-4"
               color="success"
@@ -65,6 +66,7 @@
         <v-row>
           <v-col>
             <v-data-table
+              id="pokemon-filtered-list"
               v-model:sort-by="cDtoItem.tableControl.sortByArr"
               v-model:items-per-page="cDtoItem.tableControl.itemsPerPage"
               v-model:page="cDtoItem.tableControl.currentPage"
@@ -199,6 +201,23 @@ const screenControlMethods = () => {
 /**
  * table制御用機能
  */
+// v-data-tableのページングで次ページに飛んだ場合、画面上部、前ページに飛んだ場合、画面下部までスクロールする
+watch(() => cDtoItem.value.tableControl.currentPage, (newValue, oldValue) => {
+  if (newValue > oldValue) {
+    // 次ページに飛んだ場合、画面上部に移動
+    const elem = document.getElementById('row-hidden-bar')
+    elem?.scrollIntoView({ behavior: 'smooth' })
+  } else {
+    // 前ページに飛んだ場合、画面下部に移動（ページの更新を待つ）
+    const elem = document.getElementById('pokemon-filtered-list')
+    nextTick(() => {
+      elem?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'end'
+      })
+    })
+  }
+})
 // hiddenColumnsAreaの表示・非表示
 const showHiddenColumnsArea = ref<boolean>(false)
 
@@ -232,8 +251,9 @@ const itemsPerPageOptions = computed((): Array<number> => {
   const retArr: Array<number> = []
   const count = cDtoItem.value.resData.pfr.gpAndCpList.length
 
-  if (count > 200) {
-    for (let i = 200; i < count; i = i + 200) {
+  const limit = 200
+  if (count > limit) {
+    for (let i = limit; i < count; i += limit) {
       retArr.push(i)
     }
   }
