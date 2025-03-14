@@ -187,9 +187,9 @@
                 <v-container>
                   <v-row v-for="item in raceArr" :key="`go-col-${item.title}`">
                     <v-col cols="6" style="text-align: right">
-                      <nobr>
+                      <span style="white-space: nowrap;">
                         {{ item.title }}
-                      </nobr>
+                      </span>
                     </v-col>
                     <v-col cols="6">
                       {{ item.value }}
