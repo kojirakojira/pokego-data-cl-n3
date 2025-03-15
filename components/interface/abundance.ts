@@ -1,4 +1,4 @@
-import { CatchCp, Color, GoPokedex } from './api/dto'
+import { CatchCp, Color, GoPokedex, GoPokedexAndCpPl } from './api/dto'
 import { ResearchResponse } from './api/response'
 import { EvolutionResponse } from './evolution'
 import { RaceResponse } from './race'
@@ -20,6 +20,8 @@ export class AbundanceResponse extends ResearchResponse {
   type1Color: Color
   type2Color: Color
   mega: boolean
+  superLeagueSafeCpList: Array<GoPokedexAndCpPl>
+  hyperLeagueSafeCpList: Array<GoPokedexAndCpPl>
 
   constructor () {
     super()
@@ -35,6 +37,8 @@ export class AbundanceResponse extends ResearchResponse {
     this.type1Color = new Color()
     this.type2Color = new Color()
     this.mega = false
+    this.superLeagueSafeCpList = []
+    this.hyperLeagueSafeCpList = []
   }
 }
 /**

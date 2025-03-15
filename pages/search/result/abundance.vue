@@ -161,6 +161,44 @@
                 {{ `${cDtoItem.resData.egg.normal.min} ～ ${cDtoItem.resData.egg.normal.max}` }}
               </v-col>
             </v-row>
+            <v-row v-if="cDtoItem.resData.superLeagueSafeCpList.length">
+              <v-col cols="5">
+                スーパーリーグ制限内最大CP
+                <SearchInputHelpMsg>
+                  {{ safeCpMsgGenerator }}
+                </SearchInputHelpMsg>
+              </v-col>
+              <v-col cols="7">
+                <div v-for="gpac in cDtoItem.resData.superLeagueSafeCpList" :key="`sl-safe-${gpac.goPokedex.pokedexId}`">
+                  {{ gpac.cp }}<span class="caption my-0">{{ `(PL:${gpac.pl})` }}</span>
+                  <template v-if="cDtoItem.resData.superLeagueSafeCpList.length > 1">
+                    <p class="caption my-0">
+                      {{ `(${editUtils().appendRemarks(gpac.goPokedex.name, gpac.goPokedex.remarks)}に進化させる場合)` }}
+                    </p>
+                    <v-divider />
+                  </template>
+                </div>
+              </v-col>
+            </v-row>
+            <v-row v-if="cDtoItem.resData.hyperLeagueSafeCpList.length">
+              <v-col cols="5">
+                ハイパーリーグ制限内最大CP
+                <SearchInputHelpMsg>
+                  {{ safeCpMsgGenerator }}
+                </SearchInputHelpMsg>
+              </v-col>
+              <v-col cols="7">
+                <div v-for="gpac in cDtoItem.resData.hyperLeagueSafeCpList" :key="`sl-safe-${gpac.goPokedex.pokedexId}`">
+                  {{ gpac.cp }}<span class="caption my-0">{{ `(PL:${gpac.pl})` }}</span>
+                  <template v-if="cDtoItem.resData.hyperLeagueSafeCpList.length > 1">
+                    <p class="caption my-0">
+                      {{ `(${editUtils().appendRemarks(gpac.goPokedex.name, gpac.goPokedex.remarks)}に進化させる場合)` }}
+                    </p>
+                    <v-divider />
+                  </template>
+                </div>
+              </v-col>
+            </v-row>
           </v-container>
           <div v-else>
             <Loading />
@@ -294,7 +332,7 @@ import type { ResearchResponse } from '~/components/interface/api/response'
 import { EvolutionResultSearchParams, type EvolutionResponse } from '~/components/interface/evolution'
 import { RaceResultSearchParams, type RaceResponse } from '~/components/interface/race'
 import { TypeScoreResultSearchParams, type TypeScoreResponse } from '~/components/interface/typeScore'
-import { type GoPokedex, RaceGoRank } from '~/components/interface/api/dto'
+import { type GoPokedex, RaceGoRank, GoPokedexAndCpPl } from '~/components/interface/api/dto'
 
 // current dto item
 const cDtoItem = ref<AbundanceResultDtoItem>(new AbundanceResultDtoItem())
@@ -381,6 +419,19 @@ const rgba2 = computed(() => {
 /** abundanceの読み込みが終わったらtrueになる。 */
 const isLoadedAbundance = computed(() => {
   return Object.keys(cDtoItem.value.resData).length
+})
+/** スーパーリーグ安全圏CP、ハイパーリーグ安全圏CP用のメッセージを生成する。 */
+const safeCpMsgGenerator = computed(() => {
+  const gp: GoPokedex = cDtoItem.value.resData.goPokedex
+  // スーパーリーグもハイパーリーグもここの処理は同じ。
+  const gpacArr: Array<GoPokedexAndCpPl> = cDtoItem.value.resData.superLeagueSafeCpList
+  if (!gpacArr.length) {
+    return ''
+  }
+  const finEvoPokeNames = gpacArr
+    .map(gpac => editUtils().appendRemarks(gpac.goPokedex.name, gpac.goPokedex.remarks))
+    .join('、')
+  return `${editUtils().appendRemarks(gp.name, gp.remarks)}を最終進化形態(${finEvoPokeNames})に進化させた場合、CP制限に確実にひっかからない最大のCPを示しています。`
 })
 
 /**

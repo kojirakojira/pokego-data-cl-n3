@@ -185,6 +185,18 @@ export class GoPokedexAndCp {
   }
 }
 
+export class GoPokedexAndCpPl {
+  goPokedex: GoPokedex
+  cp: number
+  pl: string
+
+  constructor () {
+    this.goPokedex = new GoPokedex()
+    this.cp = 0
+    this.pl = '0'
+  }
+}
+
 export class VersatilityIv {
   no: number
   pl: string
