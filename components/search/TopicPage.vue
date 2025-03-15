@@ -2,7 +2,7 @@
   <v-container class="widget-item">
     <v-row>
       <v-col class="subtitle-1 py-0 h2-title">
-        人気の検索
+        人気な検索
       </v-col>
     </v-row>
     <v-row v-show="!isLoading">
