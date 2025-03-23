@@ -1,4 +1,4 @@
-import { Race, MultiSearchResult } from './api/dto'
+import { Race, MultiSearchResult, type PidAndName } from './api/dto'
 import { Response } from './api/response'
 
 /**
@@ -83,9 +83,11 @@ export class RaceDiffResultDtoItem implements ResultDtoItem {
   }
 }
 
+/**
+ * APIへリクエストを送る際のパラメータ
+ */
 export interface RaceDiffRequestQuery {
-  pidArr?: Array<string>,
-  nameArr?: Array<string>
+  pidAndNameArr: Array<PidAndName>
 }
 /**
  * searchParamsからid(or name)を抽出し配列化する。
@@ -96,27 +98,31 @@ export interface RaceDiffRequestQuery {
 export const createRaceDiffRequestQuery = (
   searchParams: RaceDiffSearchParams | RaceDiffResultSearchParams
 ): RaceDiffRequestQuery => {
-  const ret: RaceDiffRequestQuery = {}
+  const ret: RaceDiffRequestQuery = { pidAndNameArr: [] }
   if ('pid1' in searchParams) {
     // 結果画面からの呼び出し
-    ret.pidArr = Object.entries(searchParams)
+    ret.pidAndNameArr = Object.entries(searchParams)
       .filter(([k, v]) => k.match(/pid[1-6]$/) && v)
       .sort(([k1], [k2]) => {
         const num1 = Number(k1.substring(k1.length - 1))
         const num2 = Number(k2.substring(k2.length - 1))
         return num1 - num2
       })
-      .map(entry => entry[1])
+      .map((entry) => {
+        return {
+          pid: entry[1],
+          name: ''
+        }
+      })
   } else if ('textFieldValues' in searchParams) {
+    const textFieldValues: Array<TextFieldValue> = searchParams.textFieldValues
     // 検索画面からの呼び出し
-    if (searchParams.textFieldValues.filter(tfv => !tfv.pid).length) {
-      ret.nameArr = searchParams.textFieldValues
-        .map(tfv => tfv.name)
-    } else {
-      // pidがすべて揃っている場合は、idArrで返却する。
-      ret.pidArr = searchParams.textFieldValues
-        .map(tfv => tfv.pid as string)
-    }
+    ret.pidAndNameArr = textFieldValues.map((tfv) => {
+      return {
+        pid: tfv.pid || '',
+        name: tfv.name
+      }
+    })
   }
 
   return ret
@@ -131,10 +137,13 @@ export const get = async (
   // リクエスト用queryの作成
   const query: Record<string, any> = createRaceDiffRequestQuery(searchParams)
 
-  const res = await fetchCommon('/api/raceDiff', 'GET', { query })
+  const res = await fetchCommon('/api/raceDiff', 'GET', {
+    query,
+    headers: { 'Content-Type': 'application/json' }
+  })
   const rd: RaceDiffResponse | null = res.data as RaceDiffResponse
   // 個別機能由来のメッセージ
-  searchCommon().resErrHandle(rd.message, rd.msgLevel)
+  searchCommon().resErrHandle(rd?.message, rd?.msgLevel)
   // 検索機能由来のメッセージ
   searchCommon().resErrHandle(rd.msr?.message, rd.msr?.msgLevel)
 
@@ -146,3 +155,16 @@ export const get = async (
  * @returns エラーメッセージ
  */
 // すべてサーバ側でやる
+
+/**
+ * PokemonSearchResultにエラーが含まれているか判定する
+ * （true: チェック成功、エラーなし, false: チェック失敗）
+ * @param rd
+ */
+export const checkApiError = (rd: RaceDiffResponse) => {
+  if (!rd.success) { return false }
+  if (!rd.msr) { return true }
+  if (rd.msr.msgLevel === 'error') { return false }
+
+  return !rd.msr.psrArr.filter(psr => psr.msgLevel === 'error').length
+}

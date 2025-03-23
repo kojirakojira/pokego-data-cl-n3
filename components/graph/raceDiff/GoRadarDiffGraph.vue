@@ -11,7 +11,7 @@
 <script setup lang="ts">
 import { RaceGoRank, type Race } from '~/components/interface/api/dto'
 import type { RadarDataset } from '~/components/graph/RadarDiffGraph.vue'
-import { colorArr } from '~/components/graph/graphCommon'
+import { graphCommon } from '~/components/graph/graphCommon'
 
 const props = withDefaults(
   defineProps<{
@@ -27,7 +27,7 @@ const datasets = computed((): Array<RadarDataset> => {
       elems: [rank.hp, rank.attack, rank.defense]
         .map(num => props.count - num + 1),
       label: editUtils().appendRemarks(race.name, race.remarks),
-      color: colorArr[i]
+      color: graphCommon().colorArr[i]
     }
   })
 })

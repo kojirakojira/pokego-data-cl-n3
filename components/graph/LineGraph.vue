@@ -18,7 +18,7 @@ import {
   LineElement
 } from 'chart.js'
 import { Line } from 'vue-chartjs'
-import { reverseRank } from './graphCommon'
+import { graphCommon } from './graphCommon'
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, PointElement, RadialLinearScale, LineElement, Filler, Title, Tooltip, Legend)
 
@@ -55,7 +55,7 @@ const rgb = computed(() => {
 
 const rankStr = computed((): string => {
   const totalCount = props.dataset.length
-  return `${totalCount - reverseRank(props.point, props.dataset)}/${totalCount}位`
+  return `${totalCount - graphCommon().reverseRank(props.point, props.dataset)}/${totalCount}位`
 })
 
 const data = ref<ChartData<'line'>>({

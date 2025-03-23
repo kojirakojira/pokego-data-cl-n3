@@ -41,7 +41,19 @@
                       :append-inner-icon="item.pid ? 'mdi-check' : ''"
                       @update:model-value="textFieldMethods().onChangeText(idx)"
                       @keyup.enter.exact="screenControlMethods().clickSearchBtn"
-                    />
+                    >
+                      <template #append>
+                        <v-btn
+                          class="mx-2"
+                          size="x-small"
+                          icon="mdi-minus"
+                          :color="cDtoItem.searchParams.textFieldValues.length <= 2 ? '' : 'red'"
+                          :disabled="cDtoItem.searchParams.textFieldValues.length <= 2"
+                          elevation="2"
+                          @click="textFieldMethods().clickTextfieldDelBtn(idx)"
+                        />
+                      </template>
+                    </v-text-field>
                   </v-col>
                 </v-row>
               </v-container>
@@ -50,27 +62,19 @@
           <v-row>
             <v-col class="py-0" align="right">
               <v-btn
+                rounded
                 class="mx-2"
                 size="small"
-                icon="mdi-plus"
+                append-icon="mdi-plus"
                 :color="cDtoItem.searchParams.textFieldValues.length >= 6 ? '' : 'info'"
                 :disabled="cDtoItem.searchParams.textFieldValues.length >= 6"
                 elevation="2"
                 @click="() => {
                   cDtoItem.searchParams.textFieldValues.push({ name: '', errMsg: '' })
                 }"
-              />
-              <v-btn
-                class="mx-2"
-                size="small"
-                icon="mdi-minus"
-                :color="cDtoItem.searchParams.textFieldValues.length <= 2 ? '' : 'red'"
-                :disabled="cDtoItem.searchParams.textFieldValues.length <= 2"
-                elevation="2"
-                @click="() => {
-                  cDtoItem.searchParams.textFieldValues.pop()
-                }"
-              />
+              >
+                ポケモンを追加
+              </v-btn>
             </v-col>
           </v-row>
           <v-row>
@@ -121,6 +125,7 @@ import {
   RaceDiffSearchDtoItem,
   type RaceDiffResponse,
   get,
+  checkApiError,
   type TextFieldValue
 } from '~/components/interface/raceDiff'
 
@@ -154,7 +159,7 @@ const screenControlMethods = () => {
 
   /** APIのレスポンスを処理する。 */
   const handleApiResult = (rd: RaceDiffResponse) => {
-    if (rd.success) {
+    if (checkApiError(rd)) {
       cDtoItem.value.resData = rd
 
       if (!rd.searchedById && !handleApiNameSearchResult(rd)) {
@@ -166,6 +171,10 @@ const screenControlMethods = () => {
 
       // idから検索した場合、またはnameから検索して遷移可能な場合
       transResultPage(cDtoItem.value.searchParams.textFieldValues)
+    } else {
+      textFieldMethods().setErrMsgInTextFieldValues(rd)
+      isLoading.value = false
+      isSearchBtnClick.value = false
     }
   }
 
@@ -175,24 +184,25 @@ const screenControlMethods = () => {
    */
   const handleApiNameSearchResult = (rd: RaceDiffResponse): boolean => {
     const msr: MultiSearchResult = rd.msr as MultiSearchResult
-    // ヒットしていないnameが存在した場合
-    if (msr.psrArr.filter(psr => !psr.hit).length) {
-      // エラーメッセージをセット
-      msr.psrArr.forEach((psr, i) => {
-        if (psr.msgLevel === 'error') {
-          cDtoItem.value.searchParams.textFieldValues[i].errMsg = psr.message
-        }
-      })
-
-      return false
-    }
 
     // 検索結果をtextFieldValuesに適用させる。
     msr.psrArr.forEach((psr, i) => {
       if (psr.unique) {
         // ポケモンが一意の場合は、pidをセットする。
         cDtoItem.value.searchParams.textFieldValues[i].pid = psr.goPokedex.pokedexId
-      } else {
+      }
+    })
+
+    if (!checkApiError(rd)) {
+      // エラーが含まれている場合
+      // エラーメッセージをセット
+      textFieldMethods().setErrMsgInTextFieldValues(rd)
+      return false
+    }
+
+    // すべて入力されていて、かつ一意に特定できていないポケモンがいた場合
+    msr.psrArr.forEach((psr, i) => {
+      if (!psr.unique) {
         // ポケモンが一意に特定できていない場合
         notUniquePsrArr.value.push({ psr, msrIdx: i })
       }
@@ -218,6 +228,7 @@ const screenControlMethods = () => {
       query: dic
     })
   }
+
   return {
     init,
     clickSearchBtn,
@@ -252,6 +263,13 @@ const textFieldMethods = () => {
     textFieldValues.push({ name: '', errMsg: '' })
   }
 
+  /** 入力ボックス横のマイナスボタン押下時の処理 */
+  const clickTextfieldDelBtn = (idx: number) => {
+    const textFieldValues: Array<TextFieldValue> = cDtoItem.value.searchParams.textFieldValues
+
+    textFieldValues.splice(idx, 1)
+  }
+
   /** 入力ボックスの値が変更されたときの処理 */
   const onChangeText = (idx: number) => {
     // pidを削除する。
@@ -260,7 +278,7 @@ const textFieldMethods = () => {
   }
 
   /** 入力されたポケモンに対して検索結果が複数ヒットした状況で、ポケモンが選択された場合の処理 */
-  const selected = (msrIdx: number, pid: string) => {
+  const selected = async (msrIdx: number, pid: string) => {
     const msr: MultiSearchResult = cDtoItem.value.resData?.msr as MultiSearchResult
     const targetGp: GoPokedex = msr.psrArr[msrIdx].goPokedexList
       .filter(gp => pid === gp.pokedexId)[0]
@@ -291,11 +309,17 @@ const textFieldMethods = () => {
     } else {
       // 全てuniqueになった場合
       // idから種族値比較用の情報を取得
-      get(cDtoItem.value.searchParams)
-        .then((res) => {
-          cDtoItem.value.resData = res
-          screenControlMethods().transResultPage(cDtoItem.value.searchParams.textFieldValues)
-        })
+      const res = await get(cDtoItem.value.searchParams)
+      cDtoItem.value.resData = res
+
+      if (checkApiError(cDtoItem.value.resData)) {
+        // 入力チェックがすべてなくなったら遷移可能
+        screenControlMethods().transResultPage(cDtoItem.value.searchParams.textFieldValues)
+      } else {
+        setErrMsgInTextFieldValues(cDtoItem.value.resData)
+        isLoading.value = false
+        isSearchBtnClick.value = false
+      }
     }
   }
   const clearErrMsg = () => {
@@ -303,11 +327,22 @@ const textFieldMethods = () => {
       tfv.errMsg = ''
     })
   }
+
+  const setErrMsgInTextFieldValues = (resData: RaceDiffResponse) => {
+    resData.msr?.psrArr.forEach((psr, i) => {
+      if (psr.msgLevel === 'error') {
+        cDtoItem.value.searchParams.textFieldValues[i].errMsg = psr.message
+      }
+    })
+  }
+
   return {
     init,
+    clickTextfieldDelBtn,
     onChangeText,
     selected,
-    clearErrMsg
+    clearErrMsg,
+    setErrMsgInTextFieldValues
   }
 }
 

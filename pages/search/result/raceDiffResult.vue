@@ -8,29 +8,29 @@
         <v-row
           v-for="(race, idx) in cDtoItem.resData.raceArr"
           :key="`p-name-${idx}`"
-          max-width="300px"
         >
-          <v-col cols="12" class="py-0 text-center">
-            <div class="d-inline-flex align-center">
-              <span class="text-left" style="width: 20em;">
-                <v-icon
-                  size="large"
-                  :color="`${typeColorUtils.getRGBA(0.7, race.goPokedex.type1, race.goPokedex.type2)}`"
-                >
-                  mdi-circle-half-full
-                </v-icon>
-                {{ editUtils().appendRemarks(race.goPokedex.name, race.goPokedex.remarks) }}
-              </span>
-              <div class="text-left" style="width: 10em;">
-                <SearchType :type="race.goPokedex.type1" />
-                <SearchType
-                  v-if="race.goPokedex.type2"
-                  :type="race.goPokedex.type2"
-                  style="margin-left:5px;"
-                />
-              </div>
-            </div>
+          <v-spacer v-if="!isSmAndDown" />
+          <v-col cols="6" md="5" lg="4" xl="3" class="py-0 d-inline-flex align-center">
+            <span>
+              <v-icon
+                size="large"
+                style="transform: rotate(90deg);"
+                :color="`${layoutMethods().getGraphColor(idx)}`"
+              >
+                mdi-circle-half-full
+              </v-icon>
+              {{ editUtils().appendRemarks(race.goPokedex.name, race.goPokedex.remarks) }}
+            </span>
           </v-col>
+          <v-col cols="6" md="5" lg="4" xl="3" class="py-0 d-inline-flex align-center">
+            <SearchType :type="race.goPokedex.type1" />
+            <SearchType
+              v-if="race.goPokedex.type2"
+              :type="race.goPokedex.type2"
+              style="margin-left:5px;"
+            />
+          </v-col>
+          <v-spacer v-if="!isSmAndDown" />
         </v-row>
       </v-container>
       <h3>
@@ -175,14 +175,16 @@
 
 <script setup lang="ts">
 import type { MetaObject } from 'nuxt/schema'
+import { useDisplay } from 'vuetify'
 import { GoPokedex, RaceGoRank, RaceOriRank, type Pokedex } from '~/components/interface/api/dto'
 import {
   type RaceDiffResponse,
   RaceDiffResultDtoItem,
   RaceDiffResultSearchParams,
+  checkApiError,
   get
 } from '~/components/interface/raceDiff'
-import { TypeColorUtils } from '#imports'
+import { graphCommon } from '~/components/graph/graphCommon'
 
 const searchPattern = 'raceDiff'
 /**
@@ -194,8 +196,6 @@ const dto: any = useAttrs().dto
 dto.params = cDtoItem
 const isLoading = ref<boolean>(true)
 
-const constant: ConstantValue = constantUtils().get()
-const typeColorUtils: TypeColorUtils = new TypeColorUtils(constant.TYPE)
 const screenControlMethods = () => {
   const init = async () => {
     // route.queryからsearchParamsを復元
@@ -207,9 +207,10 @@ const screenControlMethods = () => {
       cDtoItem.value.resData = rd
     } else {
       // 存在しない場合は取得する
-      // 入力チェック不要
-      const ret = await get(cDtoItem.value.searchParams)
-      if (!ret) { return }
+      const ret: RaceDiffResponse = await get(cDtoItem.value.searchParams)
+      if (ret && !checkApiError(ret)) {
+        throw createError({ statusCode: 400, message: '不正なパラメータが指定されました。', fatal: true })
+      }
       cDtoItem.value.resData = ret
     }
 
@@ -217,6 +218,22 @@ const screenControlMethods = () => {
   }
   return {
     init
+  }
+}
+
+/**
+ * 画面全般のレイアウト
+ */
+// 画面の横幅がsm以下かどうか
+const isSmAndDown = useDisplay().smAndDown
+
+const layoutMethods = () => {
+  const getGraphColor = (idx: number) => {
+    const color: { r: number, g: number, b: number } = graphCommon().colorArr[idx]
+    return `rgb(${color.r}, ${color.g}, ${color.b})`
+  }
+  return {
+    getGraphColor
   }
 }
 

@@ -16,6 +16,8 @@ export class GoPokedex {
   image1: string | null | undefined
   image2: string | null | undefined
   implFlg: boolean
+  dynamaxImplFlg: boolean
+  gigantamaxImplFlg: boolean
 
   constructor () {
     this.pokedexId = ''
@@ -27,6 +29,8 @@ export class GoPokedex {
     this.type1 = ''
     this.gen = ''
     this.implFlg = false
+    this.dynamaxImplFlg = false
+    this.gigantamaxImplFlg = false
   }
 }
 
@@ -461,4 +465,9 @@ export class PokemonFilterResult {
     this.hit = false
     this.filteredItems = []
   }
+}
+
+export interface PidAndName {
+  pid?: string,
+  name: string
 }
