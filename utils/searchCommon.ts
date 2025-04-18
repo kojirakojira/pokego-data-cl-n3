@@ -44,7 +44,8 @@ export default () => {
         raid: 'レイドボス勝利ボーナスCP',
         frTask: 'フィールドリサーチCP',
         eggs: 'タマゴCP',
-        rocket: 'ロケット団勝利ボーナスCP'
+        rocket: 'ロケット団勝利ボーナスCP',
+        dynamax: 'MAX,G-MAX勝利ボーナスCP'
       }
     },
     race: {
@@ -58,14 +59,14 @@ export default () => {
       name: '個体値',
       patternNames: {
         scpRank: 'PvP順位',
-        scpRankList: 'PvP順位一覧',
+        scpRankList: 'PvP順位リスト',
         scpRankMaxMin: 'PvP最高(最低)順位',
         afterEvoScpRank: '進化後PvP順位',
         afterEvoCp: '進化後CP',
         threeGalarBirds: 'ガラル三鳥の野生個体値',
         cpIv: 'CP→個体値検索',
         cp: '個体値→CP算出',
-        plList: 'PLごとのCP一覧',
+        plList: 'PLごとのCPリスト',
         cpRank: 'CP順位',
         cpRankList: 'CPランキング'
       }
@@ -87,7 +88,8 @@ export default () => {
     others: {
       name: 'その他',
       patternNames: {
-        unimplPokemon: '未実装ポケモン一覧',
+        unimplPokemon: '未実装ポケモンリスト',
+        dynamaxImplPokemon: 'MAX,G-MAX実装済みリスト',
         evoCost: '進化コスト',
         evolution: '進化ツリーと別のすがた'
       }

@@ -25,6 +25,27 @@
         <v-col cols="12" md="7" lg="8" xl="8">
           <!-- abundanceの表 -->
           <h3>基本情報</h3>
+          <v-container class="pa-0">
+            <v-row>
+              <v-col style="text-align: end;">
+                <IconAwakeningIconMegaIcon
+                  :msg="cDtoItem.resData.megaMsg"
+                  :mega="cDtoItem.resData.mega"
+                  :can-mega="cDtoItem.resData.canMega"
+                />
+                <IconAwakeningIconDynamaxIcon
+                  :msg="cDtoItem.resData.dynamaxMsg"
+                  :impl-flg="cDtoItem.resData.goPokedex.dynamaxImplFlg"
+                  type="Dynamax"
+                />
+                <IconAwakeningIconDynamaxIcon
+                  :msg="cDtoItem.resData.gigantamaxMsg"
+                  :impl-flg="cDtoItem.resData.goPokedex.gigantamaxImplFlg"
+                  type="Gigantamax"
+                />
+              </v-col>
+            </v-row>
+          </v-container>
           <v-container
             v-if="isLoadedAbundance"
             class="basic-info-table abundance-basic-info-table"
@@ -159,6 +180,9 @@
               </v-col>
               <v-col cols="7">
                 {{ `${cDtoItem.resData.egg.normal.min} ～ ${cDtoItem.resData.egg.normal.max}` }}
+                <p v-if="cDtoItem.resData.eggGp" class="caption my-0">
+                  {{ `(${editUtils().appendRemarks(cDtoItem.resData.eggGp.name, cDtoItem.resData.eggGp.remarks)}で算出)` }}
+                </p>
               </v-col>
             </v-row>
             <v-row v-if="cDtoItem.resData.superLeagueSafeCpList.length">

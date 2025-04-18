@@ -16,6 +16,7 @@ export class GoPokedex {
   image1: string | null | undefined
   image2: string | null | undefined
   implFlg: boolean
+  mega: boolean
   dynamaxImplFlg: boolean
   gigantamaxImplFlg: boolean
 
@@ -29,6 +30,7 @@ export class GoPokedex {
     this.type1 = ''
     this.gen = ''
     this.implFlg = false
+    this.mega = false
     this.dynamaxImplFlg = false
     this.gigantamaxImplFlg = false
   }

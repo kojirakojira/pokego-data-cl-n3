@@ -16,10 +16,17 @@ export class AbundanceResponse extends ResearchResponse {
   rocket: CatchCp
   frTask: CatchCp
   egg: CatchCp
+  dynamax?: CatchCp
+  dynamaxMsg: string
+  gigantamax?: CatchCp
+  gigantamaxMsg: string
+  eggGp?: GoPokedex
   tooStrong: boolean
   type1Color: Color
   type2Color: Color
   mega: boolean
+  canMega: boolean
+  megaMsg: string
   superLeagueSafeCpList: Array<GoPokedexAndCpPl>
   hyperLeagueSafeCpList: Array<GoPokedexAndCpPl>
 
@@ -33,10 +40,14 @@ export class AbundanceResponse extends ResearchResponse {
     this.rocket = new CatchCp()
     this.frTask = new CatchCp()
     this.egg = new CatchCp()
+    this.dynamaxMsg = ''
+    this.gigantamaxMsg = ''
     this.tooStrong = false
     this.type1Color = new Color()
     this.type2Color = new Color()
     this.mega = false
+    this.canMega = false
+    this.megaMsg = ''
     this.superLeagueSafeCpList = []
     this.hyperLeagueSafeCpList = []
   }

@@ -17,10 +17,18 @@
         </v-row>
         <v-row>
           <v-col>
-            <v-list :items="unimplList" lines="three" item-props variant="elevated">
-              <template #prepend="{ item }">
-                <v-avatar :image="item.prependAvatar" />
-              </template>
+            <v-list item-props lines="three" variant="elevated">
+              <v-list-item
+                v-for="(item, i) in unimplList"
+                :key="`dynamax-${i}`"
+                :title="item.title"
+                :subtitle="item.subtitle"
+                @click="screenControlMethods().onClickRow($event, item)"
+              >
+                <template #prepend>
+                  <v-avatar :image="item.prependAvatar" />
+                </template>
+              </v-list-item>
             </v-list>
           </v-col>
         </v-row>
@@ -54,8 +62,14 @@ searchCommon().restoreSearchScreen(['resData'], cDtoItem.value)
 const res: UnimplPokemonResponse = await get()
 cDtoItem.value.resData = res
 
+interface Item {
+  prependAvatar: string,
+  title: string,
+  subtitle: string,
+  id: string
+}
 const unimplList = computed(() => {
-  const arr: Array<Record<string, any>> = cDtoItem.value.resData.unimplList.map((sp: SimpPokemon) => {
+  const arr: Array<Item> = cDtoItem.value.resData.unimplList.map((sp: SimpPokemon) => {
     return {
       prependAvatar: editUtils().getPokemonImageUrl(sp.image1),
       title: editUtils().appendRemarks(sp.name, sp.remarks),
@@ -65,6 +79,28 @@ const unimplList = computed(() => {
   })
   return arr
 })
+
+/**
+ * 画面制御用機能
+ */
+const screenControlMethods = () => {
+  /**
+   * v-listの行をクリックしたときの処理
+   * @param _
+   * @param selected
+   */
+  const onClickRow = (_: PointerEvent, selected: Item) => {
+    useRouter().push({
+      name: 'search-result-abundance',
+      query: {
+        pid: selected.id
+      }
+    })
+  }
+  return {
+    onClickRow
+  }
+}
 
 useHead({
   title: searchCommon().getSearchPatternName(searchPattern),

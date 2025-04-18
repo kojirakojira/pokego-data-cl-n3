@@ -208,7 +208,6 @@ const init = async () => {
   isLoading.value = !cDtoItem.value.resData
 }
 
-console.log(cDtoItem)
 await init()
 
 // Header
