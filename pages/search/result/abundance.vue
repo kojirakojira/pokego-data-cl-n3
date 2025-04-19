@@ -185,6 +185,32 @@
                 </p>
               </v-col>
             </v-row>
+            <v-row>
+              <v-col cols="5">
+                ダイマックス捕獲時CP
+              </v-col>
+              <v-col cols="7">
+                <template v-if="cDtoItem.resData.dynamax">
+                  {{ `${cDtoItem.resData.dynamax.normal.min} ～ ${cDtoItem.resData.dynamax.normal.max}` }}
+                </template>
+                <template v-else>
+                  -
+                </template>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col cols="5">
+                キョダイマックス捕獲時CP
+              </v-col>
+              <v-col cols="7">
+                <template v-if="cDtoItem.resData.gigantamax">
+                  {{ `${cDtoItem.resData.gigantamax.normal.min} ～ ${cDtoItem.resData.gigantamax.normal.max}` }}
+                </template>
+                <template v-else>
+                  -
+                </template>
+              </v-col>
+            </v-row>
             <v-row v-if="cDtoItem.resData.superLeagueSafeCpList.length">
               <v-col cols="5">
                 スーパーリーグ制限内最大CP

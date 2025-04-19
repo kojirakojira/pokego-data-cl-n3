@@ -11,7 +11,7 @@
         >
           <v-spacer v-if="!isSmAndDown" />
           <v-col cols="6" md="5" lg="4" xl="3" class="py-0 d-inline-flex align-center">
-            <span>
+            <span :class="$style.abundance_link" @click="screenControlMethods().transAbundance(race.goPokedex.pokedexId)">
               <v-icon
                 size="large"
                 style="transform: rotate(90deg);"
@@ -65,6 +65,7 @@
                   no-data-text="loading now..."
                   no-results-text="該当するデータがありません。"
                   class="body-2"
+                  @click:row="screenControlMethods().transAbundanceForRow"
                 >
                   <template #[`item.name`]="{ item }">
                     {{ item.name }}
@@ -117,7 +118,7 @@
               <div class="d-flex flex-column">
                 <v-data-table
                   :headers="oriHeaders"
-                  :items="oriTableData as Array<OriTableData>"
+                  :items="oriTableData"
                   items-per-page="-1"
                   no-data-text="loading now..."
                   no-results-text="該当するデータがありません。"
@@ -216,8 +217,32 @@ const screenControlMethods = () => {
 
     isLoading.value = !cDtoItem.value.resData
   }
+
+  const transAbundance = (pid: string) => {
+    useRouter().push({
+      name: 'search-result-abundance',
+      query: {
+        pid
+      }
+    })
+  }
+  /**
+   * v-data-tableの列をクリックしたときの処理
+   * @param _
+   * @param selected
+   */
+  const transAbundanceForRow = (_: PointerEvent, selected: Record<string, any>) => {
+    useRouter().push({
+      name: 'search-result-abundance',
+      query: {
+        pid: selected.item.pokedexId
+      }
+    })
+  }
   return {
-    init
+    init,
+    transAbundance,
+    transAbundanceForRow
   }
 }
 
@@ -262,6 +287,7 @@ const goTableData = computed((): Array<GoTableData> => {
     const gp: GoPokedex = race.goPokedex
     const rank: RaceGoRank = race.goRank || new RaceGoRank()
     return {
+      pokedexId: gp.pokedexId,
       name: gp.name,
       remarks: gp.remarks,
       hp: gp.hp,
@@ -312,6 +338,7 @@ const oriTableData = computed((): Array<OriTableData> => {
     const pdx: Pokedex = race.pokedex as Pokedex
     const rank: RaceOriRank = race.oriRank || new RaceOriRank()
     return {
+      pokedexId: pdx.pokedexId,
       name: pdx.name,
       remarks: pdx.remarks,
       hp: pdx.hp,
@@ -351,3 +378,9 @@ const metaObject = computed((): MetaObject => {
 })
 useHead(metaObject)
 </script>
+
+<style lang="scss" module>
+.abundance_link:hover {
+  cursor: pointer;
+}
+</style>
