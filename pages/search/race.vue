@@ -19,6 +19,16 @@
             />
           </v-col>
         </v-row>
+      </v-container>
+      <SearchInputFilterInputStowable
+        v-model="cDtoItem.searchParams"
+        :show-area="showFilterArea"
+        :is-search-btn-click="isSearchBtnClick"
+        help-message="「種族値検索」では、種族値の高さをグラフで確認できます。グラフは順位を基準とするため、絞り込みをすると母数を変動させられます。"
+        @show-area="showFilterArea = !showFilterArea"
+        @click="clickSearchBtn()"
+      />
+      <v-container>
         <v-row>
           <v-col cols="12" class="text-center">
             <v-btn
@@ -33,14 +43,6 @@
           </v-col>
         </v-row>
       </v-container>
-      <SearchInputFilterInputStowable
-        v-model="cDtoItem.searchParams"
-        :show-area="showFilterArea"
-        :is-search-btn-click="isSearchBtnClick"
-        help-message="「種族値検索」では、種族値の高さをグラフで確認できます。グラフは順位を基準とするため、絞り込みをすると母数を変動させられます。"
-        @show-area="showFilterArea = !showFilterArea"
-        @click="clickSearchBtn()"
-      />
       <template v-if="cDtoItem.resData && cDtoItem.resData.pokemonSearchResult?.goPokedexList.length > 1">
         <SearchResultList
           :psr="cDtoItem.resData.pokemonSearchResult"
@@ -115,6 +117,7 @@ const handleApiResult = (rd: RaceResponse) => {
         name: 'search-race'
       })
       isSearchBtnClick.value = false
+      showFilterArea.value = false
       isLoading.value = false
     }
   }

@@ -7,6 +7,10 @@ export class ResearchRequest {
   negaFinEvo: boolean
   mega: boolean
   negaMega: boolean
+  dynamax: boolean
+  negaDynamax: boolean
+  gigantamax: boolean
+  negaGigantamax: boolean
   impled: boolean
   negaImpled: boolean
   tooStrong: boolean
@@ -24,6 +28,10 @@ export class ResearchRequest {
     this.negaFinEvo = false
     this.mega = false
     this.negaMega = false
+    this.dynamax = false
+    this.negaDynamax = false
+    this.gigantamax = false
+    this.negaGigantamax = false
     this.impled = false
     this.negaImpled = false
     this.tooStrong = false

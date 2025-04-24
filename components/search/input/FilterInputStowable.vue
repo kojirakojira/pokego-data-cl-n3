@@ -44,10 +44,27 @@
         <SearchInputFilterInput
           v-model="searchParams"
           :is-search-btn-click="isSearchBtnClick"
+          :show-search-btn="false"
           @click="emit('click')"
         />
       </div>
     </transition>
+    <v-row v-show="showArea">
+      <v-col cols="12">
+        <v-btn
+          rounded
+          class="px-4"
+          color="success"
+          density="comfortable"
+          @click="emit('showArea')"
+        >
+          <v-icon size="x-small">
+            mdi-filter-menu
+          </v-icon>
+          <span class="caption">折りたたむ</span>
+        </v-btn>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 
@@ -55,7 +72,7 @@
 import { useTheme } from 'vuetify'
 import { ResearchRequest } from '~/components/interface/api/request'
 
-const searchParams = defineModel<ResearchRequest>()
+const searchParams = defineModel<ResearchRequest>({ required: true })
 withDefaults(
   defineProps<{
     showArea: boolean,

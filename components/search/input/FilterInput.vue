@@ -11,7 +11,7 @@
       </v-col>
       <v-col cols="12" md="7" lg="8" xl="8">
         <v-select
-          v-model="(searchParams as ResearchRequest).type1"
+          v-model="searchParams.type1"
           :items="constant.TYPE"
           item-title="jpn"
           item-value="type"
@@ -25,7 +25,7 @@
       <v-spacer />
       <v-col cols="12" md="7" lg="8" xl="8">
         <v-select
-          v-model="(searchParams as ResearchRequest).type2"
+          v-model="searchParams.type2"
           :items="constant.TYPE"
           item-title="jpn"
           item-value="type"
@@ -46,12 +46,12 @@
       </v-col>
       <v-col cols="12" md="7" lg="8" xl="8">
         <v-switch
-          v-model="(searchParams as ResearchRequest).finEvo"
+          v-model="searchParams.finEvo"
           inset
           color="info"
           hide-details
           prepend-icon="mdi-filter-multiple"
-          :label="(searchParams as ResearchRequest).finEvo ? 'filter' : 'not filter'"
+          :label="searchParams.finEvo ? 'filter' : 'not filter'"
         />
       </v-col>
     </v-row>
@@ -59,13 +59,13 @@
       <v-spacer />
       <v-col cols="12" md="7" lg="8" xl="8">
         <v-switch
-          v-model="(searchParams as ResearchRequest).negaFinEvo"
+          v-model="searchParams.negaFinEvo"
           inset
           color="info"
           hide-details
           prepend-icon="mdi-not-equal"
-          :disabled="!(searchParams as ResearchRequest).finEvo"
-          :label="(searchParams as ResearchRequest).negaFinEvo ? 'not equal' : 'equals'"
+          :disabled="!searchParams.finEvo"
+          :label="searchParams.negaFinEvo ? 'not equal' : 'equals'"
         />
       </v-col>
     </v-row>
@@ -80,12 +80,12 @@
       </v-col>
       <v-col cols="12" md="7" lg="8" xl="8">
         <v-switch
-          v-model="(searchParams as ResearchRequest).mega"
+          v-model="searchParams.mega"
           inset
           color="info"
           hide-details
           prepend-icon="mdi-filter-multiple"
-          :label="(searchParams as ResearchRequest).mega ? 'filter' : 'not filter'"
+          :label="searchParams.mega ? 'filter' : 'not filter'"
         />
       </v-col>
     </v-row>
@@ -93,13 +93,81 @@
       <v-spacer />
       <v-col cols="12" md="7" lg="8" xl="8">
         <v-switch
-          v-model="(searchParams as ResearchRequest).negaMega"
+          v-model="searchParams.negaMega"
           inset
           color="info"
           hide-details
           prepend-icon="mdi-not-equal"
-          :disabled="!(searchParams as ResearchRequest).mega"
-          :label="(searchParams as ResearchRequest).negaMega ? 'not equal' : 'equals'"
+          :disabled="!searchParams.mega"
+          :label="searchParams.negaMega ? 'not equal' : 'equals'"
+        />
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col>
+        <v-divider />
+      </v-col>
+    </v-row>
+    <v-row align="center">
+      <v-col cols="12" md="5" lg="4" xl="4" class="col-title">
+        {{ constantAccessor.getValue('dynamax', 'FILTER_ITEMS') }}
+      </v-col>
+      <v-col cols="12" md="7" lg="8" xl="8">
+        <v-switch
+          v-model="searchParams.dynamax"
+          inset
+          color="info"
+          hide-details
+          prepend-icon="mdi-filter-multiple"
+          :label="searchParams.dynamax ? 'filter' : 'not filter'"
+        />
+      </v-col>
+    </v-row>
+    <v-row align="center">
+      <v-spacer />
+      <v-col cols="12" md="7" lg="8" xl="8">
+        <v-switch
+          v-model="searchParams.negaDynamax"
+          inset
+          color="info"
+          hide-details
+          prepend-icon="mdi-not-equal"
+          :disabled="!searchParams.dynamax"
+          :label="searchParams.negaDynamax ? 'not equal' : 'equals'"
+        />
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col>
+        <v-divider />
+      </v-col>
+    </v-row>
+    <v-row align="center">
+      <v-col cols="12" md="5" lg="4" xl="4" class="col-title">
+        {{ constantAccessor.getValue('gigantamax', 'FILTER_ITEMS') }}
+      </v-col>
+      <v-col cols="12" md="7" lg="8" xl="8">
+        <v-switch
+          v-model="searchParams.gigantamax"
+          inset
+          color="info"
+          hide-details
+          prepend-icon="mdi-filter-multiple"
+          :label="searchParams.gigantamax ? 'filter' : 'not filter'"
+        />
+      </v-col>
+    </v-row>
+    <v-row align="center">
+      <v-spacer />
+      <v-col cols="12" md="7" lg="8" xl="8">
+        <v-switch
+          v-model="searchParams.negaGigantamax"
+          inset
+          color="info"
+          hide-details
+          prepend-icon="mdi-not-equal"
+          :disabled="!searchParams.gigantamax"
+          :label="searchParams.negaGigantamax ? 'not equal' : 'equals'"
         />
       </v-col>
     </v-row>
@@ -114,12 +182,12 @@
       </v-col>
       <v-col cols="12" md="7" lg="8" xl="8">
         <v-switch
-          v-model="(searchParams as ResearchRequest).impled"
+          v-model="searchParams.impled"
           inset
           color="info"
           hide-details
           prepend-icon="mdi-filter-multiple"
-          :label="(searchParams as ResearchRequest).impled ? 'filter' : 'not filter'"
+          :label="searchParams.impled ? 'filter' : 'not filter'"
         />
       </v-col>
     </v-row>
@@ -127,13 +195,13 @@
       <v-spacer />
       <v-col cols="12" md="7" lg="8" xl="8">
         <v-switch
-          v-model="(searchParams as ResearchRequest).negaImpled"
+          v-model="searchParams.negaImpled"
           inset
           color="info"
           hide-details
           prepend-icon="mdi-not-equal"
-          :disabled="!(searchParams as ResearchRequest).impled"
-          :label="(searchParams as ResearchRequest).negaImpled ? 'not equal' : 'equals'"
+          :disabled="!searchParams.impled"
+          :label="searchParams.negaImpled ? 'not equal' : 'equals'"
         />
       </v-col>
     </v-row>
@@ -148,12 +216,12 @@
       </v-col>
       <v-col cols="12" md="7" lg="8" xl="8">
         <v-switch
-          v-model="(searchParams as ResearchRequest).tooStrong"
+          v-model="searchParams.tooStrong"
           inset
           color="info"
           hide-details
           prepend-icon="mdi-filter-multiple"
-          :label="(searchParams as ResearchRequest).tooStrong ? 'filter' : 'not filter'"
+          :label="searchParams.tooStrong ? 'filter' : 'not filter'"
         />
       </v-col>
     </v-row>
@@ -161,13 +229,13 @@
       <v-spacer />
       <v-col cols="12" md="7" lg="8" xl="8">
         <v-switch
-          v-model="(searchParams as ResearchRequest).negaTooStrong"
+          v-model="searchParams.negaTooStrong"
           inset
           color="info"
           hide-details
           prepend-icon="mdi-not-equal"
-          :disabled="!(searchParams as ResearchRequest).tooStrong"
-          :label="(searchParams as ResearchRequest).negaTooStrong ? 'not equal' : 'equals'"
+          :disabled="!searchParams.tooStrong"
+          :label="searchParams.negaTooStrong ? 'not equal' : 'equals'"
         />
       </v-col>
     </v-row>
@@ -183,7 +251,7 @@
       <v-col cols="12" md="7" lg="8" xl="8">
         <div v-for="r in constant.REGION" :key="r.k">
           <v-checkbox
-            v-model="(searchParams as ResearchRequest).region"
+            v-model="searchParams.region"
             :label="r.v"
             :value="r.k"
             hide-details
@@ -197,13 +265,13 @@
       <v-spacer />
       <v-col cols="12" md="7" lg="8" xl="8">
         <v-switch
-          v-model="(searchParams as ResearchRequest).negaRegion"
+          v-model="searchParams.negaRegion"
           inset
           color="info"
           hide-details
           prepend-icon="mdi-not-equal"
-          :disabled="!(searchParams as ResearchRequest).region.length"
-          :label="(searchParams as ResearchRequest).negaRegion ? 'not equal' : 'equals'"
+          :disabled="!searchParams.region.length"
+          :label="searchParams.negaRegion ? 'not equal' : 'equals'"
         />
       </v-col>
     </v-row>
@@ -219,7 +287,7 @@
       <v-col cols="12" md="7" lg="8" xl="8">
         <div v-for="r in constant.GEN" :key="r.k">
           <v-checkbox
-            v-model="(searchParams as ResearchRequest).gen"
+            v-model="searchParams.gen"
             :label="r.v"
             :value="r.k"
             hide-details
@@ -233,34 +301,36 @@
       <v-spacer />
       <v-col cols="12" md="7" lg="8" xl="8">
         <v-switch
-          v-model="(searchParams as ResearchRequest).negaGen"
+          v-model="searchParams.negaGen"
           inset
           color="info"
           hide-details
           prepend-icon="mdi-not-equal"
-          :disabled="!(searchParams as ResearchRequest).gen.length"
-          :label="(searchParams as ResearchRequest).negaGen ? 'not equal' : 'equals'"
+          :disabled="!searchParams.gen.length"
+          :label="searchParams.negaGen ? 'not equal' : 'equals'"
         />
       </v-col>
     </v-row>
-    <v-row>
-      <v-col>
-        <v-divider />
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="12" align="center">
-        <v-btn
-          rounded
-          min-width="50%"
-          color="success"
-          :disabled="isSearchBtnClick"
-          @click="emit('click')"
-        >
-          検索
-        </v-btn>
-      </v-col>
-    </v-row>
+    <template v-if="showSearchBtn">
+      <v-row>
+        <v-col>
+          <v-divider />
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col cols="12" align="center">
+          <v-btn
+            rounded
+            min-width="50%"
+            color="success"
+            :disabled="isSearchBtnClick"
+            @click="emit('click')"
+          >
+            検索
+          </v-btn>
+        </v-col>
+      </v-row>
+    </template>
   </v-container>
 </template>
 
@@ -268,12 +338,13 @@
 import { ResearchRequest } from '~/components/interface/api/request'
 import { ConstantAccessor } from '~/utils/constantUtils'
 
-const searchParams = defineModel<ResearchRequest>()
+const searchParams = defineModel<ResearchRequest>({ required: true })
 withDefaults(
   defineProps<{
-    isSearchBtnClick?: boolean
+    isSearchBtnClick?: boolean,
+    showSearchBtn?: boolean
    }>(),
-  { isSearchBtnClick: false })
+  { isSearchBtnClick: false, showSearchBtn: true })
 
 const constant: ConstantValue = constantUtils().get()
 const constantAccessor: ConstantAccessor = new ConstantAccessor(constant)
