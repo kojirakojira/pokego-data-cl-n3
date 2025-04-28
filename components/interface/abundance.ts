@@ -2,6 +2,7 @@ import { CatchCp, Color, GoPokedex, GoPokedexAndCpPl } from './api/dto'
 import { ResearchResponse } from './api/response'
 import { EvolutionResponse } from './evolution'
 import { RaceResponse } from './race'
+import { ScpRankMaxMinResponse } from './scpRankMaxMin'
 import { TypeScoreResponse } from './typeScore'
 
 /**
@@ -81,6 +82,7 @@ export class AbundanceResultDtoItem implements ResultDtoItem {
   searchParams: AbundanceResultSearchParams
   resData: AbundanceResponse
   raceResData: RaceResponse
+  scpRankMaxMinResData: ScpRankMaxMinResponse
   evoResData: EvolutionResponse
   typeScoreResData: TypeScoreResponse
 
@@ -88,12 +90,13 @@ export class AbundanceResultDtoItem implements ResultDtoItem {
     this.searchParams = new AbundanceResultSearchParams()
     this.resData = new AbundanceResponse()
     this.raceResData = new RaceResponse()
+    this.scpRankMaxMinResData = new ScpRankMaxMinResponse()
     this.evoResData = new EvolutionResponse()
     this.typeScoreResData = new TypeScoreResponse()
   }
 }
 
-export type AbundanceResData = 'resData' | 'raceResData' | 'evoResData' | 'typeScoreResData'
+export type AbundanceResData = 'resData' | 'raceResData' | 'scpRankMaxMinResData' | 'evoResData' | 'typeScoreResData'
 /**
  * APIアクセス用get関数
  */

@@ -34,7 +34,7 @@
                       個体値<br>(攻撃 - 防御 - HP)
                     </v-col>
                     <v-col cols="5" md="6" lg="6" xl="6" class="pa-1">
-                      {{ `${cDtoItem.resData.scpSlRank.iva} - ${cDtoItem.resData.scpSlRank.ivd} - ${cDtoItem.resData.scpSlRank.ivh}` }}
+                      {{ `${cDtoItem.resData.targetScpRank.sl.iva} - ${cDtoItem.resData.targetScpRank.sl.ivd} - ${cDtoItem.resData.targetScpRank.sl.ivh}` }}
                     </v-col>
                   </v-row>
                 </v-container>
@@ -43,34 +43,29 @@
           </v-col>
         </v-row>
       </v-container>
-      <h3>
-        PvP順位
-      </h3>
       <v-container>
         <v-row>
-          <v-col align="center">
-            <p>{{ `スーパーリーグ：${cDtoItem.resData.scpSlRank.rank}位` }}</p>
-            <p>{{ `ハイパーリーグ：${cDtoItem.resData.scpHlRank.rank}位` }}</p>
-            <p>{{ `マスターリーグ：${cDtoItem.resData.scpMlRank.rank}位` }}</p>
+          <v-col>
+            <h3>
+              {{ editUtils().appendRemarks(cDtoItem.resData.name, cDtoItem.resData.remarks) }}のPvP順位
+            </h3>
           </v-col>
         </v-row>
         <v-row>
-          <v-col
-            cols="12"
-            md="12"
-            lg="12"
-            xl="12"
-            class="col-title"
-          >
-            詳細
+          <v-col align="center">
+            <p>{{ `スーパーリーグ：${cDtoItem.resData.targetScpRank.sl.rank}位` }}</p>
+            <p>{{ `ハイパーリーグ：${cDtoItem.resData.targetScpRank.hl.rank}位` }}</p>
+            <p>{{ `マスターリーグ：${cDtoItem.resData.targetScpRank.ml.rank}位` }}</p>
           </v-col>
-          <v-col cols="12" md="12" lg="12" xl="12">
+        </v-row>
+        <v-row>
+          <v-col cols="12">
             <v-data-table
-              :headers="headers"
+              :headers="targetHeaders"
               :items="[
-                cDtoItem.resData.scpSlRank,
-                cDtoItem.resData.scpHlRank,
-                cDtoItem.resData.scpMlRank
+                cDtoItem.resData.targetScpRank.sl,
+                cDtoItem.resData.targetScpRank.hl,
+                cDtoItem.resData.targetScpRank.ml
               ]"
               no-data-text="loading now..."
               no-results-text="該当するデータがありません。"
@@ -86,6 +81,80 @@
           </v-col>
         </v-row>
       </v-container>
+      <v-container>
+        <v-row>
+          <v-col>
+            <h3>
+              進化後のポケモン
+            </h3>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col>
+            <v-data-table
+              v-if="cDtoItem.resData.afEvolScpRankList.length"
+              :headers="anotherHeaders"
+              :items="cDtoItem.resData.afEvolScpRankList"
+              items-per-page="-1"
+              class="body-2"
+              @click:row="screenControlMethods().onClickRow"
+            >
+              <template #[`item.goPokedex.pokedexId`]="{ item }">
+                {{ editUtils().getPdxNo(item.goPokedex.pokedexId) }}
+              </template>
+              <template #[`item.goPokedex.image1`]="{ item }">
+                <v-avatar :image="editUtils().getPokemonImageUrl(item.goPokedex.image1)" />
+              </template>
+              <template #[`item.goPokedex.name`]="{ item }">
+                <div style="min-width:120px;">
+                  {{ editUtils().appendRemarks(item.goPokedex.name, item.goPokedex.remarks) }}
+                </div>
+              </template>
+              <template #bottom />
+            </v-data-table>
+            <div v-else class="pl-4" align="center">
+              なし
+            </div>
+          </v-col>
+        </v-row>
+      </v-container>
+      <v-container>
+        <v-row>
+          <v-col>
+            <h3>
+              同系統のポケモン
+            </h3>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col>
+            <v-data-table
+              v-if="cDtoItem.resData.anotherFormScpRankList.length"
+              :headers="anotherHeaders"
+              :items="cDtoItem.resData.anotherFormScpRankList"
+              items-per-page="-1"
+              class="body-2"
+              @click:row="screenControlMethods().onClickRow"
+            >
+              <template #[`item.goPokedex.pokedexId`]="{ item }">
+                {{ editUtils().getPdxNo(item.goPokedex.pokedexId) }}
+              </template>
+              <template #[`item.goPokedex.image1`]="{ item }">
+                <v-avatar :image="editUtils().getPokemonImageUrl(item.goPokedex.image1)" />
+              </template>
+              <template #[`item.goPokedex.name`]="{ item }">
+                <div style="min-width:120px;">
+                  {{ editUtils().appendRemarks(item.goPokedex.name, item.goPokedex.remarks) }}
+                </div>
+              </template>
+              <template #bottom />
+            </v-data-table>
+            <div v-else class="pl-4" align="center">
+              なし
+            </div>
+          </v-col>
+        </v-row>
+      </v-container>
     </div>
     <div v-else>
       <Loading v-if="isValidInput" split-scr />
@@ -98,6 +167,7 @@
 
 <script setup lang="ts">
 import type { MetaObject } from 'nuxt/schema'
+import type { ScpRankAllInOne } from '~/components/interface/api/dto'
 import {
   type ScpRankResponse,
   ScpRankResultDtoItem,
@@ -115,7 +185,7 @@ dto.params = cDtoItem
 const isLoading = ref<boolean>(true)
 const isValidInput = ref<boolean>(true)
 
-const headers = readonly<any>([
+const targetHeaders = readonly<any>([
   { title: 'リーグ', key: 'league' },
   { title: '順位', key: 'rank' },
   { title: 'PL', key: 'pl' },
@@ -129,34 +199,77 @@ const leagueDic = readonly<Record<string, string>>({
   ml: 'マスター'
 })
 
-const init = async () => {
+const anotherHeaders = readonly<any>([
+  { title: '図鑑№', key: 'goPokedex.pokedexId', sortable: false },
+  { title: '', key: 'goPokedex.image1', sortable: false, width: '52px' },
+  { title: 'ポケモン', key: 'goPokedex.name', sortable: false },
+  { title: 'スーパーリーグ順位', key: 'sl.rank', sortable: false },
+  { title: 'ハイパーリーグ順位', key: 'hl.rank', sortable: false },
+  { title: 'マスターリーグ順位', key: 'ml.rank', sortable: false }])
+
+const screenControlMethods = () => {
+  const init = async () => {
   // route.queryからsearchParamsを復元
-  cDtoItem.value.searchParams = searchCommon()
-    .restoreSearchParams(useRoute().query, ScpRankResultSearchParams)
-  // dtoStoreからresDataを復元
-  const restoredParams: Record<string, any> | null = searchCommon().restoreCurrentScreen(['resData'])
-  const rd: ScpRankResponse | null = restoredParams?.resData
+    cDtoItem.value.searchParams = searchCommon()
+      .restoreSearchParams(useRoute().query, ScpRankResultSearchParams)
+    // dtoStoreからresDataを復元
+    const restoredParams: Record<string, any> | null = searchCommon().restoreCurrentScreen(['resData'])
+    const rd: ScpRankResponse | null = restoredParams?.resData
 
-  if (rd && rd.pokedexId) {
+    if (rd && rd.pokedexId) {
     // resDataが復元できた場合
-    cDtoItem.value.resData = rd
-  } else {
+      cDtoItem.value.resData = rd
+    } else {
     // 存在しない場合は取得する
-    if (check(cDtoItem.value.searchParams)) {
-      throw createError({ statusCode: 400, message: '不正なパラメータが指定されました。', fatal: true })
-    }
+      if (check(cDtoItem.value.searchParams)) {
+        throw createError({ statusCode: 400, message: '不正なパラメータが指定されました。', fatal: true })
+      }
 
-    const ret = await get(cDtoItem.value.searchParams)
-    if (!ret) {
-      isValidInput.value = false
-      return
+      const ret = await get(cDtoItem.value.searchParams)
+      if (!ret) {
+        isValidInput.value = false
+        return
+      }
+      cDtoItem.value.resData = ret
     }
-    cDtoItem.value.resData = ret
+    isLoading.value = !cDtoItem.value.resData
   }
-  isLoading.value = !cDtoItem.value.resData
+
+  interface Item {
+    index: number,
+    item: ScpRankAllInOne
+  }
+  /**
+   * v-data-tableの列をクリックしたときの処理
+   * @param _
+   * @param selected
+   */
+  const onClickRow = (_: PointerEvent, selected: Item) => {
+    useRouter().push({
+      name: 'search-result-scpRankResult',
+      query: {
+        pid: selected.item.goPokedex.pokedexId,
+        iv: cDtoItem.value.searchParams.iv
+      }
+    })
+  }
+
+  return {
+    init,
+    onClickRow
+  }
 }
 
-await init()
+// created
+await screenControlMethods().init()
+// 自画面遷移時
+watch(() => useRoute().fullPath, async () => {
+  isLoading.value = true
+  await screenControlMethods().init()
+  // evoInfoRef.value.refresh()
+  if (process.client) { scrollTo(0, 0) }
+  isLoading.value = false
+})
 
 // Header
 const thisPath = useRuntimeConfig().public.url + useRoute().path

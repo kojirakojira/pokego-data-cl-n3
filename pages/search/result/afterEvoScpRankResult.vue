@@ -63,12 +63,12 @@
         <v-row>
           <v-col cols="12">
             <h3>
-              進化後のポケモン
+              進化後のポケモンのPvP順位
             </h3>
             <v-data-table
-              v-if="cDtoItem.resData.afEvoList.length"
+              v-if="cDtoItem.resData.afEvolIvList.length"
               :headers="headers"
-              :items="cDtoItem.resData.afEvoList"
+              :items="cDtoItem.resData.afEvolIvList"
               items-per-page="-1"
               class="body-2"
             >
@@ -88,6 +88,32 @@
             <div v-else class="pl-4" align="center">
               なし
             </div>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col cols="12">
+            <h3>
+              {{ editUtils().appendRemarks(cDtoItem.resData.name, cDtoItem.resData.remarks) }}のPvP順位
+            </h3>
+            <v-data-table
+              :headers="headers"
+              :items="[ cDtoItem.resData.targetGpIv ]"
+              items-per-page="-1"
+              class="body-2"
+            >
+              <template #[`item.goPokedex.pokedexId`]="{ item }">
+                {{ editUtils().getPdxNo(item.goPokedex.pokedexId) }}
+              </template>
+              <template #[`item.goPokedex.image1`]="{ item }">
+                <v-avatar :image="editUtils().getPokemonImageUrl(item.goPokedex.image1)" />
+              </template>
+              <template #[`item.goPokedex.name`]="{ item }">
+                <div style="min-width:120px;">
+                  {{ editUtils().appendRemarks(item.goPokedex.name, item.goPokedex.remarks) }}
+                </div>
+              </template>
+              <template #bottom />
+            </v-data-table>
           </v-col>
         </v-row>
       </v-container>

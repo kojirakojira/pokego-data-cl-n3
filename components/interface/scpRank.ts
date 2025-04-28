@@ -1,4 +1,4 @@
-import { PokemonSearchResult, ScpRank } from './api/dto'
+import { PokemonSearchResult, ScpRankAllInOne } from './api/dto'
 import { ResearchRequest } from './api/request'
 import { ResearchResponse } from './api/response'
 
@@ -6,15 +6,15 @@ import { ResearchResponse } from './api/response'
  * レスポンスの型（API依存の部分）
  */
 export class ScpRankResponse extends ResearchResponse {
-  scpSlRank: ScpRank
-  scpHlRank: ScpRank
-  scpMlRank: ScpRank
+  targetScpRank: ScpRankAllInOne
+  afEvolScpRankList: Array<ScpRankAllInOne>
+  anotherFormScpRankList: Array<ScpRankAllInOne>
 
   constructor () {
     super()
-    this.scpSlRank = new ScpRank()
-    this.scpHlRank = new ScpRank()
-    this.scpMlRank = new ScpRank()
+    this.targetScpRank = new ScpRankAllInOne()
+    this.afEvolScpRankList = []
+    this.anotherFormScpRankList = []
   }
 }
 /**

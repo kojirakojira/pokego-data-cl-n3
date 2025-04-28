@@ -278,32 +278,19 @@
                   :count="cDtoItem.raceResData.goTotalCount"
                 />
               </v-col>
-              <v-col
-                cols="12"
-                sm="5"
-                md="5"
-                lg="5"
-                xl="5"
-                class="stats"
-              >
-                <v-container>
-                  <v-row v-for="item in raceArr" :key="`go-col-${item.title}`">
-                    <v-col cols="6" style="text-align: right">
-                      <span style="white-space: nowrap;">
-                        {{ item.title }}
-                      </span>
-                    </v-col>
-                    <v-col cols="6">
-                      {{ item.value }}
-                    </v-col>
-                  </v-row>
-                </v-container>
+              <v-col cols="12" class="mb-4">
+                <p v-for="item in raceArr" :key="`go-col-${item.title}`" class="stats py-1">
+                  <span class="text-right px-1">
+                    {{ `${item.title}：` }}
+                  </span>
+                  <span class="px-1">
+                    {{ item.value }}
+                  </span>
+                </p>
               </v-col>
             </v-row>
             <v-row class="my-0">
-              <v-col
-                align="right"
-              >
+              <v-col align="right">
                 <p class="link" @click="screenControlMethods().transitionRace">
                   種族値の詳細をみる >>
                 </p>
@@ -312,6 +299,46 @@
                 </p>
               </v-col>
             </v-row>
+          </v-container>
+          <div v-else>
+            <Loading />
+          </div>
+          <!-- PvP最高個体値 -->
+          <h3>PvP最高個体値</h3>
+          <v-container v-if="isLoadedScpRank">
+            <v-row>
+              <v-col cols="12">
+                <v-table class="body-2">
+                  <thead>
+                    <tr>
+                      <th v-for="(h, index) in scpRankHeaders" :key="index">
+                        {{ h.title }}
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="(tr) in scpRankMaxArr" :key="tr.league">
+                      <td v-for="(td, tdKey) in tr" :key="`key-${tr.league}-${tdKey}`">
+                        {{ tr[tdKey] }}
+                      </td>
+                    </tr>
+                  </tbody>
+                </v-table>
+              </v-col>
+            </v-row>
+            <!-- <v-row class="my-0">
+              <v-col align="right">
+                <p class="link" @click="screenControlMethods().transitionRace">
+                  詳細をみる >>
+                </p>
+                <p class="link" @click="screenControlMethods().transitionRaceDiff">
+                  特定の個体の個体値をみる >>
+                </p>
+                <p class="link" @click="screenControlMethods().transitionRaceDiff">
+                  特定の個体の個体値をリストでみる >>
+                </p>
+              </v-col>
+            </v-row> -->
           </v-container>
           <div v-else>
             <Loading />
@@ -408,8 +435,9 @@ import type { ResearchResponse } from '~/components/interface/api/response'
 import { EvolutionResultSearchParams, type EvolutionResponse } from '~/components/interface/evolution'
 import { RaceResultSearchParams, type RaceResponse } from '~/components/interface/race'
 import { TypeScoreResultSearchParams, type TypeScoreResponse } from '~/components/interface/typeScore'
-import { type GoPokedex, RaceGoRank, GoPokedexAndCpPl } from '~/components/interface/api/dto'
+import { type GoPokedex, RaceGoRank, GoPokedexAndCpPl, ScpRank } from '~/components/interface/api/dto'
 import { RaceDiffSearchParams } from '~/components/interface/raceDiff'
+import { ScpRankMaxMinResponse, ScpRankMaxMinSearchParams } from '~/components/interface/scpRankMaxMin'
 
 // current dto item
 const cDtoItem = ref<AbundanceResultDtoItem>(new AbundanceResultDtoItem())
@@ -430,11 +458,13 @@ const screenControlMethods = () => {
       // 存在しない場合は取得する
       const abundanceReq = new AbundanceResultSearchParams()
       const raceReq = new RaceResultSearchParams(false) // statisticsを取得しない。
+      const scpRankMaxMinReq = new ScpRankMaxMinSearchParams()
       const evoReq = new EvolutionResultSearchParams()
       const typeScoreReq = new TypeScoreResultSearchParams()
-      abundanceReq.pid = raceReq.pid = evoReq.pid = typeScoreReq.pid = cDtoItem.value.searchParams.pid
+      abundanceReq.pid = raceReq.pid = scpRankMaxMinReq.pid = evoReq.pid = typeScoreReq.pid = cDtoItem.value.searchParams.pid
 
       raceReq.enableCount = true
+      scpRankMaxMinReq.enableCount = true
       evoReq.enableCount = true
       typeScoreReq.enableCount = true
 
@@ -442,6 +472,7 @@ const screenControlMethods = () => {
       await Promise.all([
         get('/api/abundance', cDtoItem.value, abundanceReq, 'resData'),
         get('/api/race', cDtoItem.value, raceReq, 'raceResData'),
+        get('/api/scpRankMaxMin', cDtoItem.value, scpRankMaxMinReq, 'scpRankMaxMinResData'),
         get('/api/evolution', cDtoItem.value, evoReq, 'evoResData'),
         get('/api/typeScore', cDtoItem.value, typeScoreReq, 'typeScoreResData')
       ])
@@ -457,7 +488,7 @@ const screenControlMethods = () => {
   }
 
   const getCurrentData = (pid: string): Record<string, ResearchResponse> | null => {
-    const resDataNameArr = ['resData', 'raceResData', 'evoResData', 'typeScoreResData']
+    const resDataNameArr = ['resData', 'raceResData', 'scpRankMaxMinResData', 'evoResData', 'typeScoreResData']
     const resDataDic: Record<string, ResearchResponse> | null =
       searchCommon().restoreCurrentScreen(resDataNameArr) as Record<string, ResearchResponse>
     if (!resDataDic) {
@@ -475,6 +506,7 @@ const screenControlMethods = () => {
   const setAllResData = (resDataDic: Record<string, any>): void => {
     cDtoItem.value.resData = resDataDic.resData as AbundanceResponse
     cDtoItem.value.raceResData = resDataDic.raceResData as RaceResponse
+    cDtoItem.value.scpRankMaxMinResData = resDataDic.scpRankMaxMinResData as ScpRankMaxMinResponse
     cDtoItem.value.evoResData = resDataDic.evoResData as EvolutionResponse
     cDtoItem.value.typeScoreResData = resDataDic.typeScoreResData as TypeScoreResponse
   }
@@ -572,6 +604,40 @@ const raceArr = computed((): Array<RaceValue> => {
 })
 
 /**
+ * scpRank
+ */
+/** scpRankMaxMinの読み込みが終わったらtrueになる。 */
+const isLoadedScpRank = computed(() => {
+  return !!cDtoItem.value.scpRankMaxMinResData.pokedexId
+})
+const scpRankHeaders = ref<Record<string, string>[]>([
+  { title: '', key: 'league' },
+  { title: 'AT', key: 'iva' },
+  { title: 'DF', key: 'ivd' },
+  { title: 'HP', key: 'ivh' },
+  { title: 'PL', key: 'pl' }])
+
+const scpRankMaxArr = computed(() => {
+  const rd = cDtoItem.value.scpRankMaxMinResData
+  const scpRankMaxArr: Array<ScpRank> = [rd.scpSlRankMax, rd.scpHlRankMax, rd.scpMlRankMax]
+  return scpRankMaxArr
+    .map((scpRank) => {
+      const leagueDic = {
+        sl: 'スーパーリーグ順位',
+        hl: 'ハイパーリーグ順位',
+        ml: 'マスターリーグ順位'
+      }
+      return {
+        league: leagueDic[scpRank.league as keyof typeof leagueDic],
+        iva: scpRank.iva,
+        ivd: scpRank.ivd,
+        ivh: scpRank.ivh,
+        pl: scpRank.pl
+      }
+    })
+})
+
+/**
  * evolution
  */
 /** evolutionの読み込みが終わったらtrueになる。 */
@@ -646,8 +712,13 @@ useHead(metaObject)
   border: medium solid green;
 }
 .stats {
-  vertical-align: middle;
-  margin: auto;
+  width: fit-content;
+  margin: 0 auto;
+
+  span {
+    display: inline-block;
+    width: 100px;
+  }
 }
 .abundance-basic-info-table {
   padding: inherit;

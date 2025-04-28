@@ -80,6 +80,20 @@ export class ScpRank {
   }
 }
 
+export class ScpRankAllInOne {
+  goPokedex: GoPokedex
+  sl: ScpRank
+  hl: ScpRank
+  ml: ScpRank
+
+  constructor () {
+    this.goPokedex = new GoPokedex()
+    this.sl = new ScpRank()
+    this.hl = new ScpRank()
+    this.ml = new ScpRank()
+  }
+}
+
 export interface Hierarchy {
   x: number,
   y: number,
@@ -239,7 +253,7 @@ export interface XTypeElement {
   defMsgs: Array<string>
 }
 
-export class AfterEvoIv {
+export class AfterEvolIv {
   goPokedex: GoPokedex
   cp: number
   slRank: number

@@ -66,9 +66,39 @@
               進化後のポケモン
             </h3>
             <v-data-table
-              v-if="cDtoItem.resData.afEvoList.length"
+              v-if="cDtoItem.resData.afEvolCpList.length"
               :headers="headers"
-              :items="cDtoItem.resData.afEvoList"
+              :items="cDtoItem.resData.afEvolCpList"
+              items-per-page="-1"
+              class="body-2"
+            >
+              <template #[`item.goPokedex.pokedexId`]="{ item }">
+                {{ editUtils().getPdxNo(item.goPokedex.pokedexId) }}
+              </template>
+              <template #[`item.goPokedex.image1`]="{ item }">
+                <v-avatar :image="editUtils().getPokemonImageUrl(item.goPokedex.image1)" />
+              </template>
+              <template #[`item.goPokedex.name`]="{ item }">
+                <div style="min-width:120px;">
+                  {{ editUtils().appendRemarks(item.goPokedex.name, item.goPokedex.remarks) }}
+                </div>
+              </template>
+              <template #bottom />
+            </v-data-table>
+            <div v-else class="pl-4">
+              なし
+            </div>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col cols="12">
+            <h3>
+              別のすがた
+            </h3>
+            <v-data-table
+              v-if="cDtoItem.resData.anotherFormList.length"
+              :headers="headers"
+              :items="cDtoItem.resData.anotherFormList"
               items-per-page="-1"
               class="body-2"
             >

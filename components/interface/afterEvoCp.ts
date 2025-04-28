@@ -12,7 +12,7 @@ export class AfterEvoCpResponse extends ResearchResponse {
   ivh: number
   cp: number
   pl: string
-  afEvoList: Array<GoPokedexAndCp>
+  afEvolCpList: Array<GoPokedexAndCp>
   anotherFormList: Array<GoPokedexAndCp>
 
   constructor () {
@@ -23,7 +23,7 @@ export class AfterEvoCpResponse extends ResearchResponse {
     this.ivh = 0
     this.cp = 0
     this.pl = ''
-    this.afEvoList = []
+    this.afEvolCpList = []
     this.anotherFormList = []
   }
 }
