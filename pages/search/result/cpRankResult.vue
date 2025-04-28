@@ -44,7 +44,7 @@
         </v-row>
       </v-container>
       <h3>
-        {{ `算出結果(PL40時CP：${cDtoItem.resData.cpRank.cp})` }}
+        {{ `算出結果(PL40のCP：${cDtoItem.resData.cpRank.cp})` }}
       </h3>
       <v-container>
         <v-row>
@@ -58,7 +58,10 @@
       </v-container>
     </div>
     <div v-else>
-      <Loading full-page />
+      <Loading v-if="isValidInput" full-page />
+      <div v-else>
+        <MajorPartsInvalidInputBackLink />
+      </div>
     </div>
   </div>
 </template>
@@ -80,24 +83,29 @@ const dto: any = useAttrs().dto
 dto.params = cDtoItem
 
 const isLoading = ref<boolean>(true)
+const isValidInput = ref<boolean>(true)
 
 const init = async () => {
   // route.queryからsearchParamsを復元
   cDtoItem.value.searchParams = searchCommon()
     .restoreSearchParams(useRoute().query, CpRankResultSearchParams)
   // dtoStoreからresDataを復元
-  const rd: CpRankResponse | null = searchCommon().restoreResearchResData() as CpRankResponse
+  const restoredParams: Record<string, any> | null = searchCommon().restoreCurrentScreen(['resData'])
+  const rd: CpRankResponse | null = restoredParams?.resData
 
-  if (rd) {
+  if (rd && rd.pokedexId) {
+    // resDataが復元できた場合
     cDtoItem.value.resData = rd
   } else {
     // 存在しない場合は取得する
     if (check(cDtoItem.value.searchParams)) {
       throw createError({ statusCode: 400, message: '不正なパラメータが指定されました。', fatal: true })
     }
-
     const ret = await get(cDtoItem.value.searchParams)
-    if (!ret) { return }
+    if (!ret) {
+      isValidInput.value = false
+      return
+    }
     cDtoItem.value.resData = ret
   }
 

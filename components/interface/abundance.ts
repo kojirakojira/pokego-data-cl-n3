@@ -99,16 +99,17 @@ export const get = async (
   endpoint: string,
   dtoItem: AbundanceResultDtoItem,
   reqParam: Record<string, any>,
-  resDataNm: AbundanceResData): Promise<void> => {
+  resDataNm: AbundanceResData): Promise<ResearchResponse | null | undefined> => {
   const res = await fetchCommon(endpoint, 'GET', {
     query: reqParam
   })
   const rd: ResearchResponse | null = res.data as ResearchResponse
-  if (!searchCommon().handleApiMessage(rd)) {
-    return
+  if (searchCommon().handleApiMessage(rd)) {
+    // success
+    // AbundanceResultDtoItemにセットする。
+    dtoItem[resDataNm] = rd as any
   }
-  // AbundanceResultDtoItemにセットする。
-  dtoItem[resDataNm] = rd as any
+  return rd
 }
 
 /**

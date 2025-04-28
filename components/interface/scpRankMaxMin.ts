@@ -1,4 +1,4 @@
-import { ScpRank } from './api/dto'
+import { PokemonSearchResult, ScpRank } from './api/dto'
 import { ResearchRequest } from './api/request'
 import { ResearchResponse } from './api/response'
 
@@ -27,10 +27,12 @@ export class ScpRankMaxMinResponse extends ResearchResponse {
  * 検索画面用クエリパラメータの定義
  */
 export class ScpRankMaxMinSearchParams extends ResearchRequest {
+  pid: string
   name: string
 
   constructor () {
     super()
+    this.pid = ''
     this.name = ''
   }
 }
@@ -39,7 +41,7 @@ export class ScpRankMaxMinSearchParams extends ResearchRequest {
  */
 export class ScpRankMaxMinSearchDtoItem implements SearchDtoItem {
   searchParams: ScpRankMaxMinSearchParams
-  resData?: ScpRankMaxMinResponse
+  pokemonSearchResult?: PokemonSearchResult
 
   constructor () {
     this.searchParams = new ScpRankMaxMinSearchParams()

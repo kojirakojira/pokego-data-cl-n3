@@ -1,7 +1,7 @@
 import { readonly } from 'vue'
 import {
-  type RouteLocationNormalizedLoaded,
-  type RouteRecordName,
+  // type RouteLocationNormalizedLoaded,
+  // type RouteRecordName,
   type LocationQuery
 } from 'vue-router'
 import { toastStore } from '~/stores/toastStore'
@@ -11,7 +11,7 @@ import type { ResearchRequest } from '~/components/interface/api/request'
 
 export interface ResData extends Record<string, any> {}
 /**
- * 検索系の画面(pageがsearch配下の画面)でperiDtoStoreに値を追加するときは、
+ * 検索系の画面(pageがsearch配下の画面)でdtoStoreに値を追加するときは、
  * このインターフェースを使用する。
  */
 export interface SearchDtoItem {
@@ -106,9 +106,10 @@ export default () => {
     ]
   })
 
-  const restoreSearchScreen = (keys: Array<string>, dto: Record<string, any>): void => {
+  const restoreSearchScreen = (keys: Array<string>, dto: Record<string, any>): boolean => {
     const navigation: string = dtoStore().getNavigation()
     const currentSi: ScreenInfo | null = dtoStore().currentScreenInfo()
+    let restoreFlg = false
     if (navigation === 'reload') {
       // リロードの場合
       if (keys.includes('searchParams')) {
@@ -117,6 +118,7 @@ export default () => {
           if (spKeys.includes(k)) {
             // searchParamsに定義したキーしか復元しない。
             dto.searchParams[k] = v
+            restoreFlg = true
           }
         }
       }
@@ -125,9 +127,45 @@ export default () => {
       for (const [k, v] of Object.entries(currentSi.params)) {
         if (keys.includes(k)) {
           dto[k] = v
+          restoreFlg = true
         }
       }
     }
+    return restoreFlg
+  }
+
+  /**
+   * useRoute().queryから取得した値を使用し、～ResultSearchParamsクラスのインスタンスを生成する。
+   *
+   * @param routeQuery useRoute().query
+   * @param ResultSearchParams ～ResultSearchParamsの型
+   * @returns
+   */
+  const restoreSearchParams = <T>(routeQuery: LocationQuery, ResultSearchParams: new () => T): T => {
+    const rsp: T = new ResultSearchParams()
+    for (const k in rsp) {
+      if (routeQuery[k]) {
+        switch (typeof rsp[k]) {
+          case 'boolean':
+            rsp[k] = (routeQuery[k] === 'true') as any
+            break
+          case 'number':
+            rsp[k] = Number(routeQuery[k]) as any
+            break
+          case 'string':
+            rsp[k] = routeQuery[k] as any
+            break
+          default:
+            if (Array.isArray(rsp[k])) {
+              (rsp[k] as Array<any>).push(routeQuery[k] as any)
+            } else {
+              throw createError({ statusCode: 500, message: `An unexpected type was specified. type:${typeof rsp[k]}`, fatal: true })
+            }
+        }
+      }
+    }
+
+    return rsp
   }
 
   /**
@@ -155,6 +193,21 @@ export default () => {
     return dic
   }
 
+  // const mountQuery = (params: Record<string, any>): boolean => {
+  //   // routeの取得
+  //   const route: RouteLocationNormalizedLoaded = useRoute()
+  //   const routeQuery: LocationQuery = route.query
+  //   let mountFlg = false
+  //   for (const [k] of Object.entries(params)) {
+  //     const queryValue = routeQuery[k]
+  //     if (queryValue) {
+  //       params[k] = routeQuery[k]
+  //       mountFlg = true
+  //     }
+  //   }
+  //   return mountFlg
+  // }
+
   /**
    * resDataを復元する。主に結果画面を復元するために使用する。
    * ①dtoStoreにおける現在画面にresDataがあれば、それを返却する。（戻るボタンで戻ってきた場合）
@@ -165,46 +218,46 @@ export default () => {
    * @param rcArr 前画面のresDataを復元する条件
    * @returns
    */
-  const restoreResData = (
-    prevScrChkFlg: boolean,
-    prevScrRcArr?: Array<RestoreCondition>
-  ): Record<string, any> | null => {
-    // routeの取得
-    const route: RouteLocationNormalizedLoaded = useRoute()
-    const routeName: RouteRecordName | undefined | null = route.name
-    const routeQuery: LocationQuery = route.query
+  // const restoreResData = (
+  //   prevScrChkFlg: boolean,
+  //   prevScrRcArr?: Array<RestoreCondition>
+  // ): Record<string, any> | null => {
+  //   // routeの取得
+  //   const route: RouteLocationNormalizedLoaded = useRoute()
+  //   const routeName: RouteRecordName | undefined | null = route.name
+  //   const routeQuery: LocationQuery = route.query
 
-    const prevSi: ScreenInfo | null = dtoStore().prevScreenInfo()
-    const currentSi: ScreenInfo | null = dtoStore().currentScreenInfo()
+  //   const prevSi: ScreenInfo | null = dtoStore().prevScreenInfo()
+  //   const currentSi: ScreenInfo | null = dtoStore().currentScreenInfo()
 
-    // 現在画面からの復元
-    if (currentSi &&
-        compareQuery(routeQuery, currentSi.query) &&
-        Object.keys(currentSi.params).length &&
-        Object.keys(currentSi.params.resData).length) {
-      // queryが一致し、現在画面DTOにparamsが存在する場合
-      return currentSi.params.resData
-    }
+  //   // 現在画面からの復元
+  //   if (currentSi &&
+  //       compareQuery(routeQuery, currentSi.query) &&
+  //       Object.keys(currentSi.params).length &&
+  //       Object.keys(currentSi.params.resData).length) {
+  //     // queryが一致し、現在画面DTOにparamsが存在する場合
+  //     return currentSi.params.resData
+  //   }
 
-    // 現在画面と前画面のsearchPatternNameを取得
-    const prevSpnMatch: RegExpMatchArray | null | undefined = prevSi?.pathName.match(/[^-]*$/)
-    const prevSpn: string | null = prevSpnMatch ? prevSpnMatch[prevSpnMatch.length - 1].toString() : null
-    const spnMatch: RegExpMatchArray | null | undefined = routeName?.toString().match(/-([a-zA-Z]+)Result*$/)
-    const spn: string | null = spnMatch ? spnMatch[1].toString() : null
+  //   // 現在画面と前画面のsearchPatternNameを取得
+  //   const prevSpnMatch: RegExpMatchArray | null | undefined = prevSi?.pathName.match(/[^-]*$/)
+  //   const prevSpn: string | null = prevSpnMatch ? prevSpnMatch[prevSpnMatch.length - 1].toString() : null
+  //   const spnMatch: RegExpMatchArray | null | undefined = routeName?.toString().match(/-([a-zA-Z]+)Result*$/)
+  //   const spn: string | null = spnMatch ? spnMatch[1].toString() : null
 
-    const prevScrRcChkFlg = prevScrRcArr && prevScrRcArr.length
+  //   const prevScrRcChkFlg = prevScrRcArr && prevScrRcArr.length
 
-    // 前画面からの復元
-    if (prevSi?.params.resData &&
-        Object.keys(prevSi.params.resData).length &&
-        (!prevScrChkFlg || spn === prevSpn) &&
-        (!prevScrRcChkFlg || checkConsistency(prevScrRcArr, prevSi.params.resData))) {
-      // ちゃんと前画面が検索画面で、前画面DTOにparamsが存在する場合
-      return prevSi.params.resData
-    }
+  //   // 前画面からの復元
+  //   if (prevSi?.params.resData &&
+  //       Object.keys(prevSi.params.resData).length &&
+  //       (!prevScrChkFlg || spn === prevSpn) &&
+  //       (!prevScrRcChkFlg || checkConsistency(prevScrRcArr, prevSi.params.resData))) {
+  //     // ちゃんと前画面が検索画面で、前画面DTOにparamsが存在する場合
+  //     return prevSi.params.resData
+  //   }
 
-    return null
-  }
+  //   return null
+  // }
 
   /**
    * 前画面が復元可能かを確認する。
@@ -213,24 +266,24 @@ export default () => {
    * @param prevResData
    * @returns
    */
-  const checkConsistency = (rcArr: Array<RestoreCondition>, prevResData: Record<string, any>): boolean => {
-    const route: RouteLocationNormalizedLoaded = useRoute()
-    const routeQuery: Record<string, string> = route.query as Record<string, string>
+  // const checkConsistency = (rcArr: Array<RestoreCondition>, prevResData: Record<string, any>): boolean => {
+  //   const route: RouteLocationNormalizedLoaded = useRoute()
+  //   const routeQuery: Record<string, string> = route.query as Record<string, string>
 
-    const mismatchArr = rcArr.filter((rc) => {
-      return routeQuery[rc.routeKey] !== editUtils().getValueFromDic(rc.resDataKey, prevResData)
-    })
-    return !mismatchArr.length
-  }
+  //   const mismatchArr = rcArr.filter((rc) => {
+  //     return routeQuery[rc.routeKey] !== editUtils().getValueFromDic(rc.resDataKey, prevResData)
+  //   })
+  //   return !mismatchArr.length
+  // }
 
   /**
    * ResData(ResearchResponse)を復元する。
    *
    * @returns
    */
-  const restoreResearchResData = (): Record<string, any> | null => {
-    return restoreResData(true, [{ resDataKey: 'pokedexId', routeKey: 'pid' }])
-  }
+  // const restoreResearchResData = (): Record<string, any> | null => {
+  //   return restoreResData(true, [{ resDataKey: 'pokedexId', routeKey: 'pid' }])
+  // }
 
   /**
    * 機能の日本語名を取得する。
@@ -406,56 +459,23 @@ export default () => {
    * @param after
    * @return
    */
-  const compareQuery = (before: {[key: string]: any}, after: {[key: string]: any}) => {
-    let bool = true
-    // 相互比較
-    Object.entries(before).forEach(([k]) => { if (before[k] !== after[k]) { bool = false } })
-    Object.entries(after).forEach(([k]) => { if (before[k] !== after[k]) { bool = false } })
-    return bool
-  }
-
-  /**
-   * useRoute().queryから取得した値を使用し、～ResultSearchParamsクラスのインスタンスを生成する。
-   *
-   * @param routeQuery useRoute().query
-   * @param ResultSearchParams ～ResultSearchParamsの型
-   * @returns
-   */
-  const restoreSearchParams = <T>(routeQuery: LocationQuery, ResultSearchParams: new () => T): T => {
-    const rsp: T = new ResultSearchParams()
-    for (const k in rsp) {
-      if (routeQuery[k]) {
-        switch (typeof rsp[k]) {
-          case 'boolean':
-            rsp[k] = (routeQuery[k] === 'true') as any
-            break
-          case 'number':
-            rsp[k] = Number(routeQuery[k]) as any
-            break
-          case 'string':
-            rsp[k] = routeQuery[k] as any
-            break
-          default:
-            if (Array.isArray(rsp[k])) {
-              (rsp[k] as Array<any>).push(routeQuery[k] as any)
-            } else {
-              throw createError({ statusCode: 500, message: `An unexpected type was specified. type:${typeof rsp[k]}`, fatal: true })
-            }
-        }
-      }
-    }
-
-    return rsp
-  }
+  // const compareQuery = (before: {[key: string]: any}, after: {[key: string]: any}) => {
+  //   let bool = true
+  //   // 相互比較
+  //   Object.entries(before).forEach(([k]) => { if (before[k] !== after[k]) { bool = false } })
+  //   Object.entries(after).forEach(([k]) => { if (before[k] !== after[k]) { bool = false } })
+  //   return bool
+  // }
 
   return {
     searchPatternNames,
     rules,
+    // mountQuery,
     restoreSearchScreen,
     restoreSearchParams,
     restoreCurrentScreen,
-    restoreResData,
-    restoreResearchResData,
+    // restoreResData,
+    // restoreResearchResData,
     getSearchPatternName,
     resErrHandle,
     handleApiMessage,

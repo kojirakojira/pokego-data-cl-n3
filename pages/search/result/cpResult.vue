@@ -56,17 +56,20 @@
       </h3>
       <v-container>
         <v-row>
-          <v-col cols="12" md="6" lg="6" xl="6" class="col-title">
+          <v-col cols="6" class="col-title">
             CP
           </v-col>
-          <v-col cols="12" md="6" lg="6" xl="6">
+          <v-col cols="6">
             {{ cDtoItem.resData.cp }}
           </v-col>
         </v-row>
       </v-container>
     </div>
     <div v-else>
-      <Loading full-page />
+      <Loading v-if="isValidInput" full-page />
+      <div v-else>
+        <MajorPartsInvalidInputBackLink />
+      </div>
     </div>
   </div>
 </template>
@@ -87,13 +90,15 @@ const dto: any = useAttrs().dto
 dto.params = cDtoItem
 
 const isLoading = ref<boolean>(true)
+const isValidInput = ref<boolean>(true)
 
 const init = async () => {
   // route.queryからsearchParamsを復元
   cDtoItem.value.searchParams = searchCommon()
     .restoreSearchParams(useRoute().query, CpResultSearchParams)
   // dtoStoreからresDataを復元
-  const rd: CpResponse | null = searchCommon().restoreResearchResData() as CpResponse
+  const restoredParams: Record<string, any> | null = searchCommon().restoreCurrentScreen(['resData'])
+  const rd: CpResponse | null = restoredParams?.resData
 
   if (rd) {
     cDtoItem.value.resData = rd
@@ -104,7 +109,10 @@ const init = async () => {
     }
 
     const ret = await get(cDtoItem.value.searchParams)
-    if (!ret) { return }
+    if (!ret) {
+      isValidInput.value = false
+      return
+    }
     cDtoItem.value.resData = ret
   }
 

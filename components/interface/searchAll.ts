@@ -17,10 +17,12 @@ export class SearchAllResponse extends Response {
  * 検索画面用クエリパラメータの定義
  */
 export class SearchAllSearchParams extends ResearchRequest {
+  pid: string
   name: string
 
   constructor () {
     super()
+    this.pid = ''
     this.name = ''
   }
 }
@@ -29,7 +31,7 @@ export class SearchAllSearchParams extends ResearchRequest {
  */
 export class SearchAllSearchDtoItem implements SearchDtoItem {
   searchParams: SearchAllSearchParams
-  resData?: SearchAllResponse
+  pokemonSearchResult?: PokemonSearchResult
 
   constructor () {
     this.searchParams = new SearchAllSearchParams()

@@ -1,4 +1,4 @@
-import { VersatilityIv } from './api/dto'
+import { PokemonSearchResult, VersatilityIv } from './api/dto'
 import { ResearchRequest } from './api/request'
 import { ResearchResponse } from './api/response'
 
@@ -23,6 +23,7 @@ export class CpIvResponse extends ResearchResponse {
  * 検索画面用クエリパラメータの定義
  */
 export class CpIvSearchParams extends ResearchRequest {
+  pid: string
   name: string
   situation: string
   cp: string
@@ -30,6 +31,7 @@ export class CpIvSearchParams extends ResearchRequest {
 
   constructor () {
     super()
+    this.pid = ''
     this.name = ''
     this.situation = ''
     this.cp = ''
@@ -41,7 +43,7 @@ export class CpIvSearchParams extends ResearchRequest {
  */
 export class CpIvSearchDtoItem implements SearchDtoItem {
   searchParams: CpIvSearchParams
-  resData?: CpIvResponse
+  pokemonSearchResult?: PokemonSearchResult
 
   constructor () {
     this.searchParams = new CpIvSearchParams()

@@ -35,7 +35,6 @@ export class IroiroTypeRankSearchParams {
  */
 export class IroiroTypeRankSearchDtoItem implements SearchDtoItem {
   searchParams: IroiroTypeRankSearchParams
-  resData?: IroiroTypeRankResponse
 
   constructor () {
     this.searchParams = new IroiroTypeRankSearchParams()
@@ -69,7 +68,7 @@ export class IroiroTypeRankResultDtoItem implements ResultDtoItem {
  * APIアクセス用get関数
  */
 export const get = async (
-  searchParams: IroiroTypeRankSearchParams | IroiroTypeRankResultSearchParams
+  searchParams: IroiroTypeRankResultSearchParams
 ): Promise<IroiroTypeRankResponse | void> => {
   const res = await fetchCommon('/api/iroiroTypeRank', 'GET', {
     query: searchParams
@@ -85,7 +84,7 @@ export const get = async (
  * 入力チェック関数
  * @returns エラーメッセージ
  */
-// なし
+// 入力チェック不要
 
 /**
  * 色々タイプランキング機能で検索可能なパターンを取得する。

@@ -112,7 +112,10 @@
       </v-container>
     </div>
     <div v-else>
-      <Loading split-scr />
+      <Loading v-if="isValidInput" split-scr />
+      <div v-else class="text-center">
+        <MajorPartsInvalidInputBackLink />
+      </div>
     </div>
   </div>
 </template>
@@ -137,16 +140,18 @@ const cDtoItem = ref<XTypeResultDtoItem>(new XTypeResultDtoItem())
 const dto: any = useAttrs().dto
 dto.params = cDtoItem
 
+const isLoading = ref<boolean>(true)
+const isValidInput = ref<boolean>(true)
+
+// xを自分側に定義したかどうか
+const definedXOwn = ref<boolean>(false)
+
 const headers = ref<any>([
   { title: '有利順位', value: 'rank', align: 'center' },
   { title: 'タイプ', value: 'twoTypeKey', sortable: false, align: 'left' },
   { title: 'こうげき時相性', value: 'atkMsgs', sortable: false, align: 'left' },
   { title: 'ぼうぎょ時相性', value: 'defMsgs', sortable: false, align: 'left' }
 ])
-
-// xを自分側に定義したかどうか
-const definedXOwn = ref<boolean>(false)
-const isLoading = ref<boolean>(true)
 
 const constant: ConstantValue = constantUtils().get()
 const constantAccessor: ConstantAccessor = new ConstantAccessor(constant)
@@ -189,9 +194,11 @@ const init = async () => {
   cDtoItem.value.searchParams = searchCommon()
     .restoreSearchParams(useRoute().query, XTypeResultSearchParams)
   // dtoStoreからresDataを復元
-  const rd: XTypeResponse = searchCommon().restoreResData(true) as XTypeResponse
+  const restoredParams: Record<string, any> | null = searchCommon().restoreCurrentScreen(['resData'])
+  const rd: XTypeResponse | null = restoredParams?.resData
 
-  if (rd) {
+  if (rd && (rd.own1 || rd.own2)) {
+    // resDataが復元できた場合
     cDtoItem.value.resData = rd
   } else {
     // 存在しない場合は取得する
@@ -200,7 +207,10 @@ const init = async () => {
     }
 
     const ret = await get(cDtoItem.value.searchParams)
-    if (!ret) { return }
+    if (!ret) {
+      isValidInput.value = false
+      return
+    }
     cDtoItem.value.resData = ret
   }
 

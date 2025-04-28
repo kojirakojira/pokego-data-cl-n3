@@ -13,9 +13,11 @@
             ポケモン
           </v-col>
           <v-col cols="12" md="8" lg="8" xl="8">
-            <v-combobox
-              v-model="cDtoItem.searchParams.name"
-              :items="tgbArr"
+            <v-select
+              v-model="cDtoItem.searchParams.pid"
+              :items="cDtoItem.tgbArr"
+              item-title="name"
+              item-value="pid"
               label="ポケモンを選択"
               outlined
               dense
@@ -37,7 +39,7 @@
               dense
               autocomplete="off"
               type="number"
-              @keyup.enter.exact="clickSearchBtn"
+              @keyup.enter.exact="screenControlMethods().clickSearchBtn"
             />
           </v-col>
         </v-row>
@@ -65,19 +67,13 @@
               min-width="50%"
               color="success"
               :disabled="isSearchBtnClick"
-              @click="clickSearchBtn"
+              @click="screenControlMethods().clickSearchBtn"
             >
               検索
             </v-btn>
           </v-col>
         </v-row>
       </v-container>
-      <template v-if="cDtoItem.resData && cDtoItem.resData.pokemonSearchResult?.goPokedexList.length > 1">
-        <SearchResultList
-          :psr="cDtoItem.resData.pokemonSearchResult"
-          @click-row="searchCommon().clickRowResultList($event, searchPattern, cDtoItem.searchParams)"
-        />
-      </template>
     </div>
     <div v-show="isLoading">
       <Loading full-page />
@@ -88,10 +84,11 @@
 <script setup lang="ts">
 import {
   ThreeGalarBirdsSearchDtoItem,
-  type ThreeGalarBirdsResponse,
-  get,
+  type TgbSelectItem,
+  getList,
   check
 } from '~/components/interface/threeGalarBirds'
+import type { GoPokedex } from '~/components/interface/api/dto'
 
 const searchPattern = 'threeGalarBirds'
 
@@ -100,56 +97,49 @@ const cDtoItem = ref<ThreeGalarBirdsSearchDtoItem>(new ThreeGalarBirdsSearchDtoI
 const dto: any = useAttrs().dto
 dto.params = cDtoItem
 
-const tgbArr = ['フリーザー(ガラルのすがた)', 'サンダー(ガラルのすがた)', 'ファイヤー(ガラルのすがた)']
-
 const isLoading = ref<boolean>(false)
 const isSearchBtnClick = ref<boolean>(false)
 
 // created: 画面を復元する
-searchCommon().restoreSearchScreen(['searchParams', 'resData'], cDtoItem.value)
+searchCommon().restoreSearchScreen(['searchParams', 'tgbArr'], cDtoItem.value)
 
-const clickSearchBtn = async () => {
-  isSearchBtnClick.value = true
-  const msg = check(cDtoItem.value.searchParams)
-  if (msg) {
-    alert(msg)
-    isSearchBtnClick.value = false
-    return
+const screenControlMethods = () => {
+  const init = async () => {
+    // tgbArrの更新
+    const dtoTgbArr = cDtoItem.value.tgbArr
+    if (dtoTgbArr.length) { return }
+    const tgbGpArr: Array<GoPokedex> = await getList()
+    const tgbArr: Array<TgbSelectItem> = tgbGpArr.map((tgb) => {
+      return {
+        pid: tgb.pokedexId,
+        name: editUtils().appendRemarks(tgb.name, tgb.remarks)
+      }
+    })
+    dtoTgbArr.push(...tgbArr)
   }
-  isLoading.value = true
-  const res = await get(cDtoItem.value.searchParams)
-  if (!res) {
-    isSearchBtnClick.value = false
-    isLoading.value = false
-    return
-  }
-  handleApiResult(res)
-}
 
-/**
- * APIのレスポンスを処理する。
- *
- * @param rd
- */
-const handleApiResult = (rd: ThreeGalarBirdsResponse) => {
-  if (rd.success) {
-    cDtoItem.value.resData = rd
-    if (rd.pokemonSearchResult.unique) {
-      // 1件のみヒットした場合
-      useRouter().push({
-        name: 'search-result-threeGalarBirdsResult',
-        query: searchCommon().makeQuery(rd.pokedexId, cDtoItem.value.searchParams)
-      })
-    } else {
-      // 複数件 or 0件ヒットした場合
-      useRouter().replace({
-        name: 'search-threeGalarBirds'
-      })
+  const clickSearchBtn = () => {
+    isSearchBtnClick.value = true
+    const msg = check(cDtoItem.value.searchParams)
+    if (msg) {
+      alert(msg)
       isSearchBtnClick.value = false
-      isLoading.value = false
+      return
     }
+    isLoading.value = true
+    useRouter().push({
+      name: 'search-result-threeGalarBirdsResult',
+      query: searchCommon().makeQuery(cDtoItem.value.searchParams.pid, cDtoItem.value.searchParams)
+    })
+  }
+
+  return {
+    init,
+    clickSearchBtn
   }
 }
+
+await screenControlMethods().init()
 
 useHead({
   title: searchCommon().getSearchPatternName(searchPattern),

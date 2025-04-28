@@ -1,4 +1,4 @@
-import { ScpRank } from './api/dto'
+import { PokemonSearchResult, ScpRank } from './api/dto'
 import { ResearchRequest } from './api/request'
 import { ResearchResponse } from './api/response'
 
@@ -19,11 +19,13 @@ export class ScpRankListResponse extends ResearchResponse {
  * 検索画面用クエリパラメータの定義
  */
 export class ScpRankListSearchParams extends ResearchRequest {
+  pid: string
   name: string
   league: string
 
   constructor () {
     super()
+    this.pid = ''
     this.name = ''
     this.league = ''
   }
@@ -33,7 +35,7 @@ export class ScpRankListSearchParams extends ResearchRequest {
  */
 export class ScpRankListSearchDtoItem implements SearchDtoItem {
   searchParams: ScpRankListSearchParams
-  resData?: ScpRankListResponse
+  pokemonSearchResult?: PokemonSearchResult
 
   constructor () {
     this.searchParams = new ScpRankListSearchParams()

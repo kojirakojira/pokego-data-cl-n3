@@ -43,7 +43,7 @@ export class RaceDiffSearchParams {
  */
 export class RaceDiffSearchDtoItem implements SearchDtoItem {
   searchParams: RaceDiffSearchParams
-  resData?: RaceDiffResponse
+  msr?: MultiSearchResult
 
   constructor () {
     this.searchParams = new RaceDiffSearchParams()

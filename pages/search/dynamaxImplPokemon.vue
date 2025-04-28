@@ -129,10 +129,9 @@ const gigantamaxList = computed(() => {
  */
 const screenControlMethods = () => {
   const init = async (): Promise<void> => {
-    // 画面を復元する
-    searchCommon().restoreSearchScreen(['resData'], cDtoItem.value)
     // dtoStoreからresDataを復元
-    const rd: DynamaxImplPokemonResponse | null = searchCommon().restoreResearchResData() as DynamaxImplPokemonResponse
+    const restoredParams: Record<string, any> | null = searchCommon().restoreCurrentScreen(['resData'])
+    const rd: DynamaxImplPokemonResponse | null = restoredParams?.resData
 
     if (rd) {
       cDtoItem.value.resData = rd

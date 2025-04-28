@@ -15,7 +15,8 @@
           </v-col>
           <v-col cols="12" md="8" lg="8" xl="8">
             <SearchInputPokeName
-              v-model="cDtoItem.searchParams.name"
+              v-model:name="cDtoItem.searchParams.name"
+              v-model:pid="cDtoItem.searchParams.pid"
               :keyup-enter="clickSearchBtn"
             />
           </v-col>
@@ -68,9 +69,9 @@
           </v-col>
         </v-row>
       </v-container>
-      <template v-if="cDtoItem.resData && cDtoItem.resData.pokemonSearchResult?.goPokedexList.length > 1">
+      <template v-if="cDtoItem.pokemonSearchResult && cDtoItem.pokemonSearchResult?.goPokedexList.length > 1">
         <SearchResultList
-          :psr="cDtoItem.resData.pokemonSearchResult"
+          :psr="cDtoItem.pokemonSearchResult"
           @click-row="searchCommon().clickRowResultList($event, searchPattern, cDtoItem.searchParams)"
         />
       </template>
@@ -85,6 +86,7 @@
 import {
   CpSearchDtoItem,
   type CpResponse,
+  type CpSearchParams,
   get,
   check
 } from '~/components/interface/cp'
@@ -101,7 +103,7 @@ const isSearchBtnClick = ref<boolean>(false)
 const constant: ConstantValue = constantUtils().get()
 
 // created: 画面を復元する
-searchCommon().restoreSearchScreen(['searchParams', 'resData'], cDtoItem.value)
+searchCommon().restoreSearchScreen(['searchParams', 'pokemonSearchResult'], cDtoItem.value)
 
 const clickSearchBtn = async () => {
   isSearchBtnClick.value = true
@@ -109,6 +111,11 @@ const clickSearchBtn = async () => {
   if (msg) {
     alert(msg)
     isSearchBtnClick.value = false
+    return
+  }
+  if (cDtoItem.value.searchParams.pid) {
+    // pidが存在する場合
+    transitionResultPage(cDtoItem.value.searchParams.pid, cDtoItem.value.searchParams)
     return
   }
   isLoading.value = true
@@ -128,13 +135,10 @@ const clickSearchBtn = async () => {
    */
 const handleApiResult = (rd: CpResponse) => {
   if (rd.success) {
-    cDtoItem.value.resData = rd
+    cDtoItem.value.pokemonSearchResult = rd.pokemonSearchResult
     if (rd.pokemonSearchResult.unique) {
       // 1件のみヒットした場合
-      useRouter().push({
-        name: 'search-result-cpResult',
-        query: searchCommon().makeQuery(rd.pokedexId, cDtoItem.value.searchParams)
-      })
+      transitionResultPage(rd.pokedexId, cDtoItem.value.searchParams, rd)
     } else {
       // 複数件 or 0件ヒットした場合
       useRouter().replace({
@@ -144,6 +148,32 @@ const handleApiResult = (rd: CpResponse) => {
       isLoading.value = false
     }
   }
+}
+
+/**
+ * result画面に遷移する
+ * ここで遷移する場合は、ポケモンが一意に特定できている
+ *
+ * @param pid
+ * @param searchParams
+ * @param resData
+ */
+const transitionResultPage = (pid: string, searchParams: CpSearchParams, resData?: CpResponse): void => {
+  // result画面にresDataをセット
+  const pathName: string = 'search-result-cpResult'
+  const params: Record<string, any> = {}
+  if (resData) { params.resData = resData }
+  dtoUtils().prePushScreenInfo(dtoUtils().createScreenInfo(
+    pathName,
+    {},
+    params,
+    true
+  ))
+  // 遷移
+  useRouter().push({
+    name: pathName,
+    query: searchCommon().makeQuery(pid, searchParams)
+  })
 }
 
 useHead({

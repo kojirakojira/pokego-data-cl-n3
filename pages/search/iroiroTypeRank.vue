@@ -43,9 +43,7 @@
 
 <script setup lang="ts">
 import {
-  IroiroTypeRankResponse,
   IroiroTypeRankSearchDtoItem,
-  get,
   getSearchPatternArr
 } from '~/components/interface/iroiroTypeRank'
 
@@ -72,31 +70,15 @@ const screenControlMethods = () => {
     isLoading.value = false
   }
 
-  const clickSearchBtn = async () => {
+  const clickSearchBtn = () => {
     isSearchBtnClick.value = true
     isLoading.value = true
-    const res = await get(cDtoItem.value.searchParams)
-    if (!res) {
-      isSearchBtnClick.value = false
-      isLoading.value = false
-      return
-    }
-    handleApiResult(res)
-  }
-
-  /**
-   * APIのレスポンスを処理する。
-   *
-   * @param rd
-   */
-  const handleApiResult = (rd: IroiroTypeRankResponse) => {
-    if (rd.success) {
-      cDtoItem.value.resData = rd
-      useRouter().push({
-        name: 'search-result-iroiroTypeRankResult',
-        query: searchCommon().makeQuery(cDtoItem.value.searchParams)
-      })
-    }
+    useRouter().push({
+      name: 'search-result-iroiroTypeRankResult',
+      query: searchCommon().makeQuery(cDtoItem.value.searchParams)
+    })
+    isSearchBtnClick.value = false
+    isLoading.value = false
   }
 
   return {

@@ -1,4 +1,4 @@
-import { type PlCp } from './api/dto'
+import { PokemonSearchResult, type PlCp } from './api/dto'
 import { ResearchRequest } from './api/request'
 import { ResearchResponse } from './api/response'
 
@@ -23,11 +23,13 @@ export class PlListResponse extends ResearchResponse {
  * 検索画面用クエリパラメータの定義
  */
 export class PlListSearchParams extends ResearchRequest {
+  pid: string
   name: string
   iv: string
 
   constructor () {
     super()
+    this.pid = ''
     this.name = ''
     this.iv = ''
   }
@@ -37,7 +39,7 @@ export class PlListSearchParams extends ResearchRequest {
  */
 export class PlListSearchDtoItem implements SearchDtoItem {
   searchParams: PlListSearchParams
-  resData?: PlListResponse
+  pokemonSearchResult?: PokemonSearchResult
 
   constructor () {
     this.searchParams = new PlListSearchParams()

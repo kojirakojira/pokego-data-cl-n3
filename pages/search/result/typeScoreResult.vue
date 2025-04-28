@@ -148,7 +148,10 @@
       />
     </div>
     <div v-else>
-      <Loading full-page />
+      <Loading v-if="isValidInput" full-page />
+      <div v-else class="text-center">
+        <MajorPartsInvalidInputBackLink />
+      </div>
     </div>
   </div>
 </template>
@@ -172,6 +175,9 @@ const cDtoItem = ref<TypeScoreResultDtoItem>(new TypeScoreResultDtoItem())
 const dto: any = useAttrs().dto
 dto.params = cDtoItem
 
+const isLoading = ref<boolean>(true)
+const isValidInput = ref<boolean>(true)
+
 interface TypeInfo {
   jpn: string,
   color: string,
@@ -189,8 +195,6 @@ const typeDic = ref<TypeDic>({
   attacker2: { jpn: '', color: '', vRatingScore: 0 },
   defender: { jpn: '', color: '', vRatingScore: 0 }
 })
-
-const isLoading = ref<boolean>(true)
 
 const constant: ConstantValue = constantUtils().get()
 const constantAccessor: ConstantAccessor = new ConstantAccessor(constant)
@@ -236,9 +240,11 @@ const init = async () => {
   cDtoItem.value.searchParams = searchCommon()
     .restoreSearchParams(useRoute().query, TypeScoreResultSearchParams)
   // dtoStoreからresDataを復元
-  const rd: TypeScoreResponse | null = searchCommon().restoreResearchResData() as TypeScoreResponse
+  const restoredParams: Record<string, any> | null = searchCommon().restoreCurrentScreen(['resData'])
+  const rd: TypeScoreResponse | null = restoredParams?.resData
 
-  if (rd) {
+  if (rd && rd.pokedexId) {
+    // resDataが復元できた場合
     cDtoItem.value.resData = rd
   } else {
     // 存在しない場合は取得する
@@ -250,7 +256,10 @@ const init = async () => {
     createRequestQuery(cDtoItem.value.searchParams) as TypeScoreResultSearchParams
 
     const ret = await get(requestQuery)
-    if (!ret) { return }
+    if (!ret) {
+      isValidInput.value = false
+      return
+    }
     cDtoItem.value.resData = ret
   }
   // API側の仕様として、タイプ1に値がなく、タイプ2に値がある場合は、タイプ2にタイプ1の値が設定される。

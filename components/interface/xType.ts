@@ -47,7 +47,6 @@ export class XTypeSearchParams {
  */
 export class XTypeSearchDtoItem implements SearchDtoItem {
   searchParams: XTypeSearchParams
-  resData?: XTypeResponse
 
   constructor () {
     this.searchParams = new XTypeSearchParams()

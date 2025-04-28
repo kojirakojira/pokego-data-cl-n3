@@ -90,9 +90,9 @@ const init = async () => {
   cDtoItem.value.searchParams = searchCommon()
     .restoreSearchParams(useRoute().query, EvoCostResultSearchParams)
   // dtoStoreからresDataを復元
-  const rd: EvoCostResponse | null = searchCommon().restoreResData(true) as EvoCostResponse
-  const dtoOpenDic: Record<string, Array<string>> | null =
-    searchCommon().restoreCurrentScreen(['openDic'])?.openDic
+  const restoredParams: Record<string, any> | null = searchCommon().restoreCurrentScreen(['resData', 'openDic'])
+  const rd: EvoCostResponse | null = restoredParams?.resData
+  const dtoOpenDic: Record<string, Array<string>> | null = restoredParams?.openDic
 
   if (rd) {
     cDtoItem.value.resData = rd
@@ -100,7 +100,10 @@ const init = async () => {
     // 存在しない場合は取得する
     // 入力チェック不要
     const ret = await get(cDtoItem.value.searchParams)
-    if (!ret) { return }
+    if (!ret) {
+      // resが正しくない場合
+      throw createError({ statusCode: 400, message: '不正なパラメータが指定されました。', fatal: true })
+    }
     cDtoItem.value.resData = ret
   }
 

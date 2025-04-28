@@ -1,4 +1,4 @@
-import { CpRank, GoPokedex } from './api/dto'
+import { CpRank, GoPokedex, PokemonSearchResult } from './api/dto'
 import { ResearchRequest } from './api/request'
 import { ResearchResponse } from './api/response'
 
@@ -25,11 +25,13 @@ export class CpRankResponse extends ResearchResponse {
  * 検索画面用クエリパラメータの定義
  */
 export class CpRankSearchParams extends ResearchRequest {
+  pid: string
   name: string
   iv: string
 
   constructor () {
     super()
+    this.pid = ''
     this.name = ''
     this.iv = ''
   }
@@ -39,7 +41,7 @@ export class CpRankSearchParams extends ResearchRequest {
  */
 export class CpRankSearchDtoItem implements SearchDtoItem {
   searchParams: CpRankSearchParams
-  resData?: CpRankResponse
+  pokemonSearchResult?: PokemonSearchResult
 
   constructor () {
     this.searchParams = new CpRankSearchParams()
@@ -82,6 +84,8 @@ export const get = async (
     ivd: searchParams.iv.substring(2, 4),
     ivh: searchParams.iv.substring(4, 6)
   }
+  if ('pid' in searchParams) { query.pid = searchParams.pid }
+  if ('name' in searchParams) { query.name = searchParams.name }
 
   const res = await fetchCommon('/api/cpRank', 'GET', { query })
   const rd: CpRankResponse | null = res.data as CpRankResponse

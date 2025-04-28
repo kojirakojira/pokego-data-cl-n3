@@ -159,7 +159,10 @@
       </div>
     </div>
     <div v-else>
-      <Loading full-page />
+      <Loading v-if="isValidInput" full-page />
+      <div v-else class="text-center">
+        <MajorPartsInvalidInputBackLink />
+      </div>
     </div>
   </div>
 </template>
@@ -170,8 +173,8 @@ import { RaceGoRank, RaceOriRank, type GoPokedex, type GoPokedexStats, type Poke
 import {
   type RaceResponse,
   RaceResultDtoItem,
-  RaceResultSearchParams,
-  get
+  get,
+  RaceResultSearchParams
 } from '~/components/interface/race'
 
 const searchPattern = 'race'
@@ -181,21 +184,27 @@ const dto: any = useAttrs().dto
 dto.params = cDtoItem
 
 const isLoading = ref<boolean>(true)
+const isValidInput = ref<boolean>(true)
 
 const init = async () => {
   // route.queryからsearchParamsを復元
   cDtoItem.value.searchParams = searchCommon()
     .restoreSearchParams(useRoute().query, RaceResultSearchParams)
   // dtoStoreからresDataを復元
-  const rd: RaceResponse | null = searchCommon().restoreResearchResData() as RaceResponse
+  const restoredParams: Record<string, any> | null = searchCommon().restoreCurrentScreen(['resData'])
+  const rd: RaceResponse | null = restoredParams?.resData
 
-  if (rd) {
+  if (rd && rd.pokedexId) {
+    // resDataが復元できた場合
     cDtoItem.value.resData = rd
   } else {
     // 存在しない場合は取得する
     // 入力チェック不要
     const ret = await get(cDtoItem.value.searchParams)
-    if (!ret) { return }
+    if (!ret) {
+      isValidInput.value = false
+      return
+    }
     cDtoItem.value.resData = ret
   }
 

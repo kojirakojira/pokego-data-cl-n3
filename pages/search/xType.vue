@@ -163,7 +163,7 @@ typeArr.value.splice(0)
 typeArr.value.push({ type: 'x', jpn: 'xで仮定', color: new Color() }, ...constant.TYPE)
 
 // created: 画面を復元する
-searchCommon().restoreSearchScreen(['searchParams', 'resData'], cDtoItem.value)
+searchCommon().restoreSearchScreen(['searchParams'], cDtoItem.value)
 
 const clickSearchBtn = async () => {
   isSearchBtnClick.value = true
@@ -190,7 +190,6 @@ const clickSearchBtn = async () => {
  */
 const handleApiResult = (rd: XTypeResponse) => {
   if (rd.success) {
-    cDtoItem.value.resData = rd
     useRouter().push({
       name: 'search-result-xTypeResult',
       query: searchCommon().makeQuery(cDtoItem.value.searchParams)

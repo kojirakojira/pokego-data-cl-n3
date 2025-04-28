@@ -1,4 +1,4 @@
-import { GoPokedex } from './api/dto'
+import { GoPokedex, PokemonSearchResult } from './api/dto'
 import { ResearchRequest } from './api/request'
 import { ResearchResponse } from './api/response'
 
@@ -27,12 +27,14 @@ export class CpResponse extends ResearchResponse {
  * 検索画面用クエリパラメータの定義
  */
 export class CpSearchParams extends ResearchRequest {
+  pid: string
   name: string
   iv: string
   pl: string
 
   constructor () {
     super()
+    this.pid = ''
     this.name = ''
     this.iv = ''
     this.pl = ''
@@ -43,7 +45,7 @@ export class CpSearchParams extends ResearchRequest {
  */
 export class CpSearchDtoItem implements SearchDtoItem {
   searchParams: CpSearchParams
-  resData?: CpResponse
+  pokemonSearchResult?: PokemonSearchResult
 
   constructor () {
     this.searchParams = new CpSearchParams()

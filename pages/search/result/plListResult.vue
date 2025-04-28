@@ -58,7 +58,10 @@
       </v-container>
     </div>
     <div v-else>
-      <Loading full-page />
+      <Loading v-if="isValidInput" full-page />
+      <div v-else class="text-center">
+        <MajorPartsInvalidInputBackLink />
+      </div>
     </div>
   </div>
 </template>
@@ -83,13 +86,15 @@ const headers = ref<any>([
   { title: 'CP', key: 'cp', sortable: true }
 ])
 const isLoading = ref<boolean>(true)
+const isValidInput = ref<boolean>(true)
 
 const init = async () => {
   // route.queryからsearchParamsを復元
   cDtoItem.value.searchParams = searchCommon()
     .restoreSearchParams(useRoute().query, PlListResultSearchParams)
   // dtoStoreからresDataを復元
-  const rd: PlListResponse | null = searchCommon().restoreResearchResData() as PlListResponse
+  const restoredParams: Record<string, any> | null = searchCommon().restoreCurrentScreen(['resData'])
+  const rd: PlListResponse | null = restoredParams?.resData
 
   if (rd) {
     cDtoItem.value.resData = rd
@@ -100,7 +105,10 @@ const init = async () => {
     }
 
     const ret = await get(cDtoItem.value.searchParams)
-    if (!ret) { return }
+    if (!ret) {
+      isValidInput.value = false
+      return
+    }
     cDtoItem.value.resData = ret
   }
 

@@ -59,7 +59,10 @@
       </v-container>
     </div>
     <div v-else>
-      <Loading full-page />
+      <Loading v-if="isValidInput" full-page />
+      <div v-else class="text-center">
+        <MajorPartsInvalidInputBackLink />
+      </div>
     </div>
   </div>
 </template>
@@ -80,21 +83,28 @@ const dto: any = useAttrs().dto
 dto.params = cDtoItem
 
 const isLoading = ref<boolean>(true)
+const isValidInput = ref<boolean>(true)
 
 const init = async () => {
   // route.queryからsearchParamsを復元
   cDtoItem.value.searchParams = searchCommon()
     .restoreSearchParams(useRoute().query, EggsResultSearchParams)
   // dtoStoreからresDataを復元
-  const rd: EggsResponse | null = searchCommon().restoreResearchResData() as EggsResponse
+  const restoredParams: Record<string, any> | null = searchCommon().restoreCurrentScreen(['resData'])
+  const rd: EggsResponse | null = restoredParams?.resData
 
-  if (rd) {
+  if (rd && rd.pokedexId) {
+    // resDataが復元できた場合
     cDtoItem.value.resData = rd
   } else {
     // 存在しない場合は取得する
     // 入力チェック不要
     const ret = await get(cDtoItem.value.searchParams)
-    if (!ret) { return }
+    if (!ret) {
+      // resが正しくない場合
+      isValidInput.value = false
+      return
+    }
     cDtoItem.value.resData = ret
   }
 

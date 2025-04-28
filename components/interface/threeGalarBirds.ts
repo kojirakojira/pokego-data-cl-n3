@@ -1,4 +1,4 @@
-import { VersatilityIv } from './api/dto'
+import { GoPokedex, VersatilityIv } from './api/dto'
 import { ResearchRequest } from './api/request'
 import { ResearchResponse } from './api/response'
 
@@ -32,15 +32,21 @@ export class ThreeGalarBirdsSearchParams extends ResearchRequest {
     this.wbFlg = false
   }
 }
+
+export interface TgbSelectItem {
+  pid: string,
+  name: string
+}
 /**
  * 検索画面用DTOの定義
  */
 export class ThreeGalarBirdsSearchDtoItem implements SearchDtoItem {
   searchParams: ThreeGalarBirdsSearchParams
-  resData?: ThreeGalarBirdsResponse
+  tgbArr: Array<TgbSelectItem>
 
   constructor () {
     this.searchParams = new ThreeGalarBirdsSearchParams()
+    this.tgbArr = []
   }
 }
 
@@ -72,6 +78,14 @@ export class ThreeGalarBirdsResultDtoItem implements ResultDtoItem {
 }
 
 /**
+ * ガラル三鳥List取得用APIアクセス用関数
+ */
+export const getList = async (): Promise<Array<GoPokedex>> => {
+  const res: Record<string, any> = await fetchCommon('/api/threeGalarBirdList', 'GET')
+  return Object.entries(res.data).map((arr: Array<any>) => arr[1]) as Array<GoPokedex>
+}
+
+/**
  * APIアクセス用get関数
  */
 export const get = async (
@@ -93,8 +107,8 @@ export const get = async (
  */
 export const check = (searchParams: ThreeGalarBirdsSearchParams | ThreeGalarBirdsResultSearchParams) => {
   let msg = ''
-  if ('name' in searchParams) {
-    msg += validateUtils().checkRequired({ item: searchParams.name, itemName: 'ポケモン' })
+  if ('pid' in searchParams) {
+    msg += validateUtils().checkRequired({ item: searchParams.pid, itemName: 'ポケモン' })
   }
   msg += validateUtils().checkRequired({ item: searchParams.cp, itemName: 'CP' })
   msg += validateUtils().checkNumeric({ item: searchParams.cp, itemName: 'CP' })

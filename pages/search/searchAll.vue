@@ -14,7 +14,8 @@
           </v-col>
           <v-col cols="12" md="8" lg="8" xl="8">
             <SearchInputPokeName
-              v-model="cDtoItem.searchParams.name"
+              v-model:name="cDtoItem.searchParams.name"
+              v-model:pid="cDtoItem.searchParams.pid"
               :keyup-enter="screenControlMethods().clickSearchBtn"
             />
           </v-col>
@@ -33,10 +34,10 @@
           </v-col>
         </v-row>
       </v-container>
-      <template v-if="cDtoItem.resData && cDtoItem.resData.pokemonSearchResult?.goPokedexList.length > 1">
+      <template v-if="cDtoItem.pokemonSearchResult && cDtoItem.pokemonSearchResult?.goPokedexList.length > 1">
         <SearchResultList
-          :psr="cDtoItem.resData.pokemonSearchResult"
-          @click-row="screenControlMethods().clickRow"
+          :psr="cDtoItem.pokemonSearchResult"
+          @click-row="screenControlMethods().transitionResultPage($event, cDtoItem.searchParams)"
         />
       </template>
     </div>
@@ -50,7 +51,8 @@
 import {
   SearchAllSearchDtoItem,
   type SearchAllResponse,
-  get
+  get,
+  SearchAllSearchParams
 } from '~/components/interface/searchAll'
 
 const searchPattern = 'searchAll'
@@ -68,12 +70,17 @@ const screenControlMethods = () => {
   /** 初期表示時の処理 */
   const init = (): void => {
     // created: 画面を復元する
-    searchCommon().restoreSearchScreen(['searchParams', 'resData'], cDtoItem.value)
+    searchCommon().restoreSearchScreen(['searchParams', 'pokemonSearchResult'], cDtoItem.value)
   }
 
   const clickSearchBtn = async () => {
     isSearchBtnClick.value = true
     isLoading.value = true
+    if (cDtoItem.value.searchParams.pid) {
+    // pidが存在する場合
+      transitionResultPage(cDtoItem.value.searchParams.pid, cDtoItem.value.searchParams)
+      return
+    }
     const res = await get(cDtoItem.value.searchParams)
     if (!res) {
       isSearchBtnClick.value = false
@@ -90,13 +97,10 @@ const screenControlMethods = () => {
    */
   const handleApiResult = (rd: SearchAllResponse) => {
     if (rd.success) {
-      cDtoItem.value.resData = rd
+      cDtoItem.value.pokemonSearchResult = rd.pokemonSearchResult
       if (rd.pokemonSearchResult.unique) {
         // 1件のみヒットした場合
-        useRouter().push({
-          name: 'search-result-abundance',
-          query: { pid: rd.pokemonSearchResult.goPokedex.pokedexId }
-        })
+        transitionResultPage(rd.pokemonSearchResult.goPokedex.pokedexId, cDtoItem.value.searchParams)
       } else {
         // 複数件 or 0件ヒットした場合
         useRouter().replace({
@@ -108,16 +112,26 @@ const screenControlMethods = () => {
     }
   }
 
-  const clickRow = (pid: string) => {
+  /**
+   * result画面に遷移する
+   * ここで遷移する場合は、ポケモンが一意に特定できている
+   *
+   * @param pid
+   * @param searchParams
+   */
+  const transitionResultPage = (pid: string, searchParams: SearchAllSearchParams): void => {
+  // searchAllでabundanceの情報を取得することはないため、prePushは不要
+  // 遷移
     useRouter().push({
       name: 'search-result-abundance',
-      query: { pid }
+      query: searchCommon().makeQuery(pid, searchParams)
     })
   }
+
   return {
     init,
     clickSearchBtn,
-    clickRow
+    transitionResultPage
   }
 }
 

@@ -27,9 +27,8 @@ export class EvoCostSearchParams {
 /**
  * 検索画面用DTOの定義
  */
-export class EvoCostSearchDtoItem implements SearchDtoItem {
+export class EvoCostSearchDtoItem {
   searchParams: EvoCostSearchParams
-  resData?: EvoCostResponse
 
   constructor () {
     this.searchParams = new EvoCostSearchParams()

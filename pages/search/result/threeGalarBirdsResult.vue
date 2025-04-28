@@ -90,7 +90,10 @@
       </v-container>
     </div>
     <div v-else>
-      <Loading full-page />
+      <Loading v-if="isValidInput" full-page />
+      <div v-else class="text-center">
+        <MajorPartsInvalidInputBackLink />
+      </div>
     </div>
   </div>
 </template>
@@ -111,6 +114,9 @@ const cDtoItem = ref<ThreeGalarBirdsResultDtoItem>(new ThreeGalarBirdsResultDtoI
 const dto: any = useAttrs().dto
 dto.params = cDtoItem
 
+const isLoading = ref<boolean>(true)
+const isValidInput = ref<boolean>(true)
+
 const headers = ref<any>([
   { title: '№', key: 'no', sortable: true },
   { title: 'AT', key: 'iva', sortable: true },
@@ -120,16 +126,16 @@ const headers = ref<any>([
   { title: 'PL', key: 'pl', sortable: true }
 ])
 
-const isLoading = ref<boolean>(true)
-
 const init = async () => {
   // route.queryからsearchParamsを復元
   cDtoItem.value.searchParams = searchCommon()
     .restoreSearchParams(useRoute().query, ThreeGalarBirdsResultSearchParams)
   // dtoStoreからresDataを復元
-  const rd: ThreeGalarBirdsResponse | null = searchCommon().restoreResearchResData() as ThreeGalarBirdsResponse
+  const restoredParams: Record<string, any> | null = searchCommon().restoreCurrentScreen(['resData'])
+  const rd: ThreeGalarBirdsResponse | null = restoredParams?.resData
 
-  if (rd) {
+  if (rd && rd.pokedexId) {
+    // resDataが復元できた場合
     cDtoItem.value.resData = rd
   } else {
     // 存在しない場合は取得する
@@ -138,7 +144,10 @@ const init = async () => {
     }
 
     const ret = await get(cDtoItem.value.searchParams)
-    if (!ret) { return }
+    if (!ret) {
+      isValidInput.value = false
+      return
+    }
     cDtoItem.value.resData = ret
   }
 

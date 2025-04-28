@@ -88,7 +88,10 @@
       </v-container>
     </div>
     <div v-else>
-      <Loading split-scr />
+      <Loading v-if="isValidInput" split-scr />
+      <div v-else class="text-center">
+        <MajorPartsInvalidInputBackLink />
+      </div>
     </div>
   </div>
 </template>
@@ -109,6 +112,9 @@ const cDtoItem = ref<ScpRankResultDtoItem>(new ScpRankResultDtoItem())
 const dto: any = useAttrs().dto
 dto.params = cDtoItem
 
+const isLoading = ref<boolean>(true)
+const isValidInput = ref<boolean>(true)
+
 const headers = readonly<any>([
   { title: 'リーグ', key: 'league' },
   { title: '順位', key: 'rank' },
@@ -122,16 +128,17 @@ const leagueDic = readonly<Record<string, string>>({
   hl: 'ハイパー',
   ml: 'マスター'
 })
-const isLoading = ref<boolean>(true)
 
 const init = async () => {
   // route.queryからsearchParamsを復元
   cDtoItem.value.searchParams = searchCommon()
     .restoreSearchParams(useRoute().query, ScpRankResultSearchParams)
   // dtoStoreからresDataを復元
-  const rd: ScpRankResponse | null = searchCommon().restoreResearchResData() as ScpRankResponse
+  const restoredParams: Record<string, any> | null = searchCommon().restoreCurrentScreen(['resData'])
+  const rd: ScpRankResponse | null = restoredParams?.resData
 
-  if (rd) {
+  if (rd && rd.pokedexId) {
+    // resDataが復元できた場合
     cDtoItem.value.resData = rd
   } else {
     // 存在しない場合は取得する
@@ -140,7 +147,10 @@ const init = async () => {
     }
 
     const ret = await get(cDtoItem.value.searchParams)
-    if (!ret) { return }
+    if (!ret) {
+      isValidInput.value = false
+      return
+    }
     cDtoItem.value.resData = ret
   }
   isLoading.value = !cDtoItem.value.resData

@@ -57,10 +57,18 @@ dto.params = cDtoItem
 const isLoading = ref<boolean>(false)
 
 // created: 画面を復元する
-searchCommon().restoreSearchScreen(['resData'], cDtoItem.value)
+const restoredParams: Record<string, any> | null = searchCommon().restoreCurrentScreen(['resData'])
+const rd: UnimplPokemonResponse | null = restoredParams?.resData
 
-const res: UnimplPokemonResponse = await get()
-cDtoItem.value.resData = res
+if (rd) {
+  // resDataが復元できた場合
+  cDtoItem.value.resData = rd
+} else {
+  // 存在しない場合は取得する
+  // 入力チェック不要
+  const ret = cDtoItem.value.resData = await get()
+  cDtoItem.value.resData = ret
+}
 
 interface Item {
   prependAvatar: string,

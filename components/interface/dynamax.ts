@@ -1,5 +1,4 @@
 import { CatchCp, GoPokedex } from './api/dto'
-import { ResearchRequest } from './api/request'
 import { ResearchResponse } from './api/response'
 import { DynamaxImplPokemonResponse } from './dynamaxImplPokemon'
 
@@ -23,24 +22,21 @@ export class DynamaxResponse extends ResearchResponse {
 /**
  * 検索画面用クエリパラメータの定義
  */
-export class DynamaxSearchParams extends ResearchRequest {
+export class DynamaxSearchParams {
   pid: string
 
   constructor () {
-    super()
     this.pid = ''
   }
 }
 /**
  * 検索画面用DTOの定義
  */
-export class DynamaxSearchDtoItem implements SearchDtoItem {
-  searchParams: DynamaxSearchParams
+export class DynamaxSearchDtoItem {
   resData?: DynamaxImplPokemonResponse
   openDic: Record<string, Array<string>>
 
   constructor () {
-    this.searchParams = new DynamaxSearchParams()
     this.openDic = {}
   }
 }
@@ -88,6 +84,4 @@ export const get = async (
  * 入力チェック関数
  * @returns エラーメッセージ
  */
-export const check = (searchParams: DynamaxSearchParams) => {
-  return validateUtils().checkRequired({ item: searchParams.name, itemName: 'ポケモン' })
-}
+// 入力チェック不要

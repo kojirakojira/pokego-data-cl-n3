@@ -1,4 +1,4 @@
-import { type Hierarchy, type Race } from './api/dto'
+import { PokemonSearchResult, type Hierarchy, type Race } from './api/dto'
 import { ResearchRequest } from './api/request'
 import { ResearchResponse } from './api/response'
 
@@ -27,10 +27,12 @@ export class EvolutionResponse extends ResearchResponse {
  * 検索画面用クエリパラメータの定義
  */
 export class EvolutionSearchParams extends ResearchRequest {
+  pid: string
   name: string
 
   constructor () {
     super()
+    this.pid = ''
     this.name = ''
   }
 }
@@ -39,7 +41,7 @@ export class EvolutionSearchParams extends ResearchRequest {
  */
 export class EvolutionSearchDtoItem implements SearchDtoItem {
   searchParams: EvolutionSearchParams
-  resData?: EvolutionResponse
+  pokemonSearchResult?: PokemonSearchResult
 
   constructor () {
     this.searchParams = new EvolutionSearchParams()

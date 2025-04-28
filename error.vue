@@ -30,6 +30,7 @@
 </template>
 
 <script setup lang="ts">
+import { dtoStore } from '~/stores/dtoStore'
 const error: any = useError()
 // 表示メッセージ
 const dispMessage = computed(() => {
@@ -38,6 +39,8 @@ const dispMessage = computed(() => {
   }
   return error.value?.statusCode === 404 ? '404 Not Found' : '例外が発生しました。'
 })
+// エラーがあったページ以降のHistoryを削除する
+dtoStore().clearHistory()
 </script>
 
 <style scoped>

@@ -99,14 +99,17 @@
           <v-col class="text-body-2">
             <ul style="list-style: none;">
               <li>※シャドウレイドの場合、個体値の振れ幅は天候ブースト関係なく<span class="text-blue">6</span>～15。PLは通常時20、天候ブースト時25。</li>
-              <li>※シャドウの場合はこうげきが上がりぼうぎょが下がるが、ダメージ量が変化するだけである。つまり、種族値・個体値に変化はなく、CPは通常（シャドウでない場合）と変わらない。</li>
+              <li>※シャドウポケモンは、こうげき力が上昇しぼうぎょが低下するが、ダメージ倍率に対する補正であり、種族値・個体値には変化がない。そのため、CPの算出ロジックは通常のポケモン（シャドウでないポケモン）と変わらない。</li>
             </ul>
           </v-col>
         </v-row>
       </v-container>
     </div>
     <div v-else>
-      <Loading full-page />
+      <Loading v-if="isValidInput" full-page />
+      <div v-else class="text-center">
+        <MajorPartsInvalidInputBackLink />
+      </div>
     </div>
   </div>
 </template>
@@ -127,20 +130,27 @@ const dto: any = useAttrs().dto
 dto.params = cDtoItem
 
 const isLoading = ref<boolean>(true)
+const isValidInput = ref<boolean>(true)
 
 const init = async () => {
   // route.queryからsearchParamsを復元
   cDtoItem.value.searchParams = searchCommon()
     .restoreSearchParams(useRoute().query, RaidResultSearchParams)
   // dtoStoreからresDataを復元
-  const rd: RaidResponse | null = searchCommon().restoreResearchResData() as RaidResponse
-  if (rd) {
+  const restoredParams: Record<string, any> | null = searchCommon().restoreCurrentScreen(['resData'])
+  const rd: RaidResponse | null = restoredParams?.resData
+
+  if (rd && rd.pokedexId) {
+    // resDataが復元できた場合
     cDtoItem.value.resData = rd
   } else {
     // 存在しない場合は取得する
     // 入力チェック不要
     const ret = await get(cDtoItem.value.searchParams)
-    if (!ret) { return }
+    if (!ret) {
+      isValidInput.value = false
+      return
+    }
     cDtoItem.value.resData = ret
   }
 

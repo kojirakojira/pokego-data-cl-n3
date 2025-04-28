@@ -2,9 +2,10 @@ import { defineStore } from 'pinia'
 
 export interface ScreenInfo {
   pathName: string
-  position: number // window.history.stateで管理している、positionを識別するための番号
+  position: number // window.history.stateで管理している、positionを識別するための番号(window.historyには、vue-routerが追加している)
   query: Record<string, any>
   params: Record<string, any>
+  prePush: boolean
 }
 export const dtoStore = defineStore(
   'dtoStore',
@@ -19,7 +20,7 @@ export const dtoStore = defineStore(
     // 直前の操作
     const navigationState = ref<string>('reload')
 
-    const history = historyState.value.history
+    const history: Array<ScreenInfo> = historyState.value.history
 
     const getHistory = (): Array<ScreenInfo> => history
 
@@ -36,6 +37,10 @@ export const dtoStore = defineStore(
       if (!history.length) {
         // historyが0件の場合は有無を言わず追加。
         history.push(si)
+      } else if (history[history.length - 1].prePush) {
+        // prePushを行った場合は、historyへの追加は行わない。
+        // prePushの値はfalseに更新し無害化させておく
+        history[history.length - 1].prePush = false
       } else {
         // historyが1件以上
         const idx = indexOf(si.position)
@@ -79,7 +84,7 @@ export const dtoStore = defineStore(
       // 現在のwindow.historyの要素数を退避させる
       lenState.value = window.history.length
 
-      console.log(history) // eslint-disable-line no-console
+      console.log(JSON.parse(JSON.stringify(history))) // eslint-disable-line no-console
     }
 
     /**
@@ -91,6 +96,10 @@ export const dtoStore = defineStore(
       let idx = indexOf(positionState.value)
       if (idx < 0) {
         // 例外的な挙動をした場合
+        console.log('例外的な挙動ここから') // eslint-disable-line no-console
+        console.log(idx) // eslint-disable-line no-console
+        console.log(positionState.value) // eslint-disable-line no-console
+        console.log('例外的な挙動ここまで') // eslint-disable-line no-console
         clearHistory()
         return
       }
@@ -132,6 +141,29 @@ export const dtoStore = defineStore(
       return history[index]
     }
 
+    const prePushScreenInfo = (si: ScreenInfo) => {
+      // 現在より後ろのhistoryがあった場合は削除する
+      const currentIdx = indexOf(positionState.value)
+      if (history.length && currentIdx < history.length - 1) {
+        history.splice(currentIdx + 1)
+      }
+
+      // 削除してるからspliceじゃなくpushでOK
+      history.push(si)
+    }
+
+    /**
+     * 現在より後ろのpositionのhistoryを削除する。
+     */
+    // const spliceHistory = () => {
+    //   if (!history.length) {
+    //     // historyが0件の場合
+    //     return null
+    //   }
+    //   const index = indexOf(positionState.value)
+    //   history.splice(index)
+    // }
+
     /**
      * historyのpositionの位置を求める。
      * 存在しない場合は-1を返却する。
@@ -172,7 +204,9 @@ export const dtoStore = defineStore(
       beforeEachAction,
       clearHistory,
       prevScreenInfo,
-      currentScreenInfo
+      currentScreenInfo,
+      prePushScreenInfo
+      // spliceHistory
     }
   }, {
     persist: true

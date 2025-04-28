@@ -54,17 +54,16 @@
       />
       <MajorPartsPrevNextPokemon
         :pid="cDtoItem.resData.pid"
-        :prev-text-func="
-          (gp: GoPokedex) =>
-            `&lt; ${editUtils().appendRemarks(gp.name, gp.remarks)}の進化ツリー(図鑑№${editUtils().getPdxNo(gp.pokedexId)})`"
-        :next-text-func="
-          (gp: GoPokedex) =>
-            `${editUtils().appendRemarks(gp.name, gp.remarks)}の進化ツリー(図鑑№${editUtils().getPdxNo(gp.pokedexId)}) &gt;`"
+        :prev-text-func="prevTextFunc"
+        :next-text-func="nextTextFunc"
         router-link="search-result-evolutionResult"
       />
     </div>
     <div v-else>
-      <Loading full-page />
+      <Loading v-if="isValidInput" full-page />
+      <div v-else class="text-center">
+        <MajorPartsInvalidInputBackLink />
+      </div>
     </div>
   </div>
 </template>
@@ -85,21 +84,28 @@ const dto: any = useAttrs().dto
 dto.params = cDtoItem
 
 const isLoading = ref<boolean>(true)
+const isValidInput = ref<boolean>(true)
 
 const init = async () => {
   // route.queryからsearchParamsを復元
   cDtoItem.value.searchParams = searchCommon()
     .restoreSearchParams(useRoute().query, EvolutionResultSearchParams)
   // dtoStoreからresDataを復元
-  const rd: EvolutionResponse | null = searchCommon().restoreResearchResData() as EvolutionResponse
+  const restoredParams: Record<string, any> | null = searchCommon().restoreCurrentScreen(['resData'])
+  const rd: EvolutionResponse | null = restoredParams?.resData
 
-  if (rd) {
+  if (rd && rd.pokedexId) {
+    // resDataが復元できた場合
     cDtoItem.value.resData = rd
   } else {
     // 存在しない場合は取得する
     // 入力チェック不要
     const ret = await get(cDtoItem.value.searchParams)
-    if (!ret) { return }
+    if (!ret) {
+      // resが正しくない場合
+      isValidInput.value = false
+      return
+    }
     cDtoItem.value.resData = ret
   }
 
@@ -119,6 +125,11 @@ watch(() => useRoute().fullPath, async () => {
   if (process.client) { scrollTo(0, 0) }
   isLoading.value = false
 })
+
+const prevTextFunc = (gp: GoPokedex): string =>
+  `< ${editUtils().appendRemarks(gp.name, gp.remarks)}の進化ツリー(図鑑№${editUtils().getPdxNo(gp.pokedexId)})`
+const nextTextFunc = (gp: GoPokedex): string =>
+  `${editUtils().appendRemarks(gp.name, gp.remarks)}の進化ツリー(図鑑№${editUtils().getPdxNo(gp.pokedexId)}) >`
 
 // Header
 const thisPath = useRuntimeConfig().public.url + useRoute().path

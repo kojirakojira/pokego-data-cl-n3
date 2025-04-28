@@ -169,7 +169,10 @@
       </v-container>
     </div>
     <div v-else>
-      <Loading full-page />
+      <Loading v-if="isValidInput" full-page />
+      <div v-else class="text-center">
+        <MajorPartsInvalidInputBackLink />
+      </div>
     </div>
   </div>
 </template>
@@ -195,7 +198,9 @@ const searchPattern = 'raceDiff'
 const cDtoItem = ref<RaceDiffResultDtoItem>(new RaceDiffResultDtoItem())
 const dto: any = useAttrs().dto
 dto.params = cDtoItem
+
 const isLoading = ref<boolean>(true)
+const isValidInput = ref<boolean>(true)
 
 const screenControlMethods = () => {
   const init = async () => {
@@ -203,14 +208,18 @@ const screenControlMethods = () => {
     cDtoItem.value.searchParams = searchCommon()
       .restoreSearchParams(useRoute().query, RaceDiffResultSearchParams)
     // dtoStoreからresDataを復元
-    const rd: RaceDiffResponse | null = searchCommon().restoreResearchResData() as RaceDiffResponse
-    if (rd) {
+    const restoredParams: Record<string, any> | null = searchCommon().restoreCurrentScreen(['resData'])
+    const rd: RaceDiffResponse | null = restoredParams?.resData
+
+    if (rd && rd.success) {
+      // resDataが復元できた場合
       cDtoItem.value.resData = rd
     } else {
       // 存在しない場合は取得する
       const ret: RaceDiffResponse = await get(cDtoItem.value.searchParams)
       if (ret && !checkApiError(ret)) {
-        throw createError({ statusCode: 400, message: '不正なパラメータが指定されました。', fatal: true })
+        isValidInput.value = false
+        return
       }
       cDtoItem.value.resData = ret
     }

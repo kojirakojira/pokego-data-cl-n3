@@ -46,6 +46,6 @@ defineProps<{
   }
 }>()
 
-const emit = defineEmits<{(e: 'clickRow', value?: string): void}>()
+const emit = defineEmits<{(e: 'clickRow', value: string): void}>()
 
 </script>

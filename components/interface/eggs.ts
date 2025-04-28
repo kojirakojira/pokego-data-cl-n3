@@ -1,4 +1,4 @@
-import { CatchCp, GoPokedex } from './api/dto'
+import { CatchCp, GoPokedex, PokemonSearchResult } from './api/dto'
 import { ResearchRequest } from './api/request'
 import { ResearchResponse } from './api/response'
 
@@ -21,10 +21,12 @@ export class EggsResponse extends ResearchResponse {
  * 検索画面用クエリパラメータの定義
  */
 export class EggsSearchParams extends ResearchRequest {
+  pid: string
   name: string
 
   constructor () {
     super()
+    this.pid = ''
     this.name = ''
   }
 }
@@ -33,7 +35,7 @@ export class EggsSearchParams extends ResearchRequest {
  */
 export class EggsSearchDtoItem implements SearchDtoItem {
   searchParams: EggsSearchParams
-  resData?: EggsResponse
+  pokemonSearchResult?: PokemonSearchResult
 
   constructor () {
     this.searchParams = new EggsSearchParams()

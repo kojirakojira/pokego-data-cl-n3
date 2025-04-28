@@ -25,7 +25,10 @@
         <v-col cols="12" md="7" lg="8" xl="8">
           <!-- abundanceの表 -->
           <h3>基本情報</h3>
-          <v-container class="pa-0">
+          <v-container
+            v-if="isLoadedAbundance"
+            class="pa-0"
+          >
             <v-row>
               <v-col style="text-align: end;">
                 <IconAwakeningIconMegaIcon
@@ -286,6 +289,18 @@
                 </v-container>
               </v-col>
             </v-row>
+            <v-row class="my-0">
+              <v-col
+                align="right"
+              >
+                <p class="link" @click="screenControlMethods().transitionRace">
+                  種族値の詳細をみる >>
+                </p>
+                <p class="link" @click="screenControlMethods().transitionRaceDiff">
+                  種族値を比較する >>
+                </p>
+              </v-col>
+            </v-row>
           </v-container>
           <div v-else>
             <Loading />
@@ -383,6 +398,7 @@ import { EvolutionResultSearchParams, type EvolutionResponse } from '~/component
 import { RaceResultSearchParams, type RaceResponse } from '~/components/interface/race'
 import { TypeScoreResultSearchParams, type TypeScoreResponse } from '~/components/interface/typeScore'
 import { type GoPokedex, RaceGoRank, GoPokedexAndCpPl } from '~/components/interface/api/dto'
+import { RaceDiffSearchParams } from '~/components/interface/raceDiff'
 
 // current dto item
 const cDtoItem = ref<AbundanceResultDtoItem>(new AbundanceResultDtoItem())
@@ -418,6 +434,14 @@ const screenControlMethods = () => {
         get('/api/evolution', cDtoItem.value, evoReq, 'evoResData'),
         get('/api/typeScore', cDtoItem.value, typeScoreReq, 'typeScoreResData')
       ])
+        .then((rdArr) => {
+          for (const rd of rdArr) {
+            if (!rd || rd.msgLevel === 'error') {
+              // resにエラーが含まれていた場合
+              throw createError({ statusCode: 400, message: '不正なパラメータが指定されました。', fatal: true })
+            }
+          }
+        })
     }
   }
 
@@ -444,8 +468,39 @@ const screenControlMethods = () => {
     cDtoItem.value.typeScoreResData = resDataDic.typeScoreResData as TypeScoreResponse
   }
 
+  const transitionRace = () => {
+    useRouter().push({
+      name: 'search-result-raceResult',
+      query: {
+        pid: cDtoItem.value.raceResData.pokedexId
+      }
+    })
+  }
+
+  const transitionRaceDiff = () => {
+    const searchParams: RaceDiffSearchParams = new RaceDiffSearchParams()
+    const textFieldValue = {
+      pid: cDtoItem.value.resData.goPokedex.pokedexId,
+      name: editUtils().appendRemarks(cDtoItem.value.resData.name, cDtoItem.value.resData.remarks),
+      errMsg: ''
+    }
+    searchParams.textFieldValues = [textFieldValue]
+    const pathName = 'search-raceDiff'
+    dtoUtils().prePushScreenInfo(dtoUtils().createScreenInfo(
+      pathName,
+      {},
+      { searchParams },
+      true
+    ))
+    useRouter().push({
+      name: pathName
+    })
+  }
+
   return {
-    init
+    init,
+    transitionRace,
+    transitionRaceDiff
   }
 }
 
@@ -468,7 +523,7 @@ const rgba2 = computed(() => {
 })
 /** abundanceの読み込みが終わったらtrueになる。 */
 const isLoadedAbundance = computed(() => {
-  return Object.keys(cDtoItem.value.resData).length
+  return !!cDtoItem.value.resData.goPokedex.pokedexId
 })
 /** スーパーリーグ安全圏CP、ハイパーリーグ安全圏CP用のメッセージを生成する。 */
 const safeCpMsgGenerator = computed(() => {
@@ -489,7 +544,7 @@ const safeCpMsgGenerator = computed(() => {
  */
 /** raceの読み込みが終わったらtrueになる。 */
 const isLoadedRace = computed(() => {
-  return Object.keys(cDtoItem.value.raceResData).length
+  return !!cDtoItem.value.raceResData.pokedexId
 })
 interface RaceValue {
   title: string,
@@ -510,7 +565,7 @@ const raceArr = computed((): Array<RaceValue> => {
  */
 /** evolutionの読み込みが終わったらtrueになる。 */
 const isLoadedEvolution = computed(() => {
-  return Object.keys(cDtoItem.value.evoResData).length
+  return !!cDtoItem.value.evoResData.pokedexId
 })
 
 /**
@@ -518,7 +573,7 @@ const isLoadedEvolution = computed(() => {
  */
 /** typeScoreの読み込みが終わったらtrueになる。 */
 const isLoadedTypeScore = computed(() => {
-  return Object.keys(cDtoItem.value.typeScoreResData).length
+  return !!cDtoItem.value.typeScoreResData.pokedexId
 })
 
 /**

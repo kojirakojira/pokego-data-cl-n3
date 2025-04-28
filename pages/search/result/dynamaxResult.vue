@@ -123,16 +123,20 @@ const init = async () => {
   cDtoItem.value.searchParams = searchCommon()
     .restoreSearchParams(useRoute().query, DynamaxResultSearchParams)
   // dtoStoreからresDataを復元
-  const rd: DynamaxResponse | null = searchCommon().restoreResearchResData() as DynamaxResponse
+  const restoredParams: Record<string, any> | null = searchCommon().restoreCurrentScreen(['resData'])
+  const rd: DynamaxResponse | null = restoredParams?.resData
 
-  if (rd) {
+  if (rd && rd.pokedexId) {
+    // resDataが復元できた場合
     cDtoItem.value.resData = rd
   } else {
     // 存在しない場合は取得する
-    // 前画面からの復元はない想定
     // 入力チェック不要
     const ret = await get(cDtoItem.value.searchParams)
-    if (!ret) { return }
+    if (!ret) {
+      // resが正しくない場合
+      throw createError({ statusCode: 400, message: '不正なパラメータが指定されました。', fatal: true })
+    }
     cDtoItem.value.resData = ret
   }
 

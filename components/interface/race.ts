@@ -1,4 +1,4 @@
-import { Race, PokemonStatisticsInfo, type DispFilterParam } from './api/dto'
+import { Race, PokemonStatisticsInfo, type DispFilterParam, PokemonSearchResult } from './api/dto'
 import { ResearchRequest } from './api/request'
 import { ResearchResponse } from './api/response'
 
@@ -30,11 +30,13 @@ export class RaceResponse extends ResearchResponse {
  * 検索画面用クエリパラメータの定義
  */
 export class RaceSearchParams extends ResearchRequest {
+  pid: string
   name: string
   statsRequired: boolean
 
   constructor (statsRequired?: boolean) {
     super()
+    this.pid = ''
     this.name = ''
     // trueまたは未設定の場合true
     this.statsRequired = statsRequired || statsRequired === undefined
@@ -45,7 +47,7 @@ export class RaceSearchParams extends ResearchRequest {
  */
 export class RaceSearchDtoItem implements SearchDtoItem {
   searchParams: RaceSearchParams
-  resData?: RaceResponse
+  pokemonSearchResult?: PokemonSearchResult
 
   constructor () {
     this.searchParams = new RaceSearchParams()

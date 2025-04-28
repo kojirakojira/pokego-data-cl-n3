@@ -79,7 +79,7 @@
             通常時CP
           </v-col>
           <v-col style="white-space: nowrap;">
-            <span class="text-red">{{ sakaki.min }}</span>
+            <span class="text-blue">{{ sakaki.min }}</span>
             {{ ` ～ ${sakaki.max}` }}
           </v-col>
           <v-spacer v-if="!isXs" />
@@ -90,20 +90,23 @@
             天候ブースト時CP
           </v-col>
           <v-col style="white-space: nowrap;">
-            <span class="text-red">{{ sakaki.wbMin }}</span>
+            <span class="text-blue">{{ sakaki.wbMin }}</span>
             {{ ` ～ ${sakaki.wbMax}` }}
           </v-col>
           <v-spacer v-if="!isXs" />
         </v-row>
         <v-row>
           <v-col class="text-body-2 text-sm-center">
-            ※個体値の振れ幅は天候ブースト関係なく<span class="text-red">6</span>～15。PLは通常時8、天候ブースト時13。
+            ※個体値の振れ幅は天候ブースト関係なく<span class="text-blue">6</span>～15。PLは通常時8、天候ブースト時13。
           </v-col>
         </v-row>
       </v-container>
     </div>
     <div v-else>
-      <Loading full-page />
+      <Loading v-if="isValidInput" full-page />
+      <div v-else class="text-center">
+        <MajorPartsInvalidInputBackLink />
+      </div>
     </div>
   </div>
 </template>
@@ -126,21 +129,27 @@ const dto: any = useAttrs().dto
 dto.params = cDtoItem
 
 const isLoading = ref<boolean>(true)
+const isValidInput = ref<boolean>(true)
 
 const init = async () => {
   // route.queryからsearchParamsを復元
   cDtoItem.value.searchParams = searchCommon()
     .restoreSearchParams(useRoute().query, RocketResultSearchParams)
   // dtoStoreからresDataを復元
-  const rd: RocketResponse | null = searchCommon().restoreResearchResData() as RocketResponse
+  const restoredParams: Record<string, any> | null = searchCommon().restoreCurrentScreen(['resData'])
+  const rd: RocketResponse | null = restoredParams?.resData
 
-  if (rd) {
+  if (rd && rd.pokedexId) {
+    // resDataが復元できた場合
     cDtoItem.value.resData = rd
   } else {
     // 存在しない場合は取得する
     // 入力チェック不要
     const ret = await get(cDtoItem.value.searchParams)
-    if (!ret) { return }
+    if (!ret) {
+      isValidInput.value = false
+      return
+    }
     cDtoItem.value.resData = ret
   }
 

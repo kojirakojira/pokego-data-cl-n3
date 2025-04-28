@@ -68,7 +68,7 @@
                     :key="hIndex"
                     :style="h.key === 'mm' ? 'color: red;' : undefined"
                   >
-                    {{ convTableData(cDtoItem.resData.scpSlRankMax, h.key as keyof TableData, true) }}
+                    {{ convTableData(cDtoItem.resData.scpSlRankMax, h.key, true) }}
                   </td>
                 </tr>
                 <tr>
@@ -77,7 +77,7 @@
                     :key="hIndex"
                     :style="h.key === 'mm' ? 'color: blue;' : undefined"
                   >
-                    {{ convTableData(cDtoItem.resData.scpSlRankMin, h.key as keyof TableData, false) }}
+                    {{ convTableData(cDtoItem.resData.scpSlRankMin, h.key, false) }}
                   </td>
                 </tr>
               </tbody>
@@ -104,7 +104,7 @@
                     :key="hIndex"
                     :style="h.key === 'mm' ? 'color: red;' : undefined"
                   >
-                    {{ convTableData(cDtoItem.resData.scpHlRankMax, h.key as keyof TableData, true) }}
+                    {{ convTableData(cDtoItem.resData.scpHlRankMax, h.key, true) }}
                   </td>
                 </tr>
                 <tr>
@@ -113,7 +113,7 @@
                     :key="hIndex"
                     :style="h.key === 'mm' ? 'color: blue;' : undefined"
                   >
-                    {{ convTableData(cDtoItem.resData.scpHlRankMin, h.key as keyof TableData, false) }}
+                    {{ convTableData(cDtoItem.resData.scpHlRankMin, h.key, false) }}
                   </td>
                 </tr>
               </tbody>
@@ -140,7 +140,7 @@
                     :key="hIndex"
                     :style="h.key === 'mm' ? 'color: red;' : undefined"
                   >
-                    {{ convTableData(cDtoItem.resData.scpMlRankMax, h.key as keyof TableData, true) }}
+                    {{ convTableData(cDtoItem.resData.scpMlRankMax, h.key, true) }}
                   </td>
                 </tr>
                 <tr>
@@ -149,7 +149,7 @@
                     :key="hIndex"
                     :style="h.key === 'mm' ? 'color: blue;' : undefined"
                   >
-                    {{ convTableData(cDtoItem.resData.scpMlRankMin, h.key as keyof TableData, false) }}
+                    {{ convTableData(cDtoItem.resData.scpMlRankMin, h.key, false) }}
                   </td>
                 </tr>
               </tbody>
@@ -159,7 +159,10 @@
       </v-container>
     </div>
     <div v-else>
-      <Loading split-scr />
+      <Loading v-if="isValidInput" full-page />
+      <div v-else class="text-center">
+        <MajorPartsInvalidInputBackLink />
+      </div>
     </div>
   </div>
 </template>
@@ -179,17 +182,9 @@ const cDtoItem = ref<ScpRankMaxMinResultDtoItem>(new ScpRankMaxMinResultDtoItem(
 const dto: any = useAttrs().dto
 dto.params = cDtoItem
 
-interface TableData {
-  mm: string,
-  iva: number,
-  ivd: number,
-  ivh: number,
-  pl: string,
-  cp: number,
-  percent: number,
-  sp: number,
-  scp: number
-}
+const isLoading = ref<boolean>(true)
+const isValidInput = ref<boolean>(true)
+
 const headers = ref<Record<string, string>[]>([
   { title: '', key: 'mm' }, // 最高個体 or 最低個体
   { title: 'AT', key: 'iva' },
@@ -198,8 +193,6 @@ const headers = ref<Record<string, string>[]>([
   { title: 'PL', key: 'pl' },
   { title: 'CP', key: 'cp' },
   { title: '%', key: 'percent' }])
-
-const isLoading = ref<boolean>(true)
 
 /**
  * resDataのScpRankから、表示用の値を生成する。
@@ -234,15 +227,20 @@ const init = async () => {
   cDtoItem.value.searchParams = searchCommon()
     .restoreSearchParams(useRoute().query, ScpRankMaxMinResultSearchParams)
   // dtoStoreからresDataを復元
-  const rd: ScpRankMaxMinResponse | null = searchCommon().restoreResearchResData() as ScpRankMaxMinResponse
+  const restoredParams: Record<string, any> | null = searchCommon().restoreCurrentScreen(['resData'])
+  const rd: ScpRankMaxMinResponse | null = restoredParams?.resData
 
-  if (rd) {
+  if (rd && rd.pokedexId) {
+    // resDataが復元できた場合
     cDtoItem.value.resData = rd
   } else {
     // 存在しない場合は取得する
     // 入力チェック不要
     const ret = await get(cDtoItem.value.searchParams)
-    if (!ret) { return }
+    if (!ret) {
+      isValidInput.value = false
+      return
+    }
     cDtoItem.value.resData = ret
   }
   isLoading.value = !cDtoItem.value.resData

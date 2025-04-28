@@ -142,7 +142,7 @@ const isSearchBtnClick = ref<boolean>(false)
 const screenControlMethods = () => {
   /** 初期表示時の処理 */
   const init = (): void => {
-    searchCommon().restoreSearchScreen(['searchParams', 'resData'], cDtoItem.value)
+    searchCommon().restoreSearchScreen(['searchParams'], cDtoItem.value)
 
     textFieldMethods().init()
   }
@@ -160,8 +160,6 @@ const screenControlMethods = () => {
   /** APIのレスポンスを処理する。 */
   const handleApiResult = (rd: RaceDiffResponse) => {
     if (checkApiError(rd)) {
-      cDtoItem.value.resData = rd
-
       if (!rd.searchedById && !handleApiNameSearchResult(rd)) {
         // nameから検索していて、遷移不可能と判定された場合
         isLoading.value = false
@@ -184,6 +182,7 @@ const screenControlMethods = () => {
    */
   const handleApiNameSearchResult = (rd: RaceDiffResponse): boolean => {
     const msr: MultiSearchResult = rd.msr as MultiSearchResult
+    cDtoItem.value.msr = rd.msr
 
     // 検索結果をtextFieldValuesに適用させる。
     msr.psrArr.forEach((psr, i) => {
@@ -252,15 +251,17 @@ const textFieldMethods = () => {
   /** 入力ボックスの初期化処理 */
   const init = (): void => {
     const textFieldValues = cDtoItem.value.searchParams.textFieldValues
+    const size: number = textFieldValues.length
 
-    if (textFieldValues.length) {
-      // textFiledValuesが復元できている場合
+    if (size >= 2) {
+      // textFiledValuesが2個以上で復元できている場合
       return
     }
 
     // 初期表示時の入力ボックスは2個
-    textFieldValues.push({ name: '', errMsg: '' })
-    textFieldValues.push({ name: '', errMsg: '' })
+    for (let i = 0; i < 2 - size; i++) {
+      textFieldValues.push({ name: '', errMsg: '' })
+    }
   }
 
   /** 入力ボックス横のマイナスボタン押下時の処理 */
@@ -279,7 +280,7 @@ const textFieldMethods = () => {
 
   /** 入力されたポケモンに対して検索結果が複数ヒットした状況で、ポケモンが選択された場合の処理 */
   const selected = async (msrIdx: number, pid: string) => {
-    const msr: MultiSearchResult = cDtoItem.value.resData?.msr as MultiSearchResult
+    const msr: MultiSearchResult = cDtoItem.value.msr as MultiSearchResult
     const targetGp: GoPokedex = msr.psrArr[msrIdx].goPokedexList
       .filter(gp => pid === gp.pokedexId)[0]
     // 入力ボックスに値をセットする。
@@ -310,13 +311,13 @@ const textFieldMethods = () => {
       // 全てuniqueになった場合
       // idから種族値比較用の情報を取得
       const res = await get(cDtoItem.value.searchParams)
-      cDtoItem.value.resData = res
+      cDtoItem.value.msr = res?.msr
 
-      if (checkApiError(cDtoItem.value.resData)) {
+      if (checkApiError(res)) {
         // 入力チェックがすべてなくなったら遷移可能
         screenControlMethods().transResultPage(cDtoItem.value.searchParams.textFieldValues)
       } else {
-        setErrMsgInTextFieldValues(cDtoItem.value.resData)
+        setErrMsgInTextFieldValues(res)
         isLoading.value = false
         isSearchBtnClick.value = false
       }
@@ -329,6 +330,11 @@ const textFieldMethods = () => {
   }
 
   const setErrMsgInTextFieldValues = (resData: RaceDiffResponse) => {
+    if (!resData.msr) {
+      // msrが含まれていない場合はset不要
+      return
+    }
+
     resData.msr?.psrArr.forEach((psr, i) => {
       if (psr.msgLevel === 'error') {
         cDtoItem.value.searchParams.textFieldValues[i].errMsg = psr.message

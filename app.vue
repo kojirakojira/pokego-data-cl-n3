@@ -69,36 +69,24 @@ const dto = ref<Record<string, any>>({
   params: {}
 })
 
-const createAfterScreenInfo = (route: RouteLocationNormalized, history: History): ScreenInfo => {
-  return {
-    pathName: route.name ? route.name.toString() : '',
-    position: history.state.position,
-    query: route.query,
-    params: {}
-  }
-}
-
 onMounted(() => {
   // 最初にリロードされたときはafterEachは呼ばれない。手動で呼ぶ。
   const route = useRoute()
-  dtoStore().afterEachAction(createAfterScreenInfo(route, window.history))
+  const si: ScreenInfo = dtoUtils().createScreenInfoFromRoute(route, window.history)
+  dtoStore().afterEachAction(si)
 })
 
 useRouter().afterEach((to: RouteLocationNormalized) => {
-  dtoStore().afterEachAction(createAfterScreenInfo(to, window.history))
+  const si: ScreenInfo = dtoUtils().createScreenInfoFromRoute(to, window.history)
+  dtoStore().afterEachAction(si)
 })
 
 useRouter().beforeEach((
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  to: RouteLocationNormalized,
+  _: RouteLocationNormalized, // to
   from: RouteLocationNormalized,
   next: NavigationGuardNext) => {
-  dtoStore().beforeEachAction({
-    pathName: from.name ? from.name.toString() : '',
-    position: 0, // ここの値は使用してない。
-    query: from.query,
-    params: JSON.parse(JSON.stringify(dto.value)).params
-  })
+  const si: ScreenInfo = dtoUtils().createScreenInfoForBeforeEach(from, dto)
+  dtoStore().beforeEachAction(si)
 
   next()
 })

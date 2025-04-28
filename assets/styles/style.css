@@ -15,11 +15,12 @@
   color: white;
 }
 .link {
-  color: #1976D2 !important;
+  color: #0000EE !important;
   /* transition: all 1s ease 0s !important; */
 }
 .link:hover {
   text-decoration: underline !important;
+  cursor: pointer;
 }
 .link:visited {
   color: #551a8b !important;

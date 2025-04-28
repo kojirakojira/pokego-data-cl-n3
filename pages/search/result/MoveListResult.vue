@@ -84,7 +84,8 @@ const screenControlMethods = () => {
     cDtoItem.value.searchParams = searchCommon()
       .restoreSearchParams(useRoute().query, MoveListResultSearchParams)
     // dtoStoreからresDataを復元
-    const rd: MoveListResponse | null = searchCommon().restoreResData(true) as MoveListResponse
+    const restoredParams: Record<string, any> | null = searchCommon().restoreCurrentScreen(['resData'])
+    const rd: MoveListResponse | null = restoredParams?.resData
 
     if (rd) {
       cDtoItem.value.resData = rd
@@ -92,7 +93,10 @@ const screenControlMethods = () => {
       // 存在しない場合は取得する
       // 入力チェック不要
       const ret = await get(cDtoItem.value.searchParams)
-      if (!ret) { return }
+      if (!ret) {
+        // resが正しくない場合
+        throw createError({ statusCode: 400, message: '不正なパラメータが指定されました。', fatal: true })
+      }
       cDtoItem.value.resData = ret
     }
     console.log(cDtoItem.value.resData)

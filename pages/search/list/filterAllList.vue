@@ -139,9 +139,9 @@ const screenControlMethods = () => {
     cDtoItem.value.searchParams = searchCommon()
       .restoreSearchParams(useRoute().query, FilterAllResultSearchParams)
     // dtoStoreからresDataを復元
-    const rd: FilterAllResponse | null = searchCommon().restoreResData(false) as FilterAllResponse
-    const tableControl: TableControl | null =
-    searchCommon().restoreCurrentScreen(['tableControl'])?.tableControl
+    const restoredParams: Record<string, any> | null = searchCommon().restoreCurrentScreen(['resData', 'tableControl'])
+    const rd: FilterAllResponse | null = restoredParams?.resData
+    const tableControl: TableControl | null = restoredParams?.tableControl
 
     if (rd) {
       cDtoItem.value.resData = rd
