@@ -12,6 +12,7 @@ export class AbundanceResponse extends ResearchResponse {
   cp40: number
   cp50: number
   maxCp: number
+  wild: CatchCp
   raid: CatchCp
   rocket: CatchCp
   frTask: CatchCp
@@ -36,6 +37,7 @@ export class AbundanceResponse extends ResearchResponse {
     this.cp40 = 0
     this.cp50 = 0
     this.maxCp = 0
+    this.wild = new CatchCp()
     this.raid = new CatchCp()
     this.rocket = new CatchCp()
     this.frTask = new CatchCp()

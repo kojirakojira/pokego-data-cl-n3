@@ -44,7 +44,7 @@
         <v-row>
           <v-spacer v-if="!isXs" />
           <v-col class="col-title">
-            通常時CP
+            CP
           </v-col>
           <v-col style="white-space: nowrap;">
             {{ `${normal.min} ～ ${normal.max}` }}
@@ -52,8 +52,10 @@
           <v-spacer v-if="!isXs" />
         </v-row>
         <v-row>
-          <v-col class="text-body-2 text-sm-center">
-            ※個体値の振れ幅は10~15。PLは15固定。天候ブーストの影響なし
+          <v-col class="text-body-2 text-left">
+            <ul :class="$style.cp_annos">
+              <li>※個体値の振れ幅は10~15。PLは15固定。天候ブーストの影響なし</li>
+            </ul>
           </v-col>
         </v-row>
       </v-container>
@@ -136,3 +138,11 @@ const metaObject = computed((): MetaObject => {
 })
 useHead(metaObject)
 </script>
+
+<style lang="scss" module>
+.cp_annos {
+  list-style: none;
+  width: fit-content;
+  margin: 0 auto;
+}
+</style>

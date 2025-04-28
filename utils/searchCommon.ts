@@ -41,6 +41,7 @@ export default () => {
     captureCp: {
       name: '捕獲時CP',
       patternNames: {
+        wild: '野生CP',
         raid: 'レイドボス勝利ボーナスCP',
         frTask: 'フィールドリサーチCP',
         eggs: 'タマゴCP',

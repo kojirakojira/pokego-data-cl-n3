@@ -62,8 +62,10 @@
           <v-spacer v-if="!isXs" />
         </v-row>
         <v-row>
-          <v-col class="text-body-2">
-            ※個体値の振れ幅は天候ブースト関係なく10～15。PLは通常時20、天候ブースト時25。
+          <v-col class="text-body-2 text-left">
+            <ul :class="$style.cp_annos">
+              <li>※個体値の振れ幅は天候ブースト関係なく10～15。PLは通常時20、天候ブースト時25。</li>
+            </ul>
           </v-col>
         </v-row>
       </v-container>
@@ -96,8 +98,8 @@
           <v-spacer v-if="!isXs" />
         </v-row>
         <v-row>
-          <v-col class="text-body-2">
-            <ul style="list-style: none;">
+          <v-col class="text-body-2 text-left">
+            <ul :class="$style.cp_annos">
               <li>※シャドウレイドの場合、個体値の振れ幅は天候ブースト関係なく<span class="text-blue">6</span>～15。PLは通常時20、天候ブースト時25。</li>
               <li>※シャドウポケモンは、こうげき力が上昇しぼうぎょが低下するが、ダメージ倍率に対する補正であり、種族値・個体値には変化がない。そのため、CPの算出ロジックは通常のポケモン（シャドウでないポケモン）と変わらない。</li>
             </ul>
@@ -183,3 +185,11 @@ const metaObject = computed((): MetaObject => {
 })
 useHead(metaObject)
 </script>
+
+<style lang="scss" module>
+.cp_annos {
+  list-style: none;
+  width: fit-content;
+  margin: 0 auto;
+}
+</style>

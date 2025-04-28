@@ -146,7 +146,18 @@
             </v-row>
             <v-row>
               <v-col cols="5">
-                レイドCP
+                野生
+              </v-col>
+              <v-col cols="7">
+                {{ `${cDtoItem.resData.wild.normal.min} ～ ${cDtoItem.resData.wild.normal.max}` }}
+                <p class="caption my-0">
+                  {{ `天候ブースト時:${cDtoItem.resData.wild.normal.wbMin} ～ ${cDtoItem.resData.wild.normal.wbMax}` }}
+                </p>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col cols="5">
+                レイド
                 <SearchInputHelpMsg v-if="cDtoItem.resData.mega">
                   捕獲時はメガシンカ進化前になることご注意ください。
                 </SearchInputHelpMsg>
@@ -160,7 +171,7 @@
             </v-row>
             <v-row>
               <v-col cols="5">
-                ロケット団勝利ボーナスCP
+                ロケット団勝利ボーナス
               </v-col>
               <v-col cols="7">
                 {{ `${cDtoItem.resData.rocket.normal.min} ～ ${cDtoItem.resData.rocket.normal.max}` }}
@@ -171,7 +182,7 @@
             </v-row>
             <v-row>
               <v-col cols="5">
-                フィールドリサーチCP
+                フィールドリサーチ
               </v-col>
               <v-col cols="7">
                 {{ `${cDtoItem.resData.frTask.normal.min} ～ ${cDtoItem.resData.frTask.normal.max}` }}
@@ -179,7 +190,7 @@
             </v-row>
             <v-row>
               <v-col cols="5">
-                タマゴCP
+                タマゴ
               </v-col>
               <v-col cols="7">
                 {{ `${cDtoItem.resData.egg.normal.min} ～ ${cDtoItem.resData.egg.normal.max}` }}
@@ -190,7 +201,7 @@
             </v-row>
             <v-row>
               <v-col cols="5">
-                ダイマックス捕獲時CP
+                ダイマックス捕獲時
               </v-col>
               <v-col cols="7">
                 <template v-if="cDtoItem.resData.dynamax">
@@ -203,7 +214,7 @@
             </v-row>
             <v-row>
               <v-col cols="5">
-                キョダイマックス捕獲時CP
+                キョダイマックス捕獲時
               </v-col>
               <v-col cols="7">
                 <template v-if="cDtoItem.resData.gigantamax">

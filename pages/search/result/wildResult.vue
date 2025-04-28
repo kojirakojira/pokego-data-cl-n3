@@ -35,26 +35,33 @@
           </v-col>
         </v-row>
       </v-container>
-      <h3>
-        CP<span v-if="cDtoItem.resData.mega" class="subtitle-2">
-          {{ `（${editUtils().appendRemarks(cDtoItem.resData.befMegaGp.name, cDtoItem.resData.befMegaGp.remarks)}で算出）` }}
-        </span>
-      </h3>
+      <h3>CP</h3>
       <v-container>
         <v-row>
           <v-spacer v-if="!isXs" />
           <v-col class="col-title">
             CP
           </v-col>
-          <v-col style="white-space: nowrap;">
+          <v-col>
             {{ `${normal.min} ～ ${normal.max}` }}
+          </v-col>
+          <v-spacer v-if="!isXs" />
+        </v-row>
+        <v-row>
+          <v-spacer v-if="!isXs" />
+          <v-col class="col-title">
+            天候ブースト時CP
+          </v-col>
+          <v-col>
+            {{ `${normal.wbMin} ～ ${normal.wbMax}` }}
           </v-col>
           <v-spacer v-if="!isXs" />
         </v-row>
         <v-row>
           <v-col class="text-body-2 text-left">
             <ul :class="$style.cp_annos">
-              <li>※個体値の振れ幅は10~15。PLは15固定。天候ブーストの影響なし</li>
+              <li>※個体値の振れ幅は0~15。天候ブースト時は最低保証がつき4~15になる。</li>
+              <li>※PLは1~30。天候ブースト時は6~35になる。</li>
             </ul>
           </v-col>
         </v-row>
@@ -73,15 +80,15 @@
 import { useDisplay } from 'vuetify'
 import type { MetaObject } from 'nuxt/schema'
 import {
-  type FrTaskResponse,
-  FrTaskResultDtoItem,
-  FrTaskResultSearchParams,
+  type WildResponse,
+  WildResultDtoItem,
+  WildResultSearchParams,
   get
-} from '~/components/interface/frTask'
+} from '~/components/interface/wild'
 
-const searchPattern = 'frTask'
+const searchPattern = 'wild'
 // current dto item
-const cDtoItem = ref<FrTaskResultDtoItem>(new FrTaskResultDtoItem())
+const cDtoItem = ref<WildResultDtoItem>(new WildResultDtoItem())
 const dto: any = useAttrs().dto
 dto.params = cDtoItem
 
@@ -91,10 +98,10 @@ const isValidInput = ref<boolean>(true)
 const init = async () => {
   // route.queryからsearchParamsを復元
   cDtoItem.value.searchParams = searchCommon()
-    .restoreSearchParams(useRoute().query, FrTaskResultSearchParams)
+    .restoreSearchParams(useRoute().query, WildResultSearchParams)
   // dtoStoreからresDataを復元
   const restoredParams: Record<string, any> | null = searchCommon().restoreCurrentScreen(['resData'])
-  const rd: FrTaskResponse | null = restoredParams?.resData
+  const rd: WildResponse | null = restoredParams?.resData
 
   if (rd && rd.pokedexId) {
     // resDataが復元できた場合
@@ -125,13 +132,13 @@ const metaObject = computed((): MetaObject => {
   const pokeName = cDtoItem.value.resData.name || ''
   const pokeImage = editUtils().getUrl(cDtoItem.value.resData.image2 || 'pokego/peripper-eyes.png')
   return {
-    title: `${pokeName}のフィールドリサーチCP`,
+    title: `${pokeName}の野生CP`,
     meta: [
       { property: 'og:type', content: 'article' },
-      { property: 'og:title', content: `${pokeName}のフィールドリサーチCP - ペリずかん` },
+      { property: 'og:title', content: `${pokeName}の野生CP - ペリずかん` },
       { property: 'og:url', content: thisPath },
       { property: 'og:site_name', content: 'ペリずかん' },
-      { property: 'og:description', content: `${pokeName}のフィールドリサーチCPを確認できます。` },
+      { property: 'og:description', content: `${pokeName}の野生CPを確認できます。` },
       { property: 'og:image', content: pokeImage }
     ]
   }

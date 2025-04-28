@@ -51,8 +51,11 @@
             <v-spacer v-if="!isXs" />
           </v-row>
           <v-row>
-            <v-col class="text-body-2 text-sm-center">
-              ※個体値の振れ幅は10~15。PLは20固定。<br>※ダイマックスバトルは、レイドバトルとは異なり天候ブーストの影響はなし。
+            <v-col class="text-body-2 text-left">
+              <ul :class="$style.cp_annos">
+                <li>※個体値の振れ幅は10~15。PLは20固定。</li>
+                <li>※ダイマックスバトルは、レイドバトルとは異なり天候ブーストの影響はなし。</li>
+              </ul>
             </v-col>
           </v-row>
         </template>
@@ -80,8 +83,11 @@
             <v-spacer v-if="!isXs" />
           </v-row>
           <v-row>
-            <v-col class="text-body-2 text-sm-center">
-              ※個体値の振れ幅は10~15。PLは20固定。<br>※キョダイマックスバトルは、レイドバトルとは異なり天候ブーストの影響はなし。
+            <v-col class="text-body-2 text-left">
+              <ul :class="$style.cp_annos">
+                <li>※個体値の振れ幅は10~15。PLは20固定。</li>
+                <li>※キョダイマックスバトルは、レイドバトルとは異なり天候ブーストの影響はなし。</li>
+              </ul>
             </v-col>
           </v-row>
         </template>
@@ -169,3 +175,11 @@ const metaObject = computed((): MetaObject => {
 })
 useHead(metaObject)
 </script>
+
+<style lang="scss" module>
+.cp_annos {
+  list-style: none;
+  width: fit-content;
+  margin: 0 auto;
+}
+</style>
