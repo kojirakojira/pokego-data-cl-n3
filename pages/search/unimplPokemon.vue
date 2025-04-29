@@ -32,6 +32,13 @@
             </v-list>
           </v-col>
         </v-row>
+        <v-row class="my-0">
+          <v-col align="right">
+            <p class="link" @click="transitionUtils().filterAll({ impled: true, negaImpled: true })">
+              未実装ポケモンを詳細に絞り込む >>
+            </p>
+          </v-col>
+        </v-row>
       </v-container>
     </div>
     <div v-show="isLoading">

@@ -85,6 +85,12 @@ const updateHitAdminComments = ($event: boolean) => {
   isHitAdminComments.value = $event
 }
 
+try {
+  fetchCommon('/api/home', 'GET')
+} catch {
+  // エラーが起こっても無視する
+}
+
 useHead({
   title: 'ホーム',
   meta: [

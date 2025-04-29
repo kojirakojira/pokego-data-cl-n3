@@ -60,7 +60,7 @@ export default () => {
       name: '個体値',
       patternNames: {
         scpRank: 'PvP順位',
-        scpRankList: 'PvP順位リスト',
+        scpRankList: 'PvP順位ランキング',
         scpRankMaxMin: 'PvP最高(最低)順位',
         afterEvoScpRank: '進化後PvP順位',
         afterEvoCp: '進化後CP',

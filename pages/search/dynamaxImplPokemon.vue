@@ -40,6 +40,13 @@
                   </v-list>
                 </v-col>
               </v-row>
+              <v-row class="my-0">
+                <v-col align="right">
+                  <p class="link" @click="transitionUtils().filterAll({ dynamax: true })">
+                    ダイマックスを詳細に絞り込む >>
+                  </p>
+                </v-col>
+              </v-row>
             </v-container>
           </v-col>
           <v-col cols="12" md="12" lg="6" xl="6">
@@ -64,6 +71,13 @@
                       </template>
                     </v-list-item>
                   </v-list>
+                </v-col>
+              </v-row>
+              <v-row class="my-0">
+                <v-col align="right">
+                  <p class="link" @click="transitionUtils().filterAll({ gigantamax: true })">
+                    キョダイマックスを詳細に絞り込む >>
+                  </p>
                 </v-col>
               </v-row>
             </v-container>

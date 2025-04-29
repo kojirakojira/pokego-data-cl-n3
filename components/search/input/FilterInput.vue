@@ -213,6 +213,9 @@
     <v-row align="center">
       <v-col cols="12" md="5" lg="4" xl="4" class="col-title">
         {{ constantAccessor.getValue('tooStrong', 'FILTER_ITEMS') }}
+        <SearchInputHelpMsg>
+          ポケモンGOの種族値は、原作の種族値から一定の変換式で算出されます。種族値が高すぎる一部のポケモンは算出された種族値から×0.91されます。<br>この補正には通称がないため、このサイトでは「強ポケ補正」と呼んでいます。
+        </SearchInputHelpMsg>
       </v-col>
       <v-col cols="12" md="7" lg="8" xl="8">
         <v-switch

@@ -26,6 +26,7 @@ export class AbundanceResponse extends ResearchResponse {
   tooStrong: boolean
   type1Color: Color
   type2Color: Color
+  finEvo: boolean
   mega: boolean
   canMega: boolean
   megaMsg: string
@@ -48,6 +49,7 @@ export class AbundanceResponse extends ResearchResponse {
     this.tooStrong = false
     this.type1Color = new Color()
     this.type2Color = new Color()
+    this.finEvo = false
     this.mega = false
     this.canMega = false
     this.megaMsg = ''

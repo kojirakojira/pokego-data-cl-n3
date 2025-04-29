@@ -51,35 +51,46 @@
             </h3>
           </v-col>
         </v-row>
-        <v-row>
-          <v-col align="center">
-            <p>{{ `スーパーリーグ：${cDtoItem.resData.targetScpRank.sl.rank}位` }}</p>
-            <p>{{ `ハイパーリーグ：${cDtoItem.resData.targetScpRank.hl.rank}位` }}</p>
-            <p>{{ `マスターリーグ：${cDtoItem.resData.targetScpRank.ml.rank}位` }}</p>
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col cols="12">
-            <v-data-table
-              :headers="targetHeaders"
-              :items="[
-                cDtoItem.resData.targetScpRank.sl,
-                cDtoItem.resData.targetScpRank.hl,
-                cDtoItem.resData.targetScpRank.ml
-              ]"
-              no-data-text="loading now..."
-              no-results-text="該当するデータがありません。"
-            >
-              <template #[`item.league`]="{ item }">
-                {{ leagueDic[item.league] }}
-              </template>
-              <template #[`item.percent`]="{ item }">
-                {{ item.percent + '%' }}
-              </template>
-              <template #bottom />
-            </v-data-table>
-          </v-col>
-        </v-row>
+        <template v-if="cDtoItem.resData.targetScpRank.goPokedex.region !== 'M'">
+          <v-row>
+            <v-col align="center">
+              <p>{{ `スーパーリーグ：${cDtoItem.resData.targetScpRank.sl.rank}位` }}</p>
+              <p>{{ `ハイパーリーグ：${cDtoItem.resData.targetScpRank.hl.rank}位` }}</p>
+              <p>{{ `マスターリーグ：${cDtoItem.resData.targetScpRank.ml.rank}位` }}</p>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="12">
+              <v-data-table
+                :headers="targetHeaders"
+                :items="[
+                  cDtoItem.resData.targetScpRank.sl,
+                  cDtoItem.resData.targetScpRank.hl,
+                  cDtoItem.resData.targetScpRank.ml
+                ]"
+                no-data-text="loading now..."
+                no-results-text="該当するデータがありません。"
+              >
+                <template #[`item.league`]="{ item }">
+                  {{ leagueDic[item.league] }}
+                </template>
+                <template #[`item.percent`]="{ item }">
+                  {{ item.percent + '%' }}
+                </template>
+                <template #bottom />
+              </v-data-table>
+            </v-col>
+          </v-row>
+        </template>
+        <template v-else>
+          <v-row>
+            <v-col>
+              <div class="pl-4" align="center">
+                メガシンカ状態ではPvP参加不可
+              </div>
+            </v-col>
+          </v-row>
+        </template>
       </v-container>
       <v-container>
         <v-row>
@@ -152,6 +163,21 @@
             <div v-else class="pl-4" align="center">
               なし
             </div>
+          </v-col>
+        </v-row>
+      </v-container>
+      <v-container>
+        <v-row>
+          <v-col align="right">
+            <p class="link" @click="transitionUtils().abundance(cDtoItem.resData.pokedexId)">
+              ポケモン情報をみる >>
+            </p>
+            <p class="link" @click="transitionUtils().scpRank(cDtoItem.resData, cDtoItem.searchParams.iv)">
+              検索条件を変更する >>
+            </p>
+            <p class="link" @click="transitionUtils().afterEvoScpRank(cDtoItem.resData, cDtoItem.searchParams.iv)">
+              進化後PvP順位の詳細を確認する >>
+            </p>
           </v-col>
         </v-row>
       </v-container>

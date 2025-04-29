@@ -116,154 +116,162 @@
             <Loading />
           </div>
           <h3>CP</h3>
-          <v-container
-            v-if="isLoadedAbundance"
-            class="basic-info-table abundance-cp-table"
-          >
-            <v-row>
-              <v-col cols="5">
-                CP(PL40)
-              </v-col>
-              <v-col cols="7">
-                {{ cDtoItem.resData.cp40 }}
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col cols="5">
-                CP(PL50)
-              </v-col>
-              <v-col cols="7">
-                {{ cDtoItem.resData.cp50 }}
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col cols="5">
-                最大CP(PL51)
-              </v-col>
-              <v-col cols="7">
-                {{ cDtoItem.resData.maxCp }}
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col cols="5">
-                野生
-              </v-col>
-              <v-col cols="7">
-                {{ `${cDtoItem.resData.wild.normal.min} ～ ${cDtoItem.resData.wild.normal.max}` }}
-                <p class="caption my-0">
-                  {{ `天候ブースト時:${cDtoItem.resData.wild.normal.wbMin} ～ ${cDtoItem.resData.wild.normal.wbMax}` }}
-                </p>
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col cols="5">
-                レイド
-                <SearchInputHelpMsg v-if="cDtoItem.resData.mega">
-                  捕獲時はメガシンカ進化前になることご注意ください。
-                </SearchInputHelpMsg>
-              </v-col>
-              <v-col cols="7">
-                {{ `${cDtoItem.resData.raid.normal.min} ～ ${cDtoItem.resData.raid.normal.max}` }}
-                <p class="caption my-0">
-                  {{ `天候ブースト時:${cDtoItem.resData.raid.normal.wbMin} ～ ${cDtoItem.resData.raid.normal.wbMax}` }}
-                </p>
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col cols="5">
-                ロケット団勝利ボーナス
-              </v-col>
-              <v-col cols="7">
-                {{ `${cDtoItem.resData.rocket.normal.min} ～ ${cDtoItem.resData.rocket.normal.max}` }}
-                <p class="caption my-0">
-                  {{ `天候ブースト時:${cDtoItem.resData.rocket.normal.wbMin} ～ ${cDtoItem.resData.rocket.normal.wbMax}` }}
-                </p>
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col cols="5">
-                フィールドリサーチ
-              </v-col>
-              <v-col cols="7">
-                {{ `${cDtoItem.resData.frTask.normal.min} ～ ${cDtoItem.resData.frTask.normal.max}` }}
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col cols="5">
-                タマゴ
-              </v-col>
-              <v-col cols="7">
-                {{ `${cDtoItem.resData.egg.normal.min} ～ ${cDtoItem.resData.egg.normal.max}` }}
-                <p v-if="cDtoItem.resData.eggGp" class="caption my-0">
-                  {{ `(${editUtils().appendRemarks(cDtoItem.resData.eggGp.name, cDtoItem.resData.eggGp.remarks)}で算出)` }}
-                </p>
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col cols="5">
-                ダイマックス捕獲時
-              </v-col>
-              <v-col cols="7">
-                <template v-if="cDtoItem.resData.dynamax">
-                  {{ `${cDtoItem.resData.dynamax.normal.min} ～ ${cDtoItem.resData.dynamax.normal.max}` }}
-                </template>
-                <template v-else>
-                  -
-                </template>
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col cols="5">
-                キョダイマックス捕獲時
-              </v-col>
-              <v-col cols="7">
-                <template v-if="cDtoItem.resData.gigantamax">
-                  {{ `${cDtoItem.resData.gigantamax.normal.min} ～ ${cDtoItem.resData.gigantamax.normal.max}` }}
-                </template>
-                <template v-else>
-                  -
-                </template>
-              </v-col>
-            </v-row>
-            <v-row v-if="cDtoItem.resData.superLeagueSafeCpList.length">
-              <v-col cols="5">
-                スーパーリーグ制限内最大CP
-                <SearchInputHelpMsg>
-                  {{ safeCpMsgGenerator }}
-                </SearchInputHelpMsg>
-              </v-col>
-              <v-col cols="7">
-                <div v-for="gpac in cDtoItem.resData.superLeagueSafeCpList" :key="`sl-safe-${gpac.goPokedex.pokedexId}`">
-                  {{ gpac.cp }}<span class="caption my-0">{{ `(PL:${gpac.pl})` }}</span>
-                  <template v-if="cDtoItem.resData.superLeagueSafeCpList.length > 1">
-                    <p class="caption my-0">
-                      {{ `(${editUtils().appendRemarks(gpac.goPokedex.name, gpac.goPokedex.remarks)}に進化させる場合)` }}
-                    </p>
-                    <v-divider />
+          <template v-if="isLoadedAbundance">
+            <v-container class="basic-info-table abundance-cp-table">
+              <v-row>
+                <v-col cols="5">
+                  CP(PL40)
+                </v-col>
+                <v-col cols="7">
+                  {{ cDtoItem.resData.cp40 }}
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col cols="5">
+                  CP(PL50)
+                </v-col>
+                <v-col cols="7">
+                  {{ cDtoItem.resData.cp50 }}
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col cols="5">
+                  最大CP(PL51)
+                </v-col>
+                <v-col cols="7">
+                  {{ cDtoItem.resData.maxCp }}
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col cols="5">
+                  野生
+                </v-col>
+                <v-col cols="7">
+                  {{ `${cDtoItem.resData.wild.normal.min} ～ ${cDtoItem.resData.wild.normal.max}` }}
+                  <p class="caption my-0">
+                    {{ `天候ブースト時:${cDtoItem.resData.wild.normal.wbMin} ～ ${cDtoItem.resData.wild.normal.wbMax}` }}
+                  </p>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col cols="5">
+                  レイド
+                  <SearchInputHelpMsg v-if="cDtoItem.resData.mega">
+                    捕獲時はメガシンカ進化前になることご注意ください。
+                  </SearchInputHelpMsg>
+                </v-col>
+                <v-col cols="7">
+                  {{ `${cDtoItem.resData.raid.normal.min} ～ ${cDtoItem.resData.raid.normal.max}` }}
+                  <p class="caption my-0">
+                    {{ `天候ブースト時:${cDtoItem.resData.raid.normal.wbMin} ～ ${cDtoItem.resData.raid.normal.wbMax}` }}
+                  </p>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col cols="5">
+                  ロケット団勝利ボーナス
+                </v-col>
+                <v-col cols="7">
+                  {{ `${cDtoItem.resData.rocket.normal.min} ～ ${cDtoItem.resData.rocket.normal.max}` }}
+                  <p class="caption my-0">
+                    {{ `天候ブースト時:${cDtoItem.resData.rocket.normal.wbMin} ～ ${cDtoItem.resData.rocket.normal.wbMax}` }}
+                  </p>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col cols="5">
+                  フィールドリサーチ
+                </v-col>
+                <v-col cols="7">
+                  {{ `${cDtoItem.resData.frTask.normal.min} ～ ${cDtoItem.resData.frTask.normal.max}` }}
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col cols="5">
+                  タマゴ
+                </v-col>
+                <v-col cols="7">
+                  {{ `${cDtoItem.resData.egg.normal.min} ～ ${cDtoItem.resData.egg.normal.max}` }}
+                  <p v-if="cDtoItem.resData.eggGp" class="caption my-0">
+                    {{ `(${editUtils().appendRemarks(cDtoItem.resData.eggGp.name, cDtoItem.resData.eggGp.remarks)}で算出)` }}
+                  </p>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col cols="5">
+                  ダイマックス捕獲時
+                </v-col>
+                <v-col cols="7">
+                  <template v-if="cDtoItem.resData.dynamax">
+                    {{ `${cDtoItem.resData.dynamax.normal.min} ～ ${cDtoItem.resData.dynamax.normal.max}` }}
                   </template>
-                </div>
-              </v-col>
-            </v-row>
-            <v-row v-if="cDtoItem.resData.hyperLeagueSafeCpList.length">
-              <v-col cols="5">
-                ハイパーリーグ制限内最大CP
-                <SearchInputHelpMsg>
-                  {{ safeCpMsgGenerator }}
-                </SearchInputHelpMsg>
-              </v-col>
-              <v-col cols="7">
-                <div v-for="gpac in cDtoItem.resData.hyperLeagueSafeCpList" :key="`sl-safe-${gpac.goPokedex.pokedexId}`">
-                  {{ gpac.cp }}<span class="caption my-0">{{ `(PL:${gpac.pl})` }}</span>
-                  <template v-if="cDtoItem.resData.hyperLeagueSafeCpList.length > 1">
-                    <p class="caption my-0">
-                      {{ `(${editUtils().appendRemarks(gpac.goPokedex.name, gpac.goPokedex.remarks)}に進化させる場合)` }}
-                    </p>
-                    <v-divider />
+                  <template v-else>
+                    -
                   </template>
-                </div>
-              </v-col>
-            </v-row>
-          </v-container>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col cols="5">
+                  キョダイマックス捕獲時
+                </v-col>
+                <v-col cols="7">
+                  <template v-if="cDtoItem.resData.gigantamax">
+                    {{ `${cDtoItem.resData.gigantamax.normal.min} ～ ${cDtoItem.resData.gigantamax.normal.max}` }}
+                  </template>
+                  <template v-else>
+                    -
+                  </template>
+                </v-col>
+              </v-row>
+              <v-row v-if="cDtoItem.resData.superLeagueSafeCpList.length">
+                <v-col cols="5">
+                  スーパーリーグ制限内最大CP
+                  <SearchInputHelpMsg>
+                    {{ safeCpMsgGenerator }}
+                  </SearchInputHelpMsg>
+                </v-col>
+                <v-col cols="7">
+                  <div v-for="gpac in cDtoItem.resData.superLeagueSafeCpList" :key="`sl-safe-${gpac.goPokedex.pokedexId}`">
+                    {{ gpac.cp }}<span class="caption my-0">{{ `(PL:${gpac.pl})` }}</span>
+                    <template v-if="cDtoItem.resData.superLeagueSafeCpList.length > 1">
+                      <p class="caption my-0">
+                        {{ `(${editUtils().appendRemarks(gpac.goPokedex.name, gpac.goPokedex.remarks)}に進化させる場合)` }}
+                      </p>
+                      <v-divider />
+                    </template>
+                  </div>
+                </v-col>
+              </v-row>
+              <v-row v-if="cDtoItem.resData.hyperLeagueSafeCpList.length">
+                <v-col cols="5">
+                  ハイパーリーグ制限内最大CP
+                  <SearchInputHelpMsg>
+                    {{ safeCpMsgGenerator }}
+                  </SearchInputHelpMsg>
+                </v-col>
+                <v-col cols="7">
+                  <div v-for="gpac in cDtoItem.resData.hyperLeagueSafeCpList" :key="`sl-safe-${gpac.goPokedex.pokedexId}`">
+                    {{ gpac.cp }}<span class="caption my-0">{{ `(PL:${gpac.pl})` }}</span>
+                    <template v-if="cDtoItem.resData.hyperLeagueSafeCpList.length > 1">
+                      <p class="caption my-0">
+                        {{ `(${editUtils().appendRemarks(gpac.goPokedex.name, gpac.goPokedex.remarks)}に進化させる場合)` }}
+                      </p>
+                      <v-divider />
+                    </template>
+                  </div>
+                </v-col>
+              </v-row>
+            </v-container>
+            <v-container class="py-0">
+              <v-row v-if="!cDtoItem.resData.finEvo && !cDtoItem.resData.mega" class="py-0">
+                <v-col align="right">
+                  <p class="link" @click="transitionUtils().afterEvoScpRank(cDtoItem.resData)">
+                    進化後のリーグ制限内PvP順位を確認する >>
+                  </p>
+                </v-col>
+              </v-row>
+            </v-container>
+          </template>
           <div v-else>
             <Loading />
           </div>
@@ -291,10 +299,10 @@
             </v-row>
             <v-row class="my-0">
               <v-col align="right">
-                <p class="link" @click="screenControlMethods().transitionRace">
+                <p class="link" @click="transitionUtils().raceResult(cDtoItem.raceResData.pokedexId)">
                   種族値の詳細をみる >>
                 </p>
-                <p class="link" @click="screenControlMethods().transitionRaceDiff">
+                <p class="link" @click="transitionUtils().raceDiff([cDtoItem.raceResData])">
                   種族値を比較する >>
                 </p>
               </v-col>
@@ -326,19 +334,19 @@
                 </v-table>
               </v-col>
             </v-row>
-            <!-- <v-row class="my-0">
+            <v-row class="my-0">
               <v-col align="right">
-                <p class="link" @click="screenControlMethods().transitionRace">
+                <p class="link" @click="transitionUtils().scpRankMaxMinResult(cDtoItem.scpRankMaxMinResData.pokedexId)">
                   詳細をみる >>
                 </p>
-                <p class="link" @click="screenControlMethods().transitionRaceDiff">
-                  特定の個体の個体値をみる >>
+                <p class="link" @click="transitionUtils().scpRankList(cDtoItem.scpRankMaxMinResData)">
+                  個体値ランキングをみる >>
                 </p>
-                <p class="link" @click="screenControlMethods().transitionRaceDiff">
-                  特定の個体の個体値をリストでみる >>
+                <p class="link" @click="transitionUtils().scpRank(cDtoItem.scpRankMaxMinResData)">
+                  特定の個体のPvP順位をみる >>
                 </p>
               </v-col>
-            </v-row> -->
+            </v-row>
           </v-container>
           <div v-else>
             <Loading />
@@ -436,7 +444,6 @@ import { EvolutionResultSearchParams, type EvolutionResponse } from '~/component
 import { RaceResultSearchParams, type RaceResponse } from '~/components/interface/race'
 import { TypeScoreResultSearchParams, type TypeScoreResponse } from '~/components/interface/typeScore'
 import { type GoPokedex, RaceGoRank, GoPokedexAndCpPl, ScpRank } from '~/components/interface/api/dto'
-import { RaceDiffSearchParams } from '~/components/interface/raceDiff'
 import { ScpRankMaxMinResponse, ScpRankMaxMinSearchParams } from '~/components/interface/scpRankMaxMin'
 
 // current dto item
@@ -511,39 +518,8 @@ const screenControlMethods = () => {
     cDtoItem.value.typeScoreResData = resDataDic.typeScoreResData as TypeScoreResponse
   }
 
-  const transitionRace = () => {
-    useRouter().push({
-      name: 'search-result-raceResult',
-      query: {
-        pid: cDtoItem.value.raceResData.pokedexId
-      }
-    })
-  }
-
-  const transitionRaceDiff = () => {
-    const searchParams: RaceDiffSearchParams = new RaceDiffSearchParams()
-    const textFieldValue = {
-      pid: cDtoItem.value.resData.goPokedex.pokedexId,
-      name: editUtils().appendRemarks(cDtoItem.value.resData.name, cDtoItem.value.resData.remarks),
-      errMsg: ''
-    }
-    searchParams.textFieldValues = [textFieldValue]
-    const pathName = 'search-raceDiff'
-    dtoUtils().prePushScreenInfo(dtoUtils().createScreenInfo(
-      pathName,
-      {},
-      { searchParams },
-      true
-    ))
-    useRouter().push({
-      name: pathName
-    })
-  }
-
   return {
-    init,
-    transitionRace,
-    transitionRaceDiff
+    init
   }
 }
 

@@ -16,7 +16,7 @@ export class GoPokedex {
   image1: string | null | undefined
   image2: string | null | undefined
   implFlg: boolean
-  mega: boolean
+  region: string
   dynamaxImplFlg: boolean
   gigantamaxImplFlg: boolean
 
@@ -30,7 +30,7 @@ export class GoPokedex {
     this.type1 = ''
     this.gen = ''
     this.implFlg = false
-    this.mega = false
+    this.region = ''
     this.dynamaxImplFlg = false
     this.gigantamaxImplFlg = false
   }
@@ -259,6 +259,8 @@ export class AfterEvolIv {
   slRank: number
   hlRank: number
   mlRank: number
+  slOver: boolean
+  hlOver: boolean
 
   constructor () {
     this.goPokedex = new GoPokedex()
@@ -266,6 +268,8 @@ export class AfterEvolIv {
     this.slRank = 0
     this.hlRank = 0
     this.mlRank = 0
+    this.slOver = false
+    this.hlOver = false
   }
 }
 

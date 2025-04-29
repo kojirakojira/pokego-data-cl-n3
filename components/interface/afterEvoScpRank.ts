@@ -1,4 +1,4 @@
-import { AfterEvolIv, GoPokedex, PokemonSearchResult } from './api/dto'
+import { AfterEvolIv, GoPokedex, PokemonSearchResult, ScpRankAllInOne } from './api/dto'
 import { ResearchRequest } from './api/request'
 import { ResearchResponse } from './api/response'
 
@@ -13,6 +13,7 @@ export class AfterEvoScpRankResponse extends ResearchResponse {
   cp: number
   pl: string
   afEvolIvList: Array<AfterEvolIv>
+  afEvolScpRankList:Array<ScpRankAllInOne>
   targetGpIv: AfterEvolIv
 
   constructor () {
@@ -24,6 +25,7 @@ export class AfterEvoScpRankResponse extends ResearchResponse {
     this.cp = 0
     this.pl = ''
     this.afEvolIvList = []
+    this.afEvolScpRankList = []
     this.targetGpIv = new AfterEvolIv()
   }
 }
