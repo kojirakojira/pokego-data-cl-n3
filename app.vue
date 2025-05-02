@@ -36,7 +36,7 @@
           Loading...
         </div>
         <img
-          :src="editUtils().getUrl('brainjuice/brain-juice.png')"
+          :src="editUtils().getUrl('pokego/peripper-flapping.gif')"
           class="center-1"
         >
       </div>
