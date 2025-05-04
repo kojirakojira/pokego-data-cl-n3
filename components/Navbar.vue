@@ -9,7 +9,7 @@
             ペリずかん
           </h1>
         </nuxt-link>
-        <div class="peripper" />
+        <!-- <div class="peripper" /> -->
       </v-app-bar-title>
       <v-tabs right>
         <v-tab
@@ -64,7 +64,7 @@ const menuItems = readonly([
 }
 .peripper {
   position: relative;
-  background-image: url(https://static.brainjuice.jp/pokego/peripper-eyes.png);
+  background-image: url(https://static.brainjuice.jp/public/pokego/peripper-eyes.png);
   height: 100%;
   background-size: contain;
   aspect-ratio: 421 / 226;

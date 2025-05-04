@@ -30,14 +30,19 @@
         </v-row>
       </v-container>
     </v-footer>
-    <div v-show="isLoading">
-      <div class="center-0">
-        <div class="pulse-loader center-2">
+    <div v-show="isLoading || isLoadingTransition">
+      <div
+        :class="[
+          $style.center_0,
+          isLoading ? $style.initialize : null,
+          isLoadingTransition ? $style.transition : null]"
+      >
+        <div v-if="isLoading" :class="['pulse-loader', $style.center_2]">
           Loading...
         </div>
         <img
           :src="editUtils().getUrl('pokego/peripper-flapping.gif')"
-          class="center-1"
+          class="center_1"
         >
       </div>
     </div>
@@ -52,10 +57,19 @@ import { dtoStore, type ScreenInfo } from '~/stores/dtoStore'
 import { commonStore } from '~/stores/commonStore'
 // const theme = useTheme()
 const isLoading = ref(true)
+const isLoadingTransition = ref(false)
 onMounted(() => {
   // theme.global.name.value = 'dark'
   // display.theme.dark = this.$store.getters.darkTheme
   isLoading.value = false
+})
+useRouter().afterEach(() => {
+  isLoadingTransition.value = false
+})
+
+useRouter().beforeEach((_1, _2, next: NavigationGuardNext) => {
+  isLoadingTransition.value = true
+  next()
 })
 // commonStoreの初期化
 commonStore().setStaticUrl(useRuntimeConfig().public.staticUrl)
@@ -92,16 +106,15 @@ useRouter().beforeEach((
 })
 </script>
 
-<style>
-
-.center-2 {
+<style lang="scss" module>
+.center_2 {
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 102;
 }
-.center-1 {
+.center_1 {
   position: fixed;
   top: 50%;
   left: 50%;
@@ -110,13 +123,20 @@ useRouter().beforeEach((
   height: 100px;
   z-index: 101;
 }
-.center-0 {
-  background-color: #dcdcdc;
+.center_0 {
   position: fixed;
   top: 0;
   bottom: 0;
   left: 0;
   right: 0;
   z-index: 100;
+
+  &.initialize {
+    background-color: rgba(220, 220, 220, 1);
+  }
+
+  &.transition {
+    background-color: rgba(220, 220, 220, 0.4);
+  }
 }
 </style>
