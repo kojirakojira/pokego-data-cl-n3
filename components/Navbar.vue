@@ -61,36 +61,36 @@ const menuItems = readonly([
   overflow: visible !important;
   text-decoration: none;
   color: white;
+  margin-right: auto;
 }
-.peripper {
-  position: relative;
-  background-image: url(https://static.brainjuice.jp/public/pokego/peripper-eyes.png);
-  height: 100%;
-  background-size: contain;
-  aspect-ratio: 421 / 226;
-  margin-left: auto;
+// .peripper {
+//   position: relative;
+//   background-image: url(https://static.brainjuice.jp/public/pokego/peripper-eyes.png);
+//   height: 100%;
+//   background-size: contain;
+//   aspect-ratio: 421 / 226;
 
-  @include display_pc {
-    margin-left: 0px;
-    margin-right: auto;
-  }
-}
-.peripper::after {
-  position: absolute;
-  content: '';
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: linear-gradient(
-    90deg,
-  #1e1e1e 0%,
-  rgba(30, 30, 30, 0.4) 30%,
-  rgba(30, 30, 30, 0.3) 40%,
-  rgba(30, 30, 30, 0.3) 60%,
-  rgba(30, 30, 30, 0.4) 70%,
-  #1e1e1e 100%);
-}
+//   @include display_pc {
+//     margin-left: 0px;
+//     margin-right: auto;
+//   }
+// }
+// .peripper::after {
+//   position: absolute;
+//   content: '';
+//   top: 0;
+//   bottom: 0;
+//   left: 0;
+//   right: 0;
+//   background: linear-gradient(
+//     90deg,
+//   #1e1e1e 0%,
+//   rgba(30, 30, 30, 0.4) 30%,
+//   rgba(30, 30, 30, 0.3) 40%,
+//   rgba(30, 30, 30, 0.3) 60%,
+//   rgba(30, 30, 30, 0.4) 70%,
+//   #1e1e1e 100%);
+// }
 .v-app-bar__nav-icon {
   @include display_pc {
     display: none !important;

@@ -42,7 +42,7 @@
         </div>
         <img
           :src="editUtils().getUrl('pokego/peripper-flapping.gif')"
-          class="center_1"
+          :class="$style.center_1"
         >
       </div>
     </div>
