@@ -72,7 +72,7 @@ useRouter().beforeEach((_1, _2, next: NavigationGuardNext) => {
   next()
 })
 // commonStoreの初期化
-commonStore().setStaticUrl(useRuntimeConfig().public.staticUrl)
+commonStore().setStaticUrl(useRuntimeConfig().public.staticUrl as string)
 // constantUtilsの初期化
 await constantUtils().init()
 
@@ -86,21 +86,30 @@ const dto = ref<Record<string, any>>({
 onMounted(() => {
   // 最初にリロードされたときはafterEachは呼ばれない。手動で呼ぶ。
   const route = useRoute()
-  const si: ScreenInfo = dtoUtils().createScreenInfoFromRoute(route, window.history)
-  dtoStore().afterEachAction(si)
+  const pathName: string = route.name as string
+  if (pathName.startsWith('search')) {
+    const si: ScreenInfo = dtoUtils().createScreenInfoFromRoute(route, window.history)
+    dtoStore().afterEachAction(si)
+  }
 })
 
 useRouter().afterEach((to: RouteLocationNormalized) => {
-  const si: ScreenInfo = dtoUtils().createScreenInfoFromRoute(to, window.history)
-  dtoStore().afterEachAction(si)
+  const pathName: string = to.name as string
+  if (pathName.startsWith('search')) {
+    const si: ScreenInfo = dtoUtils().createScreenInfoFromRoute(to, window.history)
+    dtoStore().afterEachAction(si)
+  }
 })
 
 useRouter().beforeEach((
-  _: RouteLocationNormalized, // to
+  to: RouteLocationNormalized,
   from: RouteLocationNormalized,
   next: NavigationGuardNext) => {
-  const si: ScreenInfo = dtoUtils().createScreenInfoForBeforeEach(from, dto)
-  dtoStore().beforeEachAction(si)
+  const pathName: string = to.name as string
+  if (pathName.startsWith('search')) {
+    const si: ScreenInfo = dtoUtils().createScreenInfoForBeforeEach(from, dto)
+    dtoStore().beforeEachAction(si)
+  }
 
   next()
 })

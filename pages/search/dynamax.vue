@@ -169,7 +169,7 @@ const screenControlMethods = () => {
    * @param _
    * @param selected
    */
-  const onClickRow = (_: PointerEvent, selected: Item) => {
+  const onClickRow = (_: Event, selected: Item) => {
     useRouter().push({
       name: 'search-result-dynamaxResult',
       query: {

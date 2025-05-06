@@ -14,7 +14,7 @@ const defineNuxtConfig = async () => {
     modules: [
       '@nuxtjs/eslint-module',
       '@pinia/nuxt',
-      '@pinia-plugin-persistedstate/nuxt'
+      'pinia-plugin-persistedstate/nuxt'
     ],
     app: {
       head: {
