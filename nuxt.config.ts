@@ -73,9 +73,10 @@ const defineNuxtConfig = async () => {
       css: {
         preprocessorOptions: {
           scss: {
+            api: 'modern-compiler',
             additionalData:
-          '@import "@/assets/styles/common/common.scss";' +
-          '@import "vuetify/styles";'
+              '@use "@/assets/styles/common/common.scss" as *;' +
+              '@use "vuetify/styles" as *;'
           }
         }
       }
