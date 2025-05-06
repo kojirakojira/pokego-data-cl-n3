@@ -49,7 +49,6 @@ const screenControlMethods = () => {
         Authorization: jwt
       }
     })
-    console.log(res)
     if (!res.data) {
       alert('不正なアクセスです。')
       manageStore().clear()
