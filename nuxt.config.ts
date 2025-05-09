@@ -1,4 +1,5 @@
 import vuetify from 'vite-plugin-vuetify'
+
 // https://nuxt.com/docs/api/configuration/nuxt-config
 console.log(`APP_ENV=${process.env.APP_ENV}`) // eslint-disable-line no-console
 
@@ -11,6 +12,10 @@ const defineNuxtConfig = async () => {
   return {
   // devtools: { enabled: true },
     runtimeConfig: envVars,
+    server: {
+      port: process.env.PORT || 3000,
+      host: '0.0.0.0' // Heroku推奨
+    },
     modules: [
       '@nuxtjs/eslint-module',
       '@pinia/nuxt',
@@ -46,7 +51,7 @@ const defineNuxtConfig = async () => {
     },
     hooks: {
       'vite:extendConfig': (config: any) => {
-      config.plugins!.push(vuetify())
+        config.plugins!.push(vuetify())
       }
     },
     vite: {
