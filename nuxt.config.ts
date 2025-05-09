@@ -55,12 +55,6 @@ const defineNuxtConfig = async () => {
         __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: false,
         'process.env.DEBUG': false
       },
-      vue: {
-        script: {
-          defineModel: true, // TODO: Vue v3.4.15にバージョンアップさせた際に追加。（将来的にいらなくなりそう）
-          propsDestructure: true // TODO: Vue v3.4.15にバージョンアップさせた際に追加。（将来的にいらなくなりそう）
-        }
-      },
       ssr: {
         noExternal: ['vuetify']
       },

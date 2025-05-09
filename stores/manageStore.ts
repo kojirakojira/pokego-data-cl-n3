@@ -45,7 +45,5 @@ export const manageStore = defineStore(
     }
   },
   {
-    persist: {
-      storage: piniaPluginPersistedstate.localStorage()
-    }
+    persist: true
   })

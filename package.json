@@ -1,7 +1,10 @@
 {
-  "name": "nuxt-app",
+  "name": "peridex",
   "private": true,
   "type": "module",
+  "engines": {
+    "node": "22.15.0"
+  },
   "scripts": {
     "dev": "cross-env APP_ENV=development nuxt dev",
     "build": "nuxt build",

@@ -20,7 +20,7 @@ export default async (
   }
   // url形式ならそのまま。なければAPIサーバへのアクセスとする。
   const url = argEndpoint.search(/:\/\//) > 0 ? argEndpoint : useRuntimeConfig().public.apiUrl + argEndpoint
-  if (process.server) {
+  if (import.meta.server) {
     // サーバ側で実行する場合
     const { data, error, pending, refresh } = await useAsyncData(
       argEndpoint,

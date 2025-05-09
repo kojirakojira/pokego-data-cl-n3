@@ -73,8 +73,8 @@ useRouter().beforeEach((_1, _2, next: NavigationGuardNext) => {
 })
 // commonStoreの初期化
 commonStore().setStaticUrl(useRuntimeConfig().public.staticUrl as string)
-// constantUtilsの初期化
-await constantUtils().init()
+// constantStoreの初期化
+constantStore().init(await constantUtils().getConstants())
 
 /**
  * DTO機能

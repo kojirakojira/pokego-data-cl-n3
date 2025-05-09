@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import type { TypeInfo } from '~/components/interface/api/dto'
-import type { ConstantItem, ConstantValue, SimpEntry } from '~/utils/constantUtils'
+import type { ConstantItem, ConstantValue, SimpEntry, Constants } from '~/utils/constantUtils'
 
 export const constantStore = defineStore(
   'constantStore',
@@ -48,6 +48,19 @@ export const constantStore = defineStore(
       })
     }
 
+    const init = (constants: Constants) => {
+      // 念のためクリア
+      clear()
+
+      // それぞれセットしていく
+      setType(Object.entries(constants.typeList).map((arr: Array<any>) => arr[1]))
+      setRegion(Object.entries(constants.regionMap).map(([k, v]: Array<any>) => { return { k, v } }))
+      setGen(Object.entries(constants.genMap).map(([k, v]: Array<any>) => { return { k, v } }))
+      setFilterItems(Object.entries(constants.filterItemMap).map(([k, v]: Array<any>) => { return { k, v } }))
+      setPl(Object.entries(constants.plList).map((arr: Array<any>) => arr[1]))
+      setSituation(Object.entries(constants.situationMap).map(([k, v]: Array<any>) => { return { k, v } }))
+    }
+
     return {
       get,
       setType,
@@ -56,6 +69,7 @@ export const constantStore = defineStore(
       setFilterItems,
       setPl,
       setSituation,
-      clear
+      clear,
+      init
     }
   })

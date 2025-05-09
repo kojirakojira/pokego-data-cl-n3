@@ -122,7 +122,7 @@ watch(() => useRoute().fullPath, async () => {
   isLoading.value = true
   await init()
   // evoInfoRef.value.refresh()
-  if (process.client) { scrollTo(0, 0) }
+  if (import.meta.client) { scrollTo(0, 0) }
   isLoading.value = false
 })
 

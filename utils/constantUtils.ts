@@ -1,7 +1,14 @@
 import type { TypeInfo } from '~/components/interface/api/dto'
-import { toastStore } from '~/stores/toastStore'
 import { constantStore } from '~/stores/constantStore'
 
+export interface Constants {
+  typeList: Array<string>,
+  regionMap: Record<string, string>,
+  genMap: Record<string, string>,
+  filterItemMap: Record<string, string>,
+  plList: Array<string>,
+  situationMap: Record<string, string>
+}
 export interface SimpEntry {
   k: string,
   v: string
@@ -37,44 +44,22 @@ export class ConstantAccessor {
     return arr[0]?.jpn
   }
 }
-/**
- * constantUtils
- *
- * クライアントアプリ実行時、常に保持しておく情報。サーバ側から取得する。
- */
-export default () => {
-  const init = async () => {
-    await Promise.all([
-      fetchCommon('/api/typeConst', 'GET'),
-      fetchCommon('/api/regionConst', 'GET'),
-      fetchCommon('/api/genConst', 'GET'),
-      fetchCommon('/api/filterItemsConst', 'GET'),
-      fetchCommon('/api/plConst', 'GET'),
-      fetchCommon('/api/situationConst', 'GET')
-    ])
-      .then((res: any) => {
-        const store = constantStore()
-        // 初期化
-        store.clear()
 
-        // レスポンスをそれぞれセットしていく
-        store.setType(Object.entries(res[0].data).map((arr: Array<any>) => arr[1]))
-        store.setRegion(Object.entries(res[1].data).map(([k, v]: Array<any>) => { return { k, v } }))
-        store.setGen(Object.entries(res[2].data).map(([k, v]: Array<any>) => { return { k, v } }))
-        store.setFilterItems(Object.entries(res[3].data).map(([k, v]: Array<any>) => { return { k, v } }))
-        store.setPl(Object.entries(res[4].data).map((arr: Array<any>) => arr[1]))
-        store.setSituation(Object.entries(res[5].data).map(([k, v]: Array<any>) => { return { k, v } }))
-      })
-      .catch((err) => {
-        if (err.message === 'Network Error') {
-          toastStore().pushToast({ msg: 'サーバとの通信に失敗しました。' })
-        }
-      })
-  }
+export default () => {
   const get = () => constantStore().get()
 
+  /**
+   * クライアントアプリ実行時、常に保持しておく情報。サーバ側から取得する。
+   *
+   * @returns
+   */
+  const getConstants = async (): Promise<Constants> => {
+    const res = await fetchCommon('/api/constants', 'GET')
+    return res.data as Constants
+  }
+
   return {
-    init,
-    get
+    get,
+    getConstants
   }
 }
