@@ -54,7 +54,7 @@ export default () => {
    * @returns
    */
   const getConstants = async (): Promise<Constants> => {
-    const res = await fetchCommon('/api/constants', 'GET')
+    const res = await fetchCommon('/api/constants', 'GET', {}, true)
     return res.data as Constants
   }
 
