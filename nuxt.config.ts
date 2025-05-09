@@ -50,7 +50,7 @@ const defineNuxtConfig = async () => {
       }
     },
     vite: {
-      logLevel: 'error',
+      logLevel: 'warn',
       define: {
         __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: false,
         'process.env.DEBUG': false
@@ -59,11 +59,11 @@ const defineNuxtConfig = async () => {
         noExternal: ['vuetify']
       },
       // for HMR
-      server: {
-        watch: {
-          usePolling: true
-        }
-      },
+      // server: {
+      //   watch: {
+      //     usePolling: true
+      //   }
+      // },
       css: {
         preprocessorOptions: {
           scss: {

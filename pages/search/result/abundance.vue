@@ -542,7 +542,6 @@ const rgba2 = computed(() => {
 })
 /** abundanceの読み込みが終わったらtrueになる。 */
 const isLoadedAbundance = computed(() => {
-  console.log('loadedabundance')
   return !!cDtoItem.value.resData.goPokedex.pokedexId
 })
 /** スーパーリーグ安全圏CP、ハイパーリーグ安全圏CP用のメッセージを生成する。 */
