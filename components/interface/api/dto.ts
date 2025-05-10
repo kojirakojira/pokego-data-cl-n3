@@ -177,6 +177,16 @@ export class Race {
   }
 }
 
+export class RaceDiffElem {
+  race: Race
+  cp: number
+
+  constructor () {
+    this.race = new Race()
+    this.cp = 0
+  }
+}
+
 export class CpRank {
   rank: number
   iva: number

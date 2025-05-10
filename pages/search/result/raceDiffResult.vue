@@ -6,12 +6,12 @@
     <div v-if="!isLoading">
       <v-container>
         <v-row
-          v-for="(race, idx) in cDtoItem.resData.raceArr"
+          v-for="(rde, idx) in cDtoItem.resData.raceDiffElemArr"
           :key="`p-name-${idx}`"
         >
           <v-spacer v-if="!isSmAndDown" />
           <v-col cols="6" md="5" lg="4" xl="3" class="py-0 d-inline-flex align-center">
-            <span :class="$style.abundance_link" @click="screenControlMethods().transAbundance(race.goPokedex.pokedexId)">
+            <span :class="$style.abundance_link" @click="screenControlMethods().transAbundance(rde.race.goPokedex.pokedexId)">
               <v-icon
                 size="large"
                 style="transform: rotate(90deg);"
@@ -19,14 +19,14 @@
               >
                 mdi-circle-half-full
               </v-icon>
-              {{ editUtils().appendRemarks(race.goPokedex.name, race.goPokedex.remarks) }}
+              {{ editUtils().appendRemarks(rde.race.goPokedex.name, rde.race.goPokedex.remarks) }}
             </span>
           </v-col>
           <v-col cols="6" md="5" lg="4" xl="3" class="py-0 d-inline-flex align-center">
-            <SearchType :type="race.goPokedex.type1" />
+            <SearchType :type="rde.race.goPokedex.type1" />
             <SearchType
-              v-if="race.goPokedex.type2"
-              :type="race.goPokedex.type2"
+              v-if="rde.race.goPokedex.type2"
+              :type="rde.race.goPokedex.type2"
               style="margin-left:5px;"
             />
           </v-col>
@@ -51,7 +51,7 @@
             align="center"
           >
             <GraphRaceDiffGoRadarDiffGraph
-              :race-arr="cDtoItem.resData.raceArr"
+              :race-arr="raceArr"
               :count="cDtoItem.resData.goTotalCount"
             />
           </v-col>
@@ -64,14 +64,16 @@
                   items-per-page="-1"
                   no-data-text="loading now..."
                   no-results-text="該当するデータがありません。"
-                  class="body-2"
+                  class="body-2 text-right"
                   @click:row="screenControlMethods().transAbundanceForRow"
                 >
                   <template #[`item.name`]="{ item }">
-                    {{ item.name }}
-                    <template v-if="item.remarks">
-                      <br><span class="caption">{{ `(${item.remarks})` }}</span>
-                    </template>
+                    <div class="text-left">
+                      {{ item.name }}
+                      <template v-if="item.remarks">
+                        <br><span class="caption">{{ `(${item.remarks})` }}</span>
+                      </template>
+                    </div>
                   </template>
                   <template #[`item.hp`]="{ item }">
                     {{ `${item.hp}` }}<br><span class="caption">{{ `(${item.hpRank}位)` }}</span>
@@ -82,11 +84,15 @@
                   <template #[`item.df`]="{ item }">
                     {{ `${item.df}` }}<br><span class="caption">{{ `(${item.dfRank}位)` }}</span>
                   </template>
+                  <template #[`item.cp`]="{ item }">
+                    {{ `${item.cp}` }}
+                  </template>
                   <template #bottom />
                 </v-data-table>
-                <p align="right" class="subtitle-2">
-                  {{ `※全ポケモン${cDtoItem.resData.goTotalCount}体中(未実装、メガ、ゲンシ等含む)` }}
-                </p>
+                <div :class="[$style.go_race_annos, 'text-body-2']">
+                  <p>{{ `※全ポケモン${cDtoItem.resData.goTotalCount}体中(未実装、メガ、ゲンシ等含む)` }}</p>
+                  <p>※CPはPL40時。</p>
+                </div>
               </div>
             </div>
           </v-col>
@@ -99,7 +105,7 @@
         </SearchInputHelpMsg>
       </h3>
       <v-container>
-        <v-row v-if="!cDtoItem.resData.raceArr.filter(race => !race.pokedex).length">
+        <v-row v-if="!cDtoItem.resData.raceDiffElemArr.filter(rde => !rde.race.pokedex).length">
           <v-col
             cols="12"
             sm="12"
@@ -109,7 +115,7 @@
             align="center"
           >
             <GraphRaceDiffOriRadarDiffGraph
-              :race-arr="cDtoItem.resData.raceArr"
+              :race-arr="raceArr"
               :count="cDtoItem.resData.oriTotalCount"
             />
           </v-col>
@@ -122,12 +128,15 @@
                   items-per-page="-1"
                   no-data-text="loading now..."
                   no-results-text="該当するデータがありません。"
+                  class="body-2 text-right"
                 >
                   <template #[`item.name`]="{ item }">
-                    {{ item.name }}
-                    <template v-if="item.remarks">
-                      <br><span class="caption">{{ `(${item.remarks})` }}</span>
-                    </template>
+                    <div class="text-left">
+                      {{ item.name }}
+                      <template v-if="item.remarks">
+                        <br><span class="caption">{{ `(${item.remarks})` }}</span>
+                      </template>
+                    </div>
                   </template>
                   <template #[`item.hp`]="{ item }">
                     {{ `${item.hp}` }}<br><span class="caption">{{ `(${item.hpRank}位)` }}</span>
@@ -151,7 +160,7 @@
                 </v-data-table>
               </div>
               <p align="right" class="subtitle-2">
-                {{ `※全ポケモン${cDtoItem.resData.oriTotalCount}体中(メガ、ゲンシ等含む)` }}
+                {{ `※全ポケモン${cDtoItem.resData.oriTotalCount}体中(未実装、メガ、ゲンシ等含む)` }}
               </p>
             </div>
           </v-col>
@@ -159,9 +168,9 @@
         <v-row v-else>
           <v-col>
             <span class="subtitle-2 text-center">
-              {{ cDtoItem.resData.raceArr
-                .filter(race => !race.pokedex)
-                .map(race => editUtils().appendRemarks(race.name, race.remarks))
+              {{ cDtoItem.resData.raceDiffElemArr
+                .filter(rde => !rde.race.pokedex)
+                .map(rde => editUtils().appendRemarks(rde.race.name, rde.race.remarks))
                 .join(",") + 'は、原作種族値が存在しないため比較できませんでした。' }}
             </span>
           </v-col>
@@ -180,7 +189,7 @@
 <script setup lang="ts">
 import type { MetaObject } from 'nuxt/schema'
 import { useDisplay } from 'vuetify'
-import { GoPokedex, RaceGoRank, RaceOriRank, type Pokedex } from '~/components/interface/api/dto'
+import { GoPokedex, Race, RaceGoRank, RaceOriRank, type Pokedex } from '~/components/interface/api/dto'
 import {
   type RaceDiffResponse,
   RaceDiffResultDtoItem,
@@ -271,6 +280,11 @@ const layoutMethods = () => {
   }
 }
 
+const raceArr = computed((): Array<Race> => {
+  return cDtoItem.value.resData.raceDiffElemArr
+    .map(rde => rde.race)
+})
+
 /**
  * GO種族値用の定義、処理
  */
@@ -280,6 +294,7 @@ interface GoTableData {
   hp: number,
   at: number,
   df: number,
+  cp: number,
   hpRank: number,
   atRank: number,
   dfRank: number
@@ -288,13 +303,14 @@ const goHeaders = [
   { title: '', value: 'name' },
   { title: 'HP', value: 'hp' },
   { title: 'こうげき', value: 'at' },
-  { title: 'ぼうぎょ', value: 'df' }
+  { title: 'ぼうぎょ', value: 'df' },
+  { title: 'CP', value: 'cp' }
 ]
 const goTableData = computed((): Array<GoTableData> => {
-  const raceArr = cDtoItem.value.resData.raceArr
-  return raceArr.map((race) => {
-    const gp: GoPokedex = race.goPokedex
-    const rank: RaceGoRank = race.goRank || new RaceGoRank()
+  const raceDiffElemArr = cDtoItem.value.resData.raceDiffElemArr
+  return raceDiffElemArr.map((rde) => {
+    const gp: GoPokedex = rde.race.goPokedex
+    const rank: RaceGoRank = rde.race.goRank || new RaceGoRank()
     return {
       pokedexId: gp.pokedexId,
       name: gp.name,
@@ -302,6 +318,7 @@ const goTableData = computed((): Array<GoTableData> => {
       hp: gp.hp,
       at: gp.attack,
       df: gp.defense,
+      cp: rde.cp,
       hpRank: rank.hp,
       atRank: rank.attack,
       dfRank: rank.defense
@@ -338,14 +355,14 @@ const oriHeaders = [
   { title: 'すばやさ', value: 'sp' }
 ]
 const oriTableData = computed((): Array<OriTableData> => {
-  const raceArr = cDtoItem.value.resData.raceArr
-  if (raceArr.filter(race => !race.pokedex).length) {
+  const raceDiffElemArr = cDtoItem.value.resData.raceDiffElemArr
+  if (raceDiffElemArr.filter(rde => !rde.race).length) {
     // 原作種族値が存在しないポケモンが指定された場合
     return []
   }
-  return raceArr.map((race) => {
-    const pdx: Pokedex = race.pokedex as Pokedex
-    const rank: RaceOriRank = race.oriRank || new RaceOriRank()
+  return raceDiffElemArr.map((rde) => {
+    const pdx: Pokedex = rde.race.pokedex as Pokedex
+    const rank: RaceOriRank = rde.race.oriRank || new RaceOriRank()
     return {
       pokedexId: pdx.pokedexId,
       name: pdx.name,
@@ -391,5 +408,9 @@ useHead(metaObject)
 <style lang="scss" module>
 .abundance_link:hover {
   cursor: pointer;
+}
+.go_race_annos {
+  width: fit-content;
+  margin-left: auto;
 }
 </style>

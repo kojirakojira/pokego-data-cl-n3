@@ -1,4 +1,4 @@
-import { Race, MultiSearchResult, type PidAndName } from './api/dto'
+import { RaceDiffElem, MultiSearchResult, type PidAndName } from './api/dto'
 import { Response } from './api/response'
 
 /**
@@ -14,7 +14,7 @@ export interface TextFieldValue {
  */
 export class RaceDiffResponse extends Response {
   msr?: MultiSearchResult
-  raceArr: Array<Race>
+  raceDiffElemArr: Array<RaceDiffElem>
   searchedById: boolean
   goTotalCount: number
   oriTotalCount: number
@@ -22,7 +22,7 @@ export class RaceDiffResponse extends Response {
   constructor () {
     super()
     this.msr = new MultiSearchResult()
-    this.raceArr = []
+    this.raceDiffElemArr = []
     this.searchedById = false
     this.goTotalCount = 1
     this.oriTotalCount = 1
