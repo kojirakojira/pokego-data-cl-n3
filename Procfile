@@ -1,1 +1,1 @@
-web: NODE_DEBUG=module npm run start --loglevel verbose
+web: node .output/server/index.mjs
