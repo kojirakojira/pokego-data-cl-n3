@@ -13,8 +13,7 @@
     "generate": "cross-env APP_ENV=production nuxt generate",
     "generate:dev": "cross-env APP_ENV=development nuxt generate",
     "preview": "nuxt preview --dotenv .env.development",
-    "postinstall": "nuxt prepare",
-    "heroku-postbuild": "nuxt build"
+    "postinstall": "nuxt prepare"
   },
   "dependencies": {
     "@mdi/font": "^7.4.47",
