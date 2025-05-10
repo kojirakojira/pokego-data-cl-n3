@@ -1,1 +1,1 @@
-web: npm run start --verbose
+web: NODE_DEBUG=module npm run start --loglevel verbose
