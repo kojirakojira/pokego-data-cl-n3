@@ -30,8 +30,8 @@ export class RaceResponse extends ResearchResponse {
  * 検索画面用クエリパラメータの定義
  */
 export class RaceSearchParams extends ResearchRequest {
-  pid: string
-  name: string
+  override pid: string
+  override name: string
   statsRequired: boolean
 
   constructor (statsRequired?: boolean) {
@@ -58,7 +58,7 @@ export class RaceSearchDtoItem implements SearchDtoItem {
  * 結果画面用クエリパラメータの定義
  */
 export class RaceResultSearchParams extends ResearchRequest {
-  pid: string
+  override pid: string
   statsRequired: boolean
 
   constructor (statsRequired?: boolean) {

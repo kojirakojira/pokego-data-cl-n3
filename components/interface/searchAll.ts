@@ -17,8 +17,8 @@ export class SearchAllResponse extends Response {
  * 検索画面用クエリパラメータの定義
  */
 export class SearchAllSearchParams extends ResearchRequest {
-  pid: string
-  name: string
+  override pid: string
+  override name: string
 
   constructor () {
     super()

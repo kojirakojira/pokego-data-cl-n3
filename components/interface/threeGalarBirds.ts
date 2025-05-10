@@ -21,7 +21,7 @@ export class ThreeGalarBirdsResponse extends ResearchResponse {
  * 検索画面用クエリパラメータの定義
  */
 export class ThreeGalarBirdsSearchParams extends ResearchRequest {
-  name: string
+  override name: string
   cp: string
   wbFlg: boolean
 

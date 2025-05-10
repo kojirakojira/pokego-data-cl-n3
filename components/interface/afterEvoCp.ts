@@ -31,8 +31,8 @@ export class AfterEvoCpResponse extends ResearchResponse {
  * 検索画面用クエリパラメータの定義
  */
 export class AfterEvoCpSearchParams extends ResearchRequest {
-  pid: string
-  name: string
+  override pid: string
+  override name: string
   iv: string
   cp: string
 

@@ -77,6 +77,8 @@ import {
   get
 } from '~/components/interface/evolution'
 import { type GoPokedex } from '~/components/interface/api/dto'
+const MajorPartsPrevNextPokemon = defineAsyncComponent(() => import('~/components/majorParts/PrevNextPokemon.vue'))
+
 const searchPattern = 'evolution'
 // current dto item
 const cDtoItem = ref<EvolutionResultDtoItem>(new EvolutionResultDtoItem())

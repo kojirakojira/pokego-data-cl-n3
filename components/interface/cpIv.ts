@@ -23,8 +23,8 @@ export class CpIvResponse extends ResearchResponse {
  * 検索画面用クエリパラメータの定義
  */
 export class CpIvSearchParams extends ResearchRequest {
-  pid: string
-  name: string
+  override pid: string
+  override name: string
   situation: string
   cp: string
   wbFlg: boolean

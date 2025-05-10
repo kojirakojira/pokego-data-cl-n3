@@ -27,8 +27,8 @@ export class EvolutionResponse extends ResearchResponse {
  * 検索画面用クエリパラメータの定義
  */
 export class EvolutionSearchParams extends ResearchRequest {
-  pid: string
-  name: string
+  override pid: string
+  override name: string
 
   constructor () {
     super()
@@ -52,7 +52,7 @@ export class EvolutionSearchDtoItem implements SearchDtoItem {
  * 結果画面用クエリパラメータの定義
  */
 export class EvolutionResultSearchParams extends ResearchRequest {
-  pid: string
+  override pid: string
 
   constructor () {
     super()

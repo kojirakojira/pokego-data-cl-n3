@@ -445,6 +445,13 @@ import { RaceResultSearchParams, type RaceResponse } from '~/components/interfac
 import { TypeScoreResultSearchParams, type TypeScoreResponse } from '~/components/interface/typeScore'
 import { type GoPokedex, RaceGoRank, GoPokedexAndCpPl, ScpRank } from '~/components/interface/api/dto'
 import { ScpRankMaxMinResponse, ScpRankMaxMinSearchParams } from '~/components/interface/scpRankMaxMin'
+const MajorPartsH2Common = defineAsyncComponent(() => import('~/components/majorParts/H2Common.vue'))
+const IconAwakeningIconMegaIcon = defineAsyncComponent(() => import('~/components/icon/awakeningIcon/MegaIcon.vue'))
+const IconAwakeningIconDynamaxIcon = defineAsyncComponent(() => import('~/components/icon/awakeningIcon/DynamaxIcon.vue'))
+const GraphRaceGoRadarGraph = defineAsyncComponent(() => import('~/components/graph/race/GoRadarGraph.vue'))
+const SearchTypeComments = defineAsyncComponent(() => import('~/components/search/type/TypeComments.vue'))
+const SearchInputHelpMsg = defineAsyncComponent(() => import('~/components/search/input/HelpMsg.vue'))
+const MajorPartsPrevNextPokemon = defineAsyncComponent(() => import('~/components/majorParts/PrevNextPokemon.vue'))
 
 // current dto item
 const cDtoItem = ref<AbundanceResultDtoItem>(new AbundanceResultDtoItem())

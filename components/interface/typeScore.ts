@@ -37,10 +37,10 @@ export class TypeScoreResponse extends ResearchResponse {
  * 検索画面用クエリパラメータの定義
  */
 export class TypeScoreSearchParams extends ResearchRequest {
-  pid: string
-  name: string
-  type1: string
-  type2: string
+  override pid: string
+  override name: string
+  override type1: string
+  override type2: string
   isPoke: boolean
 
   constructor () {
@@ -68,9 +68,9 @@ export class TypeScoreSearchDtoItem implements SearchDtoItem {
  * 結果画面用クエリパラメータの定義
  */
 export class TypeScoreResultSearchParams extends ResearchRequest {
-  pid: string
-  type1: string
-  type2: string
+  override pid: string
+  override type1: string
+  override type2: string
   isPoke: boolean
 
   constructor () {
