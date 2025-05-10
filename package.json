@@ -9,7 +9,7 @@
     "dev": "cross-env APP_ENV=development nuxt dev",
     "build": "nuxt build",
     "build:dev": "cross-env APP_ENV=development nuxt build",
-    "start": "nuxt start",
+    "start": "node .output/server/index.mjs",
     "generate": "cross-env APP_ENV=production nuxt generate",
     "generate:dev": "cross-env APP_ENV=development nuxt generate",
     "preview": "nuxt preview --dotenv .env.development",

@@ -12,9 +12,6 @@ const defineNuxtConfig = async () => {
   return {
   // devtools: { enabled: true },
     runtimeConfig: envVars,
-    nitro: {
-      preset: 'node'
-    },
     server: {
       port: process.env.PORT || 3000
     },
