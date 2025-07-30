@@ -23,6 +23,18 @@
               rounded
               min-width="50%"
               color="success"
+              @click="useRouter().push({ name: 'manage-masterFileAnalyze' })"
+            >
+              マスタファイル解析
+            </v-btn>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col cols="12" class="text-center">
+            <v-btn
+              rounded
+              min-width="50%"
+              color="success"
               :disabled="isBtnClick"
               @click="onClickBtn('cleanupRedis')"
             >

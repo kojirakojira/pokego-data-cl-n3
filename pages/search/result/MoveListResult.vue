@@ -6,18 +6,68 @@
     <div v-if="!isLoading">
       <v-container v-if="cDtoItem.resData">
         <v-row>
+          <v-col cols="12">
+            <h3>通常技</h3>
+          </v-col>
+        </v-row>
+        <v-row>
           <v-col>
             <v-data-table
-              :headers="headers"
+              :headers="faHeaders"
               :items="cDtoItem.resData.faList"
               item-value="moveId"
+              items-per-page="-1"
+              height="400"
+              fixed-header
               no-data-text="loading now..."
               no-results-text="該当するデータがありません。"
               hover
-            />
+            >
+              <template #[`item.type`]="{ item }">
+                <SearchType :type="item.type" />
+              </template>
+              <template #bottom />
+            </v-data-table>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col cols="12">
+            <h3>スペシャル技</h3>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col>
+            <v-data-table
+              :headers="caHeaders"
+              :items="cDtoItem.resData.caList"
+              item-value="moveId"
+              items-per-page="-1"
+              height="400"
+              fixed-header
+              no-data-text="loading now..."
+              no-results-text="該当するデータがありません。"
+              hover
+            >
+              <template #[`item.type`]="{ item }">
+                <SearchType :type="item.type" />
+              </template>
+              <template #[`item.pvp.buff.buffMsg`]="{ item }">
+                <span style="white-space: pre-wrap;">{{ item.pvp.buff.buffMsg }}</span>
+              </template>
+              <template #[`item.pvp.buff.activationChance`]="{ item }">
+                <span>{{ item.pvp.buff.activationChanceStr }}</span>
+              </template>
+              <template #bottom />
+            </v-data-table>
           </v-col>
         </v-row>
       </v-container>
+      <div :class="$style.fixed">
+        <v-radio-group v-model="radioStatus" inline hide-details>
+          <v-radio label="ジム・レイド" color="primary" value="gymRaid" />
+          <v-radio label="PvP" color="primary" value="pvp" />
+        </v-radio-group>
+      </div>
     </div>
     <div v-else>
       <Loading full-page />
@@ -42,40 +92,59 @@ dto.params = cDtoItem
 
 const isLoading = ref<boolean>(true)
 
+const radioStatus = ref<string>('gymRaid')
+
 /**
  * table制御用機能
  */
 /** 列が全部そろったv-data-tableのヘッダ */
-const baseHeaders = readonly<Array<any>>([
+const faBaseHeaders = readonly<Array<any>>([
+  { title: 'No', key: 'no' },
   { title: '技名', key: 'name' },
-  {
-    title: 'ジム・レイド',
-    align: 'center',
-    children: [
-      { title: 'ダメージ', key: 'gym.gymPower', size: '8px' },
-      { title: 'DPS', key: 'gym.dps' },
-      { title: 'EPS', key: 'gym.eps' },
-      { title: '発生時間', key: 'gym.damagedTime' },
-      { title: '全体時間', key: 'gym.totalTime' }
-    ]
-  },
-  {
-    title: 'PvP',
-    align: 'center',
-    children: [
-      { title: 'ダメージ', key: 'pvp.pvpPower' },
-      { title: 'ゲージ増加量', key: 'pvp.energy' },
-      { title: 'ターン数', key: 'pvp.turns' },
-      { title: 'DPT', key: 'pvp.dpt' },
-      { title: 'EPT', key: 'pvp.ept' }
-    ]
-  }
+  { title: 'タイプ', key: 'type' },
+  { title: 'ダメージ', key: 'gymRaid.gymPower', size: '8px' },
+  { title: '発生時間', key: 'gymRaid.damageSecond' },
+  { title: '全体時間', key: 'gymRaid.totalSecond' },
+  { title: 'DPS', key: 'gymRaid.dps' },
+  { title: 'EPS', key: 'gymRaid.eps' },
+  { title: 'ダメージ', key: 'pvp.pvpPower' },
+  { title: 'ゲージ増加量', key: 'pvp.energy' },
+  { title: 'ターン数', key: 'pvp.turns' },
+  { title: 'DPT', key: 'pvp.dpt' },
+  { title: 'EPT', key: 'pvp.ept' }
+])
+const caBaseHeaders = readonly<Array<any>>([
+  { title: 'No', key: 'no' },
+  { title: '技名', key: 'name' },
+  { title: 'タイプ', key: 'type' },
+  { title: 'ダメージ', key: 'gymRaid.gymPower', size: '8px' },
+  { title: '発生時間', key: 'gymRaid.damageSecond' },
+  { title: '全体時間', key: 'gymRaid.totalSecond' },
+  { title: 'DPS', key: 'gymRaid.dps' },
+  { title: 'バー', key: 'gymRaid.energyBar' },
+  { title: 'ダメージ', key: 'pvp.pvpPower' },
+  { title: 'ゲージ減少量', key: 'pvp.energy' },
+  { title: 'DPE', key: 'pvp.dpe' },
+  { title: 'バフ', key: 'pvp.buff.buffMsg' },
+  { title: 'バフ確率', key: 'pvp.buff.activationChance' }
 ])
 
-const headers = computed((): Array<any> => {
-  // const selectedArr: Array<string> = cDtoItem.value.tableControl.chkboxSelected
-  // return baseHeaders.filter(col => !selectedArr.includes(col.key))
-  return baseHeaders.filter(() => true)
+const faHeaders = computed((): Array<any> => {
+  return faBaseHeaders.filter((col) => {
+    if (col.key.indexOf('.') < 1) {
+      return true
+    }
+    return col.key.substring(0, col.key.indexOf('.')) === radioStatus.value
+  })
+})
+
+const caHeaders = computed((): Array<any> => {
+  return caBaseHeaders.filter((col) => {
+    if (col.key.indexOf('.') < 1) {
+      return true
+    }
+    return col.key.substring(0, col.key.indexOf('.')) === radioStatus.value
+  })
 })
 
 const screenControlMethods = () => {
@@ -139,3 +208,20 @@ const metaObject = computed((): MetaObject => {
 })
 useHead(metaObject)
 </script>
+
+<style lang="scss" module>
+.fixed {
+  background-color: white;
+  padding: 5px 20px 5px 5px;
+  position: fixed;
+  bottom: 25px;
+  left: 25px;
+  z-index: 50;
+  border-radius: 25px;
+  border: thin solid;
+
+  &:hover {
+    border-color: blue;
+  }
+}
+</style>

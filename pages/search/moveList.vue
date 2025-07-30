@@ -3,124 +3,315 @@
     <MajorPartsH2Common>
       {{ searchCommon().getSearchPatternName(searchPattern) }}
     </MajorPartsH2Common>
-    <div v-show="!isLoading">
-      <v-container>
-        <v-row align="center">
-          <v-col cols="12" md="5" lg="4" xl="4" class="col-title">
-            何のランキングがみたい？
-          </v-col>
-          <v-col cols="12" md="7" lg="8" xl="8">
-            <v-select
-              v-model="cDtoItem.searchParams.scene"
-              :items="moveListArr"
-              item-title="jpn"
-              item-value="id"
-              prepend-icon="mdi-filter-multiple"
-              hide-details
-            />
+    <div v-if="!isLoading">
+      <v-container v-if="cDtoItem.resData">
+        <v-row>
+          <v-col cols="12">
+            <h3>通常技</h3>
           </v-col>
         </v-row>
         <v-row>
-          <v-col cols="12" class="text-center">
-            <v-btn
-              rounded
-              min-width="50%"
-              color="success"
-              :disabled="isSearchBtnClick"
-              @click="screenControlMethods().clickSearchBtn"
+          <v-col>
+            <v-data-table
+              id="fast-attack-table"
+              v-model:sort-by="cDtoItem.tableControl.faSortByArr"
+              :headers="faHeaders"
+              :items="cDtoItem.resData.faList"
+              item-value="moveId"
+              items-per-page="-1"
+              height="400"
+              fixed-header
+              multi-sort
+              no-data-text="loading now..."
+              no-results-text="該当するデータがありません。"
+              hover
             >
-              検索
-            </v-btn>
+              <template #[`item.type`]="{ item }">
+                <SearchType :type="item.type" />
+              </template>
+              <template #bottom />
+            </v-data-table>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col cols="12">
+            <h3>スペシャル技</h3>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col>
+            <v-data-table
+              id="charged-attack-table"
+              v-model:sort-by="cDtoItem.tableControl.caSortByArr"
+              :headers="caHeaders"
+              :items="cDtoItem.resData.caList"
+              item-value="moveId"
+              items-per-page="-1"
+              height="400"
+              fixed-header
+              multi-sort
+              no-data-text="loading now..."
+              no-results-text="該当するデータがありません。"
+              hover
+            >
+              <template #[`item.type`]="{ item }">
+                <SearchType :type="item.type" />
+              </template>
+              <template #[`item.pvp.buff.buffMsg`]="{ item }">
+                <span style="white-space: pre-wrap;">{{ item.pvp.buff.buffMsg }}</span>
+              </template>
+              <template #[`item.pvp.buff.activationChance`]="{ item }">
+                <span>{{ item.pvp.buff.activationChanceStr }}</span>
+              </template>
+              <template #[`item.gymRaid.energyBar`]="{ item }">
+                <div :class="$style.energy_bar">
+                  <div v-if="item.gymRaid.energyBar >= 2" :class="$style.separator" />
+                  <div v-if="item.gymRaid.energyBar >= 3" :class="$style.separator" />
+                </div>
+              </template>
+              <template #bottom />
+            </v-data-table>
           </v-col>
         </v-row>
       </v-container>
+      <div :class="$style.fixed">
+        <v-radio-group v-model="cDtoItem.tableControl.radioStatus" inline hide-details>
+          <v-radio label="ジム・レイド" color="primary" value="gymRaid" />
+          <v-radio label="PvP" color="primary" value="pvp" />
+        </v-radio-group>
+      </div>
     </div>
-    <div v-show="isLoading">
+    <div v-else>
       <Loading full-page />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import type { MetaObject } from 'nuxt/schema'
 import {
-  MoveListResponse,
-  MoveListSearchDtoItem,
+  type MoveListResponse,
+  MoveListResultDtoItem,
+  type TableControl,
   get
 } from '~/components/interface/moveList'
 
 const searchPattern = 'moveList'
-/**
- * 画面制御用機能
- */
 // current dto item
-const cDtoItem = ref<MoveListSearchDtoItem>(new MoveListSearchDtoItem())
+const cDtoItem = ref<MoveListResultDtoItem>(new MoveListResultDtoItem())
 const dto: any = useAttrs().dto
 dto.params = cDtoItem
 
-const isLoading = ref<boolean>(false)
-const isSearchBtnClick = ref<boolean>(false)
+const isLoading = ref<boolean>(true)
+
+/**
+ * table制御用機能
+ */
+/** 列が全部そろったv-data-tableのヘッダ */
+const faBaseHeaders = readonly<Array<any>>([
+  { title: 'No', key: 'no' },
+  { title: '技名', key: 'name' },
+  { title: 'タイプ', key: 'type' },
+  { title: 'ダメージ', key: 'gymRaid.gymPower', size: '8px' },
+  { title: '発生時間', key: 'gymRaid.damageSecond' },
+  { title: '全体時間', key: 'gymRaid.totalSecond' },
+  { title: 'DPS', key: 'gymRaid.dps' },
+  { title: 'EPS', key: 'gymRaid.eps' },
+  { title: 'ダメージ', key: 'pvp.pvpPower' },
+  { title: 'ゲージ増加量', key: 'pvp.energy' },
+  { title: 'ターン数', key: 'pvp.turns' },
+  { title: 'DPT', key: 'pvp.dpt' },
+  { title: 'EPT', key: 'pvp.ept' }
+])
+const caBaseHeaders = readonly<Array<any>>([
+  { title: 'No', key: 'no' },
+  { title: '技名', key: 'name' },
+  { title: 'タイプ', key: 'type' },
+  { title: 'ゲージ', key: 'gymRaid.energyBar' },
+  { title: 'ダメージ', key: 'gymRaid.gymPower', size: '8px' },
+  { title: '発生時間', key: 'gymRaid.damageSecond' },
+  { title: '全体時間', key: 'gymRaid.totalSecond' },
+  { title: 'DPS', key: 'gymRaid.dps' },
+  { title: 'ダメージ', key: 'pvp.pvpPower' },
+  { title: 'ゲージ減少量', key: 'pvp.energy' },
+  { title: 'DPE', key: 'pvp.dpe' },
+  { title: 'バフ', key: 'pvp.buff.buffMsg' },
+  { title: 'バフ確率', key: 'pvp.buff.activationChance' }
+])
+
+const faHeaders = computed((): Array<any> => {
+  return faBaseHeaders.filter((col) => {
+    if (col.key.indexOf('.') < 1) {
+      return true
+    }
+    return col.key.substring(0, col.key.indexOf('.')) === cDtoItem.value.tableControl.radioStatus
+  })
+})
+
+const caHeaders = computed((): Array<any> => {
+  return caBaseHeaders.filter((col) => {
+    if (col.key.indexOf('.') < 1) {
+      return true
+    }
+    return col.key.substring(0, col.key.indexOf('.')) === cDtoItem.value.tableControl.radioStatus
+  })
+})
+
 const screenControlMethods = () => {
-  /** 初期表示時の処理 */
-  const init = (): void => {
-    isLoading.value = true
-    // 画面を復元する
-    searchCommon().restoreSearchScreen(['searchParams', 'resData'], cDtoItem.value)
+  const init = async () => {
+    // dtoStoreからresDataを復元
+    const restoredParams: Record<string, any> | null = searchCommon().restoreCurrentScreen(['resData', 'tableControl'])
+    const rd: MoveListResponse | null = restoredParams?.resData
+    const tableControl: TableControl | null = restoredParams?.tableControl
 
-    isLoading.value = false
-  }
-
-  const clickSearchBtn = async () => {
-    isSearchBtnClick.value = true
-    isLoading.value = true
-    const res = await get(cDtoItem.value.searchParams)
-    if (!res) {
-      isSearchBtnClick.value = false
-      isLoading.value = false
-      return
-    }
-    handleApiResult(res)
-  }
-
-  /**
-   * APIのレスポンスを処理する。
-   *
-   * @param rd
-   */
-  const handleApiResult = (rd: MoveListResponse) => {
-    if (rd.success) {
+    if (rd) {
       cDtoItem.value.resData = rd
-      useRouter().push({
-        name: 'search-result-iroiroTypeRankResult',
-        query: searchCommon().makeQuery(cDtoItem.value.searchParams)
-      })
+    } else {
+      // 存在しない場合は取得する
+      // 入力チェック不要
+      const ret = await get()
+      if (!ret) {
+        // resが正しくない場合
+        throw createError({ statusCode: 400, message: '不正なパラメータが指定されました。', fatal: true })
+      }
+      cDtoItem.value.resData = ret
     }
+
+    tableControlMethods().restoreTableControl(tableControl)
+
+    isLoading.value = !cDtoItem.value.resData
   }
 
   return {
-    init,
-    clickSearchBtn
+    init
   }
 }
 
 /**
- * 入力系機能
+ * テーブル制御
  */
-const moveListArr = readonly<Array<{ id: string, jpn: string }>>([
-  { id: 'gym', jpn: 'ジム・レイド' },
-  { id: 'pvp', jpn: 'PvP' }
-])
+const tableControlMethods = () => {
+  /**
+   * v-data-tableの復元
+   * @param tableControl
+   */
+  const restoreTableControl = (tableControl: TableControl | null) => {
+    const tc = cDtoItem.value.tableControl
+    // ラジオボタンの復元
+    tc.radioStatus = tableControl?.radioStatus || tc.radioStatus
+    // ソートの復元
+    tc.faSortByArr = tableControl?.faSortByArr || tc.faSortByArr
+    tc.caSortByArr = tableControl?.caSortByArr || tc.caSortByArr
+    // スクロール位置
+    tc.faScrollTop = tableControl?.faScrollTop || tc.faScrollTop
+    tc.caScrollTop = tableControl?.caScrollTop || tc.caScrollTop
+  }
 
-screenControlMethods().init()
+  return {
+    restoreTableControl
+  }
+}
 
-useHead({
-  title: searchCommon().getSearchPatternName(searchPattern),
-  meta: [
-    { property: 'og:type', content: 'article' },
-    { property: 'og:title', content: `${searchCommon().getSearchPatternName(searchPattern)} - ペリずかん` },
-    { property: 'og:url', content: useRuntimeConfig().public.url + useRoute().path },
-    { property: 'og:site_name', content: 'ペリずかん' },
-    { property: 'og:description', content: 'ポケモンの名前から、ポケモンの情報を検索することができます。' },
-    { property: 'og:image', content: editUtils().getUrl('pokego/peripper-eyes.png') }
-  ]
+watch(
+  () => cDtoItem.value.tableControl.radioStatus,
+  (newValue) => {
+    const tc = cDtoItem.value.tableControl
+    // ラジオボタンに合わせてソートを更新。ジム・レイド、PvP固有の列はソートを除去する。
+    // 通常技
+    tc.faSortByArr = tc.faSortByArr.filter((sItem) => {
+      if (sItem.key.indexOf('.') < 1) {
+        return true
+      }
+      return sItem.key.substring(0, sItem.key.indexOf('.')) === newValue
+    })
+    // スペシャル技
+    tc.caSortByArr = tc.caSortByArr.filter((sItem) => {
+      if (sItem.key.indexOf('.') < 1) {
+        return true
+      }
+      return sItem.key.substring(0, sItem.key.indexOf('.')) === newValue
+    })
+  }
+)
+
+onMounted(() => {
+  // スクロール位置の復元
+  const faTable = document.getElementById('fast-attack-table')
+  if (faTable) {
+    faTable.children[0].scrollTop = cDtoItem.value.tableControl.faScrollTop
+  }
+  const caTable = document.getElementById('charged-attack-table')
+  if (caTable) {
+    caTable.children[0].scrollTop = cDtoItem.value.tableControl.caScrollTop
+  }
 })
+
+onBeforeRouteLeave((_to, _from, next) => {
+  // 画面を離れる前にスクロール位置を退避
+  const faTable = document.getElementById('fast-attack-table')
+  if (faTable) {
+    cDtoItem.value.tableControl.faScrollTop = faTable.children[0].scrollTop
+  }
+  const caTable = document.getElementById('charged-attack-table')
+  if (caTable) {
+    cDtoItem.value.tableControl.caScrollTop = caTable.children[0].scrollTop
+  }
+  next()
+})
+
+await screenControlMethods().init()
+
+/**
+ * Header
+ */
+const thisPath = useRuntimeConfig().public.url + useRoute().path
+const metaObject = computed((): MetaObject => {
+  return {
+    title: searchCommon().getSearchPatternName(searchPattern),
+    meta: [
+      { property: 'og:type', content: 'article' },
+      { property: 'og:title', content: `${searchCommon().getSearchPatternName(searchPattern)} - ペリずかん` },
+      { property: 'og:url', content: thisPath },
+      { property: 'og:site_name', content: 'ペリずかん' },
+      { property: 'og:description', content: 'タイプについての色々なランキングを確認することができます。' },
+      { property: 'og:image', content: editUtils().getUrl('pokego/peripper-eyes.png') }
+    ]
+  }
+})
+useHead(metaObject)
 </script>
+
+<style lang="scss" module>
+.fixed {
+  background-color: white;
+  padding: 5px 20px 5px 5px;
+  position: fixed;
+  bottom: 25px;
+  left: 25px;
+  z-index: 50;
+  border-radius: 25px;
+  border: thin solid;
+
+  &:hover {
+    border-color: blue;
+  }
+}
+
+.energy_bar {
+  position: relative;
+  background-color: darkgrey;
+  height: 10px;
+  overflow: hidden;
+  display: flex;
+  justify-content: space-evenly;
+
+  .separator {
+    position: relative;
+    top: -1px;
+    background-color: white;
+    height: 12px;
+    width: 4px;
+    transform: rotate(25deg);
+  }
+}
+</style>

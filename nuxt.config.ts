@@ -63,11 +63,11 @@ const defineNuxtConfig = async () => {
         noExternal: ['vuetify']
       },
       // for HMR
-      // server: {
-      //   watch: {
-      //     usePolling: true
-      //   }
-      // },
+      server: {
+        watch: {
+          usePolling: true
+        }
+      },
       css: {
         preprocessorOptions: {
           scss: {

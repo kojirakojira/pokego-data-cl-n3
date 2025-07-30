@@ -387,8 +387,8 @@ export interface FastGymParam {
   gymPower: number,
   dps: number,
   eps: number,
-  damagedTime: number,
-  totalTime: number
+  damegeSecond: number,
+  totalSecond: number
 }
 
 export interface FastPvpParam {
@@ -400,18 +400,20 @@ export interface FastPvpParam {
 }
 
 export interface DispFastAttack {
+  no: number,
   moveId: string,
   name: string,
   type: string,
-  gym: FastGymParam,
+  gymRaid: FastGymParam,
   pvp: FastPvpParam
 }
 
 export interface ChargedGymParam {
+  no: number,
   gymPower: number,
   dps: number,
-  damagedTime: number,
-  totalTime: number,
+  damegeSecond: number,
+  totalSecond: number,
   energyBar: number
 }
 
@@ -423,7 +425,9 @@ export interface BuffContent {
 
 export interface Buff {
   buffList: Array<BuffContent>
-  activationChance: number
+  buffMsg: string,
+  activationChance: number,
+  activationChanceStr: string
 }
 
 export interface ChargedPvpParam {
@@ -437,7 +441,7 @@ export interface DispChargedAttack {
   moveId: string,
   name: string,
   type: string,
-  gym: ChargedGymParam,
+  gymRaid: ChargedGymParam,
   pvp: ChargedPvpParam
 }
 
