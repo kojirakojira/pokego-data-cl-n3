@@ -1,5 +1,3 @@
-import vuetify from 'vite-plugin-vuetify'
-
 // https://nuxt.com/docs/api/configuration/nuxt-config
 console.log(`APP_ENV=${process.env.APP_ENV}`) // eslint-disable-line no-console
 
@@ -18,7 +16,8 @@ const defineNuxtConfig = async () => {
     modules: [
       '@nuxtjs/eslint-module',
       '@pinia/nuxt',
-      'pinia-plugin-persistedstate/nuxt'
+      'pinia-plugin-persistedstate/nuxt',
+      'vuetify-nuxt-module'
     ],
     app: {
       head: {
@@ -40,27 +39,15 @@ const defineNuxtConfig = async () => {
       }
     },
     css: [
-      'vuetify/lib/styles/main.sass',
       '@mdi/font/css/materialdesignicons.css',
       '@/assets/styles/style.css',
       '@/assets/styles/common/mixin.scss'
     ],
-    build: {
-      transpile: ['vuetify']
-    },
-    hooks: {
-      'vite:extendConfig': (config: any) => {
-        config.plugins!.push(vuetify())
-      }
-    },
     vite: {
       logLevel: 'warn',
       define: {
         __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: false,
         'process.env.DEBUG': false
-      },
-      ssr: {
-        noExternal: ['vuetify']
       },
       // for HMR
       server: {
@@ -73,8 +60,7 @@ const defineNuxtConfig = async () => {
           scss: {
             api: 'modern-compiler',
             additionalData:
-              '@use "@/assets/styles/common/common.scss" as *;' +
-              '@use "vuetify/styles" as *;'
+              '@use "@/assets/styles/common/common.scss" as *;'
           }
         }
       }

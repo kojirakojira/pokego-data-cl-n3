@@ -28,7 +28,6 @@
     "sass": "^1.87.0",
     "sass-loader": "^13.3.3",
     "typescript": "^5.2.2",
-    "vite-plugin-vuetify": "^2.1.1",
     "vue": "^3.5.13",
     "vue-chartjs": "^5.3.2",
     "vue-loading-overlay": "^6.0.6",
@@ -39,7 +38,8 @@
     "@nuxt/devtools": "^1.7.0",
     "@nuxtjs/eslint-config-typescript": "^12.1.0",
     "@nuxtjs/eslint-module": "^4.1.0",
-    "eslint": "^8.57.1"
+    "eslint": "^8.57.1",
+    "vuetify-nuxt-module": "^0.18.7"
   },
   "rules": {
     "vue/multi-word-component-names": "off"
