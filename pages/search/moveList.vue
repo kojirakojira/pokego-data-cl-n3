@@ -64,10 +64,7 @@
                 <span>{{ item.pvp.buff.activationChanceStr }}</span>
               </template>
               <template #[`item.gymRaid.energyBar`]="{ item }">
-                <div :class="$style.energy_bar">
-                  <div v-if="item.gymRaid.energyBar >= 2" :class="$style.separator" />
-                  <div v-if="item.gymRaid.energyBar >= 3" :class="$style.separator" />
-                </div>
+                <SearchMovesEnergyBar :divide="item.gymRaid.energyBar" />
               </template>
               <template #bottom />
             </v-data-table>
@@ -273,7 +270,7 @@ const metaObject = computed((): MetaObject => {
       { property: 'og:title', content: `${searchCommon().getSearchPatternName(searchPattern)} - ペリずかん` },
       { property: 'og:url', content: thisPath },
       { property: 'og:site_name', content: 'ペリずかん' },
-      { property: 'og:description', content: 'タイプについての色々なランキングを確認することができます。' },
+      { property: 'og:description', content: 'ポケモンGOにおける、すべての通常技・スペシャル技の一覧です。' },
       { property: 'og:image', content: editUtils().getUrl('pokego/peripper-eyes.png') }
     ]
   }
@@ -294,24 +291,6 @@ useHead(metaObject)
 
   &:hover {
     border-color: blue;
-  }
-}
-
-.energy_bar {
-  position: relative;
-  background-color: darkgrey;
-  height: 10px;
-  overflow: hidden;
-  display: flex;
-  justify-content: space-evenly;
-
-  .separator {
-    position: relative;
-    top: -1px;
-    background-color: white;
-    height: 12px;
-    width: 4px;
-    transform: rotate(25deg);
   }
 }
 </style>

@@ -408,6 +408,11 @@ export interface DispFastAttack {
   pvp: FastPvpParam
 }
 
+export interface DispPokemonFastAttack extends DispFastAttack {
+  learningPattern: string,
+  learningPatternName: string
+}
+
 export interface ChargedGymParam {
   no: number,
   gymPower: number,
@@ -443,6 +448,12 @@ export interface DispChargedAttack {
   type: string,
   gymRaid: ChargedGymParam,
   pvp: ChargedPvpParam
+}
+
+export interface DispPokemonChargedAttack extends DispChargedAttack {
+  learningPattern: string,
+  learningPatternName: string,
+  learningPatternAnnos?: string
 }
 
 export class PokemonSearchResult {

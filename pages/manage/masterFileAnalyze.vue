@@ -132,7 +132,7 @@ const onClickBtn = async () => {
   isBtnClick.value = true
   const userId: string = manageStore().getUserId()
   const jwt: string = manageStore().getJwt()
-  console.log(masterFile.value)
+
   if (!masterFile.value) {
     alert('ファイルが選択されていません。')
     isBtnClick.value = false

@@ -1,7 +1,7 @@
 <template>
   <span
     :style="`background-color: ${typeColorUtils.getRGB(type)};`"
-    class="type"
+    :class="$style.type"
   >
     {{ dispType }}
   </span>
@@ -28,3 +28,16 @@ const dispType = computed(() => {
     : props.type
 })
 </script>
+
+<style module>
+.type {
+  display: inline-block;
+  vertical-align: top;
+  color: white;
+  font-weight: bold;
+  padding: 1px 3px !important;
+  font-size: 80%;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+</style>

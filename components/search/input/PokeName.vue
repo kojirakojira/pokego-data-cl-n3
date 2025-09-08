@@ -1,5 +1,6 @@
 <template>
   <v-text-field
+    :id="id"
     v-model="modelName"
     :label="label"
     outlined
@@ -18,18 +19,27 @@
 <script setup lang="ts">
 const modelName = defineModel('name')
 const modelPid = defineModel('pid')
-withDefaults(
+const props = withDefaults(
   defineProps<{
+    id?: string,
     label?: string, // ラベル（任意）
-    keyupEnter?: Function // Enterイベント（任意）
+    keyupEnter?: Function, // Enterイベント（任意）
+    autoFocus?: boolean
    }>(),
   {
+    id: 'poke-name',
     label: '例：ミュウツー',
-    keyupEnter: () => {}
+    keyupEnter: () => {},
+    autoFocus: true
   }
 )
 const onChangeText = () => {
   // pidを削除する。
   modelPid.value = ''
 }
+onMounted(() => {
+  if (props.autoFocus) {
+    document.getElementById(props.id)?.focus()
+  }
+})
 </script>
