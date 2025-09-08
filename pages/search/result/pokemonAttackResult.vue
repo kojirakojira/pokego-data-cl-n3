@@ -1,7 +1,7 @@
 <template>
   <div>
     <MajorPartsH2Common>
-      {{ `${editUtils().appendRemarks(cDtoItem.resData.name, cDtoItem.resData.remarks)}が${searchCommon().getSearchPatternName(searchPattern)}` }}
+      {{ `${editUtils().appendRemarks(cDtoItem.resData.name, cDtoItem.resData.remarks)}が覚える技` }}
     </MajorPartsH2Common>
     <div v-if="!isLoading">
       <v-container>
@@ -141,7 +141,7 @@ import {
   PokemonAttackResultSearchParams,
   get
 } from '~/components/interface/pokemonAttack'
-const searchPattern = 'pokemonAttack'
+// const searchPattern = 'pokemonAttack'
 // current dto item
 const cDtoItem = ref<PokemonAttackResultDtoItem>(new PokemonAttackResultDtoItem())
 const dto: any = useAttrs().dto
@@ -251,10 +251,10 @@ const metaObject = computed((): MetaObject => {
     title: `${pokeName}のタマゴCP`,
     meta: [
       { property: 'og:type', content: 'article' },
-      { property: 'og:title', content: `${pokeName}のタマゴCP - ペリずかん` },
+      { property: 'og:title', content: `${pokeName}が覚える技 - ペリずかん` },
       { property: 'og:url', content: thisPath },
       { property: 'og:site_name', content: 'ペリずかん' },
-      { property: 'og:description', content: `${pokeName}のCPを確認できます。` },
+      { property: 'og:description', content: `${pokeName}が覚える通常技、スペシャル技を確認できます。` },
       { property: 'og:image', content: pokeImage }
     ]
   }
