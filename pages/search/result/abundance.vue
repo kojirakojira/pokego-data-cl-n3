@@ -844,7 +844,7 @@ const thisPath = useRuntimeConfig().public.url + useRoute().path
 const metaObject = computed((): MetaObject => {
   const pokeName = cDtoItem.value.resData.name || ''
   return {
-    title: `${pokeName}の情報`,
+    title: `【ポケモンGO】${pokeName}のCP、種族値、技 - ペリずかん`,
     meta: [
       { property: 'og:type', content: 'article' },
       { property: 'og:title', content: `【ポケモンGO】${pokeName}のCP、種族値、技 - ペリずかん` },
