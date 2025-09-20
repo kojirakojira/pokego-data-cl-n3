@@ -1,6 +1,7 @@
 import { CatchCp, Color, GoPokedex, GoPokedexAndCpPl } from './api/dto'
 import { ResearchResponse } from './api/response'
 import { EvolutionResponse } from './evolution'
+import { PokemonAttackResponse, type TableControl } from './pokemonAttack'
 import { RaceResponse } from './race'
 import { ScpRankMaxMinResponse } from './scpRankMaxMin'
 import { TypeScoreResponse } from './typeScore'
@@ -87,6 +88,9 @@ export class AbundanceResultDtoItem implements ResultDtoItem {
   scpRankMaxMinResData: ScpRankMaxMinResponse
   evoResData: EvolutionResponse
   typeScoreResData: TypeScoreResponse
+  pokemonAttackResData: PokemonAttackResponse
+  // 画面制御用
+  pokemonAttackTableControl: TableControl
 
   constructor () {
     this.searchParams = new AbundanceResultSearchParams()
@@ -95,10 +99,16 @@ export class AbundanceResultDtoItem implements ResultDtoItem {
     this.scpRankMaxMinResData = new ScpRankMaxMinResponse()
     this.evoResData = new EvolutionResponse()
     this.typeScoreResData = new TypeScoreResponse()
+    this.pokemonAttackResData = new PokemonAttackResponse()
+
+    this.pokemonAttackTableControl = {
+      radioStatus: 'gymRaid'
+    }
   }
 }
 
-export type AbundanceResData = 'resData' | 'raceResData' | 'scpRankMaxMinResData' | 'evoResData' | 'typeScoreResData'
+export type AbundanceResData = 'resData' | 'raceResData'
+  | 'scpRankMaxMinResData' | 'evoResData' | 'typeScoreResData' | 'pokemonAttackResData'
 /**
  * APIアクセス用get関数
  */

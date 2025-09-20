@@ -85,7 +85,6 @@ const screenControlMethods = () => {
       }
     })
     ymdStr.value = res.data?.format as string
-    console.log(res.data)
 
     isLoading.value = false
   }

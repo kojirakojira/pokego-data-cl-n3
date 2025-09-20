@@ -46,10 +46,11 @@ export class PokemonAttackSearchDtoItem implements SearchDtoItem {
 /**
  * 結果画面用クエリパラメータの定義
  */
-export class PokemonAttackResultSearchParams {
-  pid: string
+export class PokemonAttackResultSearchParams extends ResearchRequest {
+  override pid: string
 
   constructor () {
+    super()
     this.pid = ''
   }
 }
@@ -58,8 +59,8 @@ export class PokemonAttackResultSearchParams {
  */
 export type RadioStatus = 'gymRaid' | 'pvp'
 export interface TableControl {
-   radioStatus: RadioStatus
-  }
+  radioStatus: RadioStatus
+}
 export class PokemonAttackResultDtoItem implements ResultDtoItem {
   searchParams: PokemonAttackResultSearchParams
   resData: PokemonAttackResponse

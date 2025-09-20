@@ -51,29 +51,29 @@
           </v-container>
           <v-container
             v-if="isLoadedAbundance"
-            class="basic-info-table abundance-basic-info-table"
+            :class="['basic-info-table', $style.abundance_basic_info_table]"
           >
-            <v-row>
-              <v-col cols="5">
+            <v-row :class="$style.row">
+              <v-col cols="5" :class="$style.title">
                 図鑑No
               </v-col>
-              <v-col cols="7">
+              <v-col cols="7" :class="$style.content">
                 {{ editUtils().getPdxNo(cDtoItem.resData.pokedexId) }}
               </v-col>
             </v-row>
-            <v-row>
-              <v-col cols="5">
+            <v-row :class="$style.row">
+              <v-col cols="5" :class="$style.title">
                 ポケモン
               </v-col>
-              <v-col cols="7">
+              <v-col cols="7" :class="$style.content">
                 {{ editUtils().appendRemarks(cDtoItem.resData.name, cDtoItem.resData.remarks) }}
               </v-col>
             </v-row>
-            <v-row>
-              <v-col cols="5">
+            <v-row :class="$style.row">
+              <v-col cols="5" :class="$style.title">
                 タイプ
               </v-col>
-              <v-col cols="7">
+              <v-col cols="7" :class="$style.content">
                 <SearchType :type="cDtoItem.resData.goPokedex.type1" />
                 <SearchType
                   v-if="cDtoItem.resData.goPokedex.type2"
@@ -82,31 +82,31 @@
                 />
               </v-col>
             </v-row>
-            <v-row>
-              <v-col cols="5">
+            <v-row :class="$style.row">
+              <v-col cols="5" :class="$style.title">
                 世代
               </v-col>
-              <v-col cols="7">
+              <v-col cols="7" :class="$style.content">
                 {{ constantAccessor.getValue(cDtoItem.resData.goPokedex.gen, 'GEN') }}
               </v-col>
             </v-row>
-            <v-row>
-              <v-col cols="5">
+            <v-row :class="$style.row">
+              <v-col cols="5" :class="$style.title">
                 PokémonGO実装
               </v-col>
-              <v-col cols="7">
+              <v-col cols="7" :class="$style.content">
                 <span v-if="cDtoItem.resData.goPokedex.implFlg">実装済</span>
                 <span v-else class="text-red">未実装</span>
               </v-col>
             </v-row>
-            <v-row>
-              <v-col cols="5">
+            <v-row :class="$style.row">
+              <v-col cols="5" :class="$style.title">
                 強ポケ補正
                 <SearchInputHelpMsg>
                   ポケモンGOの種族値は、原作の種族値から一定の変換式で算出されます。種族値が高すぎる一部のポケモンは算出された種族値から×0.91されます。<br>この補正には通称がないため、このサイトでは「強ポケ補正」と呼んでいます。
                 </SearchInputHelpMsg>
               </v-col>
-              <v-col cols="7">
+              <v-col cols="7" :class="$style.content">
                 <span v-if="cDtoItem.resData.tooStrong" class="text-red">対象</span>
                 <span v-else>対象外</span>
               </v-col>
@@ -117,91 +117,91 @@
           </div>
           <h3>CP</h3>
           <template v-if="isLoadedAbundance">
-            <v-container class="basic-info-table abundance-cp-table">
-              <v-row>
-                <v-col cols="5">
+            <v-container :class="['basic-info-table', $style.abundance_cp_table]">
+              <v-row :class="$style.row">
+                <v-col cols="5" :class="$style.title">
                   CP(PL40)
                 </v-col>
-                <v-col cols="7">
+                <v-col cols="7" :class="$style.content">
                   {{ cDtoItem.resData.cp40 }}
                 </v-col>
               </v-row>
-              <v-row>
-                <v-col cols="5">
+              <v-row :class="$style.row">
+                <v-col cols="5" :class="$style.title">
                   CP(PL50)
                 </v-col>
-                <v-col cols="7">
+                <v-col cols="7" :class="$style.content">
                   {{ cDtoItem.resData.cp50 }}
                 </v-col>
               </v-row>
-              <v-row>
-                <v-col cols="5">
+              <v-row :class="$style.row">
+                <v-col cols="5" :class="$style.title">
                   最大CP(PL51)
                 </v-col>
-                <v-col cols="7">
+                <v-col cols="7" :class="$style.content">
                   {{ cDtoItem.resData.maxCp }}
                 </v-col>
               </v-row>
-              <v-row>
-                <v-col cols="5">
+              <v-row :class="$style.row">
+                <v-col cols="5" :class="$style.title">
                   野生
                 </v-col>
-                <v-col cols="7">
+                <v-col cols="7" :class="$style.content">
                   {{ `${cDtoItem.resData.wild.normal.min} ～ ${cDtoItem.resData.wild.normal.max}` }}
                   <p class="caption my-0">
                     {{ `天候ブースト時:${cDtoItem.resData.wild.normal.wbMin} ～ ${cDtoItem.resData.wild.normal.wbMax}` }}
                   </p>
                 </v-col>
               </v-row>
-              <v-row>
-                <v-col cols="5">
+              <v-row :class="$style.row">
+                <v-col cols="5" :class="$style.title">
                   レイド
                   <SearchInputHelpMsg v-if="cDtoItem.resData.mega">
                     捕獲時はメガシンカ進化前になることご注意ください。
                   </SearchInputHelpMsg>
                 </v-col>
-                <v-col cols="7">
+                <v-col cols="7" :class="$style.content">
                   {{ `${cDtoItem.resData.raid.normal.min} ～ ${cDtoItem.resData.raid.normal.max}` }}
                   <p class="caption my-0">
                     {{ `天候ブースト時:${cDtoItem.resData.raid.normal.wbMin} ～ ${cDtoItem.resData.raid.normal.wbMax}` }}
                   </p>
                 </v-col>
               </v-row>
-              <v-row>
-                <v-col cols="5">
+              <v-row :class="$style.row">
+                <v-col cols="5" :class="$style.title">
                   ロケット団勝利ボーナス
                 </v-col>
-                <v-col cols="7">
+                <v-col cols="7" :class="$style.content">
                   {{ `${cDtoItem.resData.rocket.normal.min} ～ ${cDtoItem.resData.rocket.normal.max}` }}
                   <p class="caption my-0">
                     {{ `天候ブースト時:${cDtoItem.resData.rocket.normal.wbMin} ～ ${cDtoItem.resData.rocket.normal.wbMax}` }}
                   </p>
                 </v-col>
               </v-row>
-              <v-row>
-                <v-col cols="5">
+              <v-row :class="$style.row">
+                <v-col cols="5" :class="$style.title">
                   フィールドリサーチ
                 </v-col>
-                <v-col cols="7">
+                <v-col cols="7" :class="$style.content">
                   {{ `${cDtoItem.resData.frTask.normal.min} ～ ${cDtoItem.resData.frTask.normal.max}` }}
                 </v-col>
               </v-row>
-              <v-row>
-                <v-col cols="5">
+              <v-row :class="$style.row">
+                <v-col cols="5" :class="$style.title">
                   タマゴ
                 </v-col>
-                <v-col cols="7">
+                <v-col cols="7" :class="$style.content">
                   {{ `${cDtoItem.resData.egg.normal.min} ～ ${cDtoItem.resData.egg.normal.max}` }}
                   <p v-if="cDtoItem.resData.eggGp" class="caption my-0">
                     {{ `(${editUtils().appendRemarks(cDtoItem.resData.eggGp.name, cDtoItem.resData.eggGp.remarks)}で算出)` }}
                   </p>
                 </v-col>
               </v-row>
-              <v-row>
-                <v-col cols="5">
+              <v-row :class="$style.row">
+                <v-col cols="5" :class="$style.title">
                   ダイマックス捕獲時
                 </v-col>
-                <v-col cols="7">
+                <v-col cols="7" :class="$style.content">
                   <template v-if="cDtoItem.resData.dynamax">
                     {{ `${cDtoItem.resData.dynamax.normal.min} ～ ${cDtoItem.resData.dynamax.normal.max}` }}
                   </template>
@@ -210,11 +210,11 @@
                   </template>
                 </v-col>
               </v-row>
-              <v-row>
-                <v-col cols="5">
+              <v-row :class="$style.row">
+                <v-col cols="5" :class="$style.title">
                   キョダイマックス捕獲時
                 </v-col>
-                <v-col cols="7">
+                <v-col cols="7" :class="$style.content">
                   <template v-if="cDtoItem.resData.gigantamax">
                     {{ `${cDtoItem.resData.gigantamax.normal.min} ～ ${cDtoItem.resData.gigantamax.normal.max}` }}
                   </template>
@@ -223,14 +223,14 @@
                   </template>
                 </v-col>
               </v-row>
-              <v-row v-if="cDtoItem.resData.superLeagueSafeCpList.length">
-                <v-col cols="5">
+              <v-row v-if="cDtoItem.resData.superLeagueSafeCpList.length" :class="$style.row">
+                <v-col cols="5" :class="$style.title">
                   スーパーリーグ制限内最大CP
                   <SearchInputHelpMsg>
                     {{ safeCpMsgGenerator }}
                   </SearchInputHelpMsg>
                 </v-col>
-                <v-col cols="7">
+                <v-col cols="7" :class="$style.content">
                   <div v-for="gpac in cDtoItem.resData.superLeagueSafeCpList" :key="`sl-safe-${gpac.goPokedex.pokedexId}`">
                     {{ gpac.cp }}<span class="caption my-0">{{ `(PL:${gpac.pl})` }}</span>
                     <template v-if="cDtoItem.resData.superLeagueSafeCpList.length > 1">
@@ -242,14 +242,14 @@
                   </div>
                 </v-col>
               </v-row>
-              <v-row v-if="cDtoItem.resData.hyperLeagueSafeCpList.length">
-                <v-col cols="5">
+              <v-row v-if="cDtoItem.resData.hyperLeagueSafeCpList.length" :class="$style.row">
+                <v-col cols="5" :class="$style.title">
                   ハイパーリーグ制限内最大CP
                   <SearchInputHelpMsg>
                     {{ safeCpMsgGenerator }}
                   </SearchInputHelpMsg>
                 </v-col>
-                <v-col cols="7">
+                <v-col cols="7" :class="$style.content">
                   <div v-for="gpac in cDtoItem.resData.hyperLeagueSafeCpList" :key="`sl-safe-${gpac.goPokedex.pokedexId}`">
                     {{ gpac.cp }}<span class="caption my-0">{{ `(PL:${gpac.pl})` }}</span>
                     <template v-if="cDtoItem.resData.hyperLeagueSafeCpList.length > 1">
@@ -278,7 +278,7 @@
           <!-- 種族値 -->
           <h3>種族値</h3>
           <v-container v-if="isLoadedRace">
-            <v-row class="race">
+            <v-row :class="$style.race">
               <v-col>
                 <GraphRaceGoRadarGraph
                   :go-pokedex="cDtoItem.raceResData.race.goPokedex"
@@ -287,7 +287,7 @@
                 />
               </v-col>
               <v-col cols="12" class="mb-4">
-                <p v-for="item in raceArr" :key="`go-col-${item.title}`" class="stats py-1">
+                <p v-for="item in raceArr" :key="`go-col-${item.title}`" :class="[$style.stats, 'py-1']">
                   <span class="text-right px-1">
                     {{ `${item.title}：` }}
                   </span>
@@ -351,9 +351,93 @@
           <div v-else>
             <Loading />
           </div>
+          <!-- 覚える技 -->
+          <h3>覚える技</h3>
+          <div v-if="isLoadedPokemonAttack">
+            <v-container class="py-0">
+              <v-row>
+                <v-col>
+                  <div :class="$style.select_gym_pvp">
+                    <v-radio-group
+                      v-model="cDtoItem.pokemonAttackTableControl.radioStatus"
+                      width="fit-content"
+                      inline
+                      hide-details
+                    >
+                      <v-radio label="ジム・レイド" color="primary" value="gymRaid" />
+                      <v-radio label="PvP" color="primary" value="pvp" />
+                    </v-radio-group>
+                  </div>
+                </v-col>
+              </v-row>
+            </v-container>
+            <!-- メガシンカ後でない場合 -->
+            <h4>通常技</h4>
+            <v-container>
+              <v-row>
+                <v-col>
+                  <v-data-table
+                    :headers="faHeaders"
+                    :items="cDtoItem.pokemonAttackResData.fastAttackList"
+                    item-value="moveId"
+                    items-per-page="-1"
+                    no-data-text="loading now..."
+                    no-results-text="該当するデータがありません。"
+                    hover
+                  >
+                    <template #[`item.type`]="{ item }">
+                      <SearchType :type="item.type" />
+                    </template>
+                    <template #[`item.learningPattern`]="{ item }">
+                      <SearchMovesLearningPattern :pattern-id="item.learningPattern" :pattern-name="item.learningPatternName" />
+                    </template>
+                    <template #bottom />
+                  </v-data-table>
+                </v-col>
+              </v-row>
+            </v-container>
+            <h4>スペシャル技</h4>
+            <v-container>
+              <v-row>
+                <v-col>
+                  <v-data-table
+                    :headers="caHeaders"
+                    :items="cDtoItem.pokemonAttackResData.chargedAttackList"
+                    item-value="moveId"
+                    items-per-page="-1"
+                    no-data-text="loading now..."
+                    no-results-text="該当するデータがありません。"
+                    hover
+                  >
+                    <template #[`item.type`]="{ item }">
+                      <SearchType :type="item.type" />
+                    </template>
+                    <template #[`item.pvp.buff.buffMsg`]="{ item }">
+                      <span style="white-space: pre-wrap;">{{ item.pvp.buff.buffMsg }}</span>
+                    </template>
+                    <template #[`item.pvp.buff.activationChance`]="{ item }">
+                      <span>{{ item.pvp.buff.activationChanceStr }}</span>
+                    </template>
+                    <template #[`item.gymRaid.energyBar`]="{ item }">
+                      <SearchMovesEnergyBar :divide="item.gymRaid.energyBar" />
+                    </template>
+                    <template #[`item.learningPattern`]="{ item }">
+                      <div class="d-flex align-center">
+                        <SearchMovesLearningPattern :pattern-id="item.learningPattern" :pattern-name="item.learningPatternName" />
+                        <SearchInputHelpMsg v-if="item.learningPatternAnnos">
+                          {{ item.learningPatternAnnos }}
+                        </SearchInputHelpMsg>
+                      </div>
+                    </template>
+                    <template #bottom />
+                  </v-data-table>
+                </v-col>
+              </v-row>
+            </v-container>
+          </div>
           <!-- タイプ倍率 -->
           <h3>タイプ倍率</h3>
-          <v-container v-if="isLoadedTypeScore">
+          <div v-if="isLoadedTypeScore">
             <v-container v-if="cDtoItem.typeScoreResData.typeComments">
               <v-row>
                 <v-col>
@@ -370,7 +454,7 @@
             <h4>
               こうげき時
               <SearchInputHelpMsg>
-                タイプ一致時のダメージ倍率を示しています。ここから×1.2倍されます。
+                実際のダメージは、タイプ一致ボーナスによってここから×1.2倍されます。
               </SearchInputHelpMsg>
             </h4>
             <SearchTypeAtkDmgMult
@@ -385,7 +469,7 @@
               :type2="cDtoItem.typeScoreResData.type2"
               :atk-type-dic="cDtoItem.typeScoreResData.defenderTypeMap"
             />
-          </v-container>
+          </div>
           <div v-else>
             <Loading />
           </div>
@@ -394,7 +478,7 @@
           <h3>
             進化
           </h3>
-          <div class="evolution">
+          <div :class="$style.evolution">
             <SearchEvolutionEvoInfo
               v-if="isLoadedEvolution"
               :pid="cDtoItem.evoResData.pid"
@@ -445,6 +529,7 @@ import { RaceResultSearchParams, type RaceResponse } from '~/components/interfac
 import { TypeScoreResultSearchParams, type TypeScoreResponse } from '~/components/interface/typeScore'
 import { type GoPokedex, RaceGoRank, GoPokedexAndCpPl, ScpRank } from '~/components/interface/api/dto'
 import { ScpRankMaxMinResponse, ScpRankMaxMinSearchParams } from '~/components/interface/scpRankMaxMin'
+import { PokemonAttackResultSearchParams, type PokemonAttackResponse } from '~/components/interface/pokemonAttack'
 const MajorPartsH2Common = defineAsyncComponent(() => import('~/components/majorParts/H2Common.vue'))
 const IconAwakeningIconMegaIcon = defineAsyncComponent(() => import('~/components/icon/awakeningIcon/MegaIcon.vue'))
 const IconAwakeningIconDynamaxIcon = defineAsyncComponent(() => import('~/components/icon/awakeningIcon/DynamaxIcon.vue'))
@@ -475,12 +560,21 @@ const screenControlMethods = () => {
       const scpRankMaxMinReq = new ScpRankMaxMinSearchParams()
       const evoReq = new EvolutionResultSearchParams()
       const typeScoreReq = new TypeScoreResultSearchParams()
-      abundanceReq.pid = raceReq.pid = scpRankMaxMinReq.pid = evoReq.pid = typeScoreReq.pid = cDtoItem.value.searchParams.pid
+      const pokemonAttackReq = new PokemonAttackResultSearchParams()
+      // すべてのリクエストにpokedexIdを設定する
+      abundanceReq.pid =
+      raceReq.pid =
+      scpRankMaxMinReq.pid =
+      evoReq.pid =
+      typeScoreReq.pid =
+      pokemonAttackReq.pid = cDtoItem.value.searchParams.pid
 
+      // 閲覧数をカウントしない
       raceReq.enableCount = true
       scpRankMaxMinReq.enableCount = true
       evoReq.enableCount = true
       typeScoreReq.enableCount = true
+      pokemonAttackReq.enableCount = true
 
       // 入力チェック不要
       await Promise.all([
@@ -488,7 +582,8 @@ const screenControlMethods = () => {
         get('/api/race', cDtoItem.value, raceReq, 'raceResData'),
         get('/api/scpRankMaxMin', cDtoItem.value, scpRankMaxMinReq, 'scpRankMaxMinResData'),
         get('/api/evolution', cDtoItem.value, evoReq, 'evoResData'),
-        get('/api/typeScore', cDtoItem.value, typeScoreReq, 'typeScoreResData')
+        get('/api/typeScore', cDtoItem.value, typeScoreReq, 'typeScoreResData'),
+        get('/api/pokemonAttack', cDtoItem.value, pokemonAttackReq, 'pokemonAttackResData')
       ])
         .then((rdArr) => {
           for (const rd of rdArr) {
@@ -502,7 +597,14 @@ const screenControlMethods = () => {
   }
 
   const getCurrentData = (pid: string): Record<string, ResearchResponse> | null => {
-    const resDataNameArr = ['resData', 'raceResData', 'scpRankMaxMinResData', 'evoResData', 'typeScoreResData']
+    const resDataNameArr = [
+      'resData',
+      'raceResData',
+      'scpRankMaxMinResData',
+      'evoResData',
+      'typeScoreResData',
+      'pokemonAttackResData'
+    ]
     const resDataDic: Record<string, ResearchResponse> | null =
       searchCommon().restoreCurrentScreen(resDataNameArr) as Record<string, ResearchResponse>
     if (!resDataDic) {
@@ -523,6 +625,7 @@ const screenControlMethods = () => {
     cDtoItem.value.scpRankMaxMinResData = resDataDic.scpRankMaxMinResData as ScpRankMaxMinResponse
     cDtoItem.value.evoResData = resDataDic.evoResData as EvolutionResponse
     cDtoItem.value.typeScoreResData = resDataDic.typeScoreResData as TypeScoreResponse
+    cDtoItem.value.pokemonAttackResData = resDataDic.pokemonAttackResData as PokemonAttackResponse
   }
 
   return {
@@ -637,6 +740,69 @@ const isLoadedTypeScore = computed(() => {
 })
 
 /**
+ * pokemonAttack
+ */
+const isLoadedPokemonAttack = computed(() => {
+  return !!cDtoItem.value.pokemonAttackResData.pokedexId
+})
+/**
+ * table制御用機能
+ */
+/** 列が全部そろったv-data-tableのヘッダ */
+const faBaseHeaders = readonly<Array<any>>([
+  { title: 'No', key: 'no' },
+  { title: '技名', key: 'name' },
+  { title: 'タイプ', key: 'type' },
+  { title: 'ダメージ', key: 'gymRaid.gymPower', size: '8px' },
+  { title: '発生時間', key: 'gymRaid.damageSecond' },
+  { title: '全体時間', key: 'gymRaid.totalSecond' },
+  { title: 'DPS', key: 'gymRaid.dps' },
+  { title: 'EPS', key: 'gymRaid.eps' },
+  { title: 'ダメージ', key: 'pvp.pvpPower' },
+  { title: 'ゲージ増加量', key: 'pvp.energy' },
+  { title: 'ターン数', key: 'pvp.turns' },
+  { title: 'DPT', key: 'pvp.dpt' },
+  { title: 'EPT', key: 'pvp.ept' },
+  { title: '覚え方', key: 'learningPattern' }
+])
+const caBaseHeaders = readonly<Array<any>>([
+  { title: 'No', key: 'no' },
+  { title: '技名', key: 'name' },
+  { title: 'タイプ', key: 'type' },
+  { title: 'ゲージ', key: 'gymRaid.energyBar' },
+  { title: 'ダメージ', key: 'gymRaid.gymPower', size: '8px' },
+  { title: '発生時間', key: 'gymRaid.damageSecond' },
+  { title: '全体時間', key: 'gymRaid.totalSecond' },
+  { title: 'DPS', key: 'gymRaid.dps' },
+  { title: 'ダメージ', key: 'pvp.pvpPower' },
+  { title: 'ゲージ減少量', key: 'pvp.energy' },
+  { title: 'DPE', key: 'pvp.dpe' },
+  { title: 'バフ', key: 'pvp.buff.buffMsg' },
+  { title: 'バフ確率', key: 'pvp.buff.activationChanceStr' },
+  { title: '覚え方', key: 'learningPattern' }
+])
+
+// 通常技のヘッダ
+const faHeaders = computed((): Array<any> => {
+  return faBaseHeaders.filter((col) => {
+    if (col.key.indexOf('.') < 1) {
+      return true
+    }
+    return col.key.substring(0, col.key.indexOf('.')) === cDtoItem.value.pokemonAttackTableControl.radioStatus
+  })
+})
+
+// スペシャル技のヘッダ
+const caHeaders = computed((): Array<any> => {
+  return caBaseHeaders.filter((col) => {
+    if (col.key.indexOf('.') < 1) {
+      return true
+    }
+    return col.key.substring(0, col.key.indexOf('.')) === cDtoItem.value.pokemonAttackTableControl.radioStatus
+  })
+})
+
+/**
  * 共通系
  */
 const prevNextRef = ref()
@@ -675,7 +841,7 @@ const metaObject = computed((): MetaObject => {
     title: `${pokeName}の情報`,
     meta: [
       { property: 'og:type', content: 'article' },
-      { property: 'og:title', content: `${pokeName}の情報 - ペリずかん` },
+      { property: 'og:title', content: `【ポケモンGO】${pokeName}のCP、種族値、技 - ペリずかん` },
       { property: 'og:url', content: thisPath },
       { property: 'og:site_name', content: 'ペリずかん' },
       { property: 'og:description', content: `${pokeName}の情報を確認できます。` },
@@ -686,7 +852,7 @@ const metaObject = computed((): MetaObject => {
 useHead(metaObject)
 </script>
 
-<style lang="scss">
+<style lang="scss" module>
 .race {
   border: medium solid maroon;
   // border-color: red blue blue red;
@@ -703,28 +869,38 @@ useHead(metaObject)
     width: 100px;
   }
 }
-.abundance-basic-info-table {
+.abundance_basic_info_table {
   padding: inherit;
 
-  .v-row {
-    .v-col:first-child {
+  .row {
+    .title {
       background: v-bind(rgb1);
     }
-    &:nth-child(odd) .v-col:not(:first-child) {
+    &:nth-child(odd) .content:not(:first-child) {
       background: v-bind(rgba1);
     }
   }
 }
-.abundance-cp-table  {
+.abundance_cp_table {
   padding: inherit;
 
-  .v-row {
-    .v-col:first-child {
+  .row {
+    .title {
       background: v-bind(rgb2);
     }
-    &:nth-child(odd) .v-col:not(:first-child) {
+    &:nth-child(odd) .content:not(:first-child) {
       background: v-bind(rgba2);
     }
+  }
+}
+.select_gym_pvp {
+  width: fit-content;
+  padding: 5px 20px 5px 5px;
+  border-radius: 25px;
+  border: thin solid;
+
+  &:hover {
+    border-color: blue;
   }
 }
 </style>

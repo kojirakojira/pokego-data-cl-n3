@@ -226,7 +226,6 @@ const init = async () => {
     }
     cDtoItem.value.resData = ret
   }
-  console.log(cDtoItem.value.resData)
 
   isLoading.value = !cDtoItem.value.resData
 }
@@ -248,7 +247,7 @@ const metaObject = computed((): MetaObject => {
   const pokeName = cDtoItem.value.resData.name || ''
   const pokeImage = editUtils().getUrl(cDtoItem.value.resData.image2 || 'pokego/peripper-eyes.png')
   return {
-    title: `${pokeName}のタマゴCP`,
+    title: `${pokeName}が覚える技`,
     meta: [
       { property: 'og:type', content: 'article' },
       { property: 'og:title', content: `${pokeName}が覚える技 - ペリずかん` },
