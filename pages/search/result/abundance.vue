@@ -549,10 +549,16 @@ const screenControlMethods = () => {
     cDtoItem.value.searchParams = searchCommon()
       .restoreSearchParams(useRoute().query, AbundanceResultSearchParams)
     // dtoStoreからresDataを復元
-    const rdDic: Record<string, ResearchResponse> | null = getCurrentData(cDtoItem.value.searchParams.pid)
+    const rdDic: Record<string, ResearchResponse> | null = getCurrentResData(cDtoItem.value.searchParams.pid)
 
     if (rdDic && Object.keys(rdDic).length) {
       setAllResData(rdDic)
+
+      // searchParams, resData以外の復元
+      const otherScreenData = searchCommon().restoreCurrentScreen(['pokemonAttackTableControl'])
+      if (otherScreenData && 'pokemonAttackTableControl' in otherScreenData) {
+        cDtoItem.value.pokemonAttackTableControl = otherScreenData?.pokemonAttackTableControl
+      }
     } else {
       // 存在しない場合は取得する
       const abundanceReq = new AbundanceResultSearchParams()
@@ -596,7 +602,7 @@ const screenControlMethods = () => {
     }
   }
 
-  const getCurrentData = (pid: string): Record<string, ResearchResponse> | null => {
+  const getCurrentResData = (pid: string): Record<string, ResearchResponse> | null => {
     const resDataNameArr = [
       'resData',
       'raceResData',
