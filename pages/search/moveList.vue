@@ -26,6 +26,14 @@
               no-results-text="該当するデータがありません。"
               hover
             >
+              <template #[`item.no`]="{ index }">
+                {{ index + 1 }}
+              </template>
+              <template #[`item.name`]="{ item }">
+                <div style="min-width: 140px;">
+                  {{ item.name }}
+                </div>
+              </template>
               <template #[`item.type`]="{ item }">
                 <SearchType :type="item.type" />
               </template>
@@ -54,6 +62,14 @@
               no-results-text="該当するデータがありません。"
               hover
             >
+              <template #[`item.no`]="{ index }">
+                {{ index + 1 }}
+              </template>
+              <template #[`item.name`]="{ item }">
+                <div style="min-width: 140px;">
+                  {{ item.name }}
+                </div>
+              </template>
               <template #[`item.type`]="{ item }">
                 <SearchType :type="item.type" />
               </template>
@@ -109,9 +125,9 @@ const faBaseHeaders = readonly<Array<any>>([
   { title: 'No', key: 'no' },
   { title: '技名', key: 'name' },
   { title: 'タイプ', key: 'type' },
-  { title: 'ダメージ', key: 'gymRaid.gymPower', size: '8px' },
-  { title: '発生時間', key: 'gymRaid.damageSecond' },
-  { title: '全体時間', key: 'gymRaid.totalSecond' },
+  { title: 'ダメージ', key: 'gymRaid.gymPower' },
+  { title: '発生時間', key: 'gymRaid.damageSeconds' },
+  { title: '全体時間', key: 'gymRaid.totalSeconds' },
   { title: 'DPS', key: 'gymRaid.dps' },
   { title: 'EPS', key: 'gymRaid.eps' },
   { title: 'ダメージ', key: 'pvp.pvpPower' },
@@ -121,16 +137,16 @@ const faBaseHeaders = readonly<Array<any>>([
   { title: 'EPT', key: 'pvp.ept' }
 ])
 const caBaseHeaders = readonly<Array<any>>([
-  { title: 'No', key: 'no' },
+  { title: 'No', key: 'no', sortable: false },
   { title: '技名', key: 'name' },
   { title: 'タイプ', key: 'type' },
   { title: 'ゲージ', key: 'gymRaid.energyBar' },
-  { title: 'ダメージ', key: 'gymRaid.gymPower', size: '8px' },
-  { title: '発生時間', key: 'gymRaid.damageSecond' },
-  { title: '全体時間', key: 'gymRaid.totalSecond' },
+  { title: 'ダメージ', key: 'gymRaid.gymPower' },
+  { title: '発生時間', key: 'gymRaid.damageSeconds' },
+  { title: '全体時間', key: 'gymRaid.totalSeconds' },
   { title: 'DPS', key: 'gymRaid.dps' },
   { title: 'ダメージ', key: 'pvp.pvpPower' },
-  { title: 'ゲージ減少量', key: 'pvp.energy' },
+  { title: 'ゲージ増加量', key: 'pvp.energy' },
   { title: 'DPE', key: 'pvp.dpe' },
   { title: 'バフ', key: 'pvp.buff.buffMsg' },
   { title: 'バフ確率', key: 'pvp.buff.activationChance' }

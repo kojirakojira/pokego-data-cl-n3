@@ -51,6 +51,7 @@
 import {
   SearchAllSearchDtoItem,
   type SearchAllResponse,
+  check,
   get,
   SearchAllSearchParams
 } from '~/components/interface/searchAll'
@@ -75,6 +76,12 @@ const screenControlMethods = () => {
 
   const clickSearchBtn = async () => {
     isSearchBtnClick.value = true
+    const msg = check(cDtoItem.value.searchParams)
+    if (msg) {
+      alert(msg)
+      isSearchBtnClick.value = false
+      return
+    }
     isLoading.value = true
     if (cDtoItem.value.searchParams.pid) {
     // pidが存在する場合

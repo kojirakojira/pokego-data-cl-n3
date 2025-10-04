@@ -206,10 +206,12 @@ export class CpRank {
 }
 
 export class GoPokedexAndCp {
+  no: number
   goPokedex: GoPokedex
   cp: number
 
   constructor () {
+    this.no = 0
     this.goPokedex = new GoPokedex()
     this.cp = 0
   }
@@ -383,29 +385,54 @@ export class CatchCp {
   }
 }
 
-export interface FastGymParam {
-  gymPower: number,
-  dps: number,
-  eps: number,
-  damegeSecond: number,
-  totalSecond: number
+export class FastGymParam {
+  gymPower: number
+  dps: number
+  eps: number
+  damageSeconds: number
+  totalSeconds: number
+
+  constructor () {
+    this.gymPower = 0
+    this.dps = 0
+    this.eps = 0
+    this.damageSeconds = 0
+    this.totalSeconds = 0
+  }
 }
 
-export interface FastPvpParam {
-  pvpPower: number,
-  energy: number,
-  turns: number,
-  dpt: number,
+export class FastPvpParam {
+  pvpPower: number
+  energy: number
+  turns: number
+  dpt: number
   ept: number
+
+  constructor () {
+    this.pvpPower = 0
+    this.energy = 0
+    this.turns = 0
+    this.dpt = 0
+    this.ept = 0
+  }
 }
 
-export interface DispFastAttack {
-  no: number,
-  moveId: string,
-  name: string,
-  type: string,
-  gymRaid: FastGymParam,
+export class DispFastAttack {
+  no: number
+  moveId: string
+  name: string
+  type: string
+  gymRaid: FastGymParam
   pvp: FastPvpParam
+
+  constructor () {
+    this.no = 0
+    this.moveId = ''
+    this.name = ''
+    this.type = ''
+    this.gymRaid = new FastGymParam()
+    this.pvp = new FastPvpParam()
+  }
 }
 
 export interface DispPokemonFastAttack extends DispFastAttack {
@@ -413,13 +440,22 @@ export interface DispPokemonFastAttack extends DispFastAttack {
   learningPatternName: string
 }
 
-export interface ChargedGymParam {
-  no: number,
-  gymPower: number,
-  dps: number,
-  damegeSecond: number,
-  totalSecond: number,
+export class ChargedGymParam {
+  no: number
+  gymPower: number
+  dps: number
+  damageSeconds: number
+  totalSeconds: number
   energyBar: number
+
+  constructor () {
+    this.no = 0
+    this.gymPower = 0
+    this.dps = 0
+    this.damageSeconds = 0
+    this.totalSeconds = 0
+    this.energyBar = 0
+  }
 }
 
 export interface BuffContent {
@@ -428,26 +464,48 @@ export interface BuffContent {
   buffEffect: number
 }
 
-export interface Buff {
+export class Buff {
   buffList: Array<BuffContent>
-  buffMsg: string,
-  activationChance: number,
+  buffMsg: string
+  activationChance: number
   activationChanceStr: string
+
+  constructor () {
+    this.buffList = []
+    this.buffMsg = ''
+    this.activationChance = 0
+    this.activationChanceStr = ''
+  }
 }
 
-export interface ChargedPvpParam {
-  pvpPower: number,
-  energy: number,
-  dpe: number,
+export class ChargedPvpParam {
+  pvpPower: number
+  energy: number
+  dpe: number
   buff: Buff
+
+  constructor () {
+    this.pvpPower = 0
+    this.energy = 0
+    this.dpe = 0
+    this.buff = new Buff()
+  }
 }
 
-export interface DispChargedAttack {
-  moveId: string,
-  name: string,
-  type: string,
-  gymRaid: ChargedGymParam,
+export class DispChargedAttack {
+  moveId: string
+  name: string
+  type: string
+  gymRaid: ChargedGymParam
   pvp: ChargedPvpParam
+
+  constructor () {
+    this.moveId = ''
+    this.name = ''
+    this.type = ''
+    this.gymRaid = new ChargedGymParam()
+    this.pvp = new ChargedPvpParam()
+  }
 }
 
 export interface DispPokemonChargedAttack extends DispChargedAttack {
@@ -515,4 +573,120 @@ export class PokemonFilterResult {
 export interface PidAndName {
   pid?: string,
   name: string
+}
+
+export class SimpMove {
+  moveId: string
+  name: string
+
+  constructor () {
+    this.moveId = ''
+    this.name = ''
+  }
+}
+
+export class MoveSearchResult {
+  message: string
+  msgLevel: MsgLevel
+  unique: boolean
+  simpMoveList: Array<SimpMove>
+  simpMove: SimpMove
+  maybe: boolean
+  hit: boolean
+  searched: boolean
+
+  constructor () {
+    this.message = ''
+    this.msgLevel = 'info'
+    this.unique = false
+    this.simpMoveList = []
+    this.simpMove = new SimpMove()
+    this.maybe = false
+    this.hit = false
+    this.searched = false
+  }
+}
+
+export class FastAttackRank {
+  gymPowerRank: number
+  gymEnergyIncrAmountRank: number
+  dpsRank: number
+  epsRank: number
+  damageSecondsRank: number
+  pvpPowerRank: number
+  pvpEnergyIncrAmountRank: number
+  dptRank: number
+  eptRank: number
+  totalCount: number
+
+  constructor () {
+    this.gymPowerRank = 0
+    this.gymEnergyIncrAmountRank = 0
+    this.dpsRank = 0
+    this.epsRank = 0
+    this.damageSecondsRank = 0
+    this.pvpPowerRank = 0
+    this.pvpEnergyIncrAmountRank = 0
+    this.dptRank = 0
+    this.eptRank = 0
+    this.totalCount = 0
+  }
+}
+
+export class ChargedAttackRank {
+  gymPowerRank: number
+  gymEnergyIncrAmountRank: number
+  dpsRank: number
+  damageSecondsRank: number
+  pvpPowerRank: number
+  pvpEnergyIncrAmountRank: number
+  dpeRank: number
+  totalCount: number
+
+  constructor () {
+    this.gymPowerRank = 0
+    this.gymEnergyIncrAmountRank = 0
+    this.dpsRank = 0
+    this.damageSecondsRank = 0
+    this.pvpPowerRank = 0
+    this.pvpEnergyIncrAmountRank = 0
+    this.dpeRank = 0
+    this.totalCount = 0
+  }
+}
+
+export interface GoPokedexAndMoveInfo {
+  no: number,
+  goPokedex: GoPokedex,
+  learningPattern: string,
+  learningPatternName: string,
+  learningPatternAnnos: string
+}
+
+export class FastAttackDetails {
+  fastAttack: DispFastAttack
+  fastAttackRank: FastAttackRank
+  learnPokemonList: Array<GoPokedexAndMoveInfo>
+  sameTypeMoveList: Array<DispFastAttack>
+
+  constructor () {
+    this.fastAttack = new DispFastAttack()
+    this.fastAttackRank = new FastAttackRank()
+    this.learnPokemonList = []
+    this.sameTypeMoveList = []
+  }
+}
+
+export class ChargedAttackDetails {
+  chargedAttack: DispChargedAttack
+  chargedAttackRank: ChargedAttackRank
+  learnPokemonList: Array<GoPokedexAndMoveInfo>
+  sameTypeMoveList: Array<DispChargedAttack>
+
+  constructor () {
+    this.chargedAttack = new DispChargedAttack()
+    this.chargedAttackRank = new ChargedAttackRank()
+    this.learnPokemonList = []
+    this.sameTypeMoveList = []
+  }
 }

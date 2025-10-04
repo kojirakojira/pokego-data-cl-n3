@@ -10,12 +10,12 @@
             <v-icon>
               mdi-pen
             </v-icon>
-            ポケモン
+            技名を入力
           </v-col>
           <v-col cols="12" md="8" lg="8" xl="8">
-            <SearchInputPokeName
+            <SearchInputMoveName
               v-model:name="cDtoItem.searchParams.name"
-              v-model:pid="cDtoItem.searchParams.pid"
+              v-model:mid="cDtoItem.searchParams.mid"
               :keyup-enter="clickSearchBtn"
             />
           </v-col>
@@ -34,11 +34,39 @@
           </v-col>
         </v-row>
       </v-container>
-      <template v-if="cDtoItem.pokemonSearchResult && cDtoItem.pokemonSearchResult?.goPokedexList.length > 1">
-        <SearchResultList
-          :psr="cDtoItem.pokemonSearchResult"
-          @click-row="searchCommon().clickRowResultList($event, searchPattern, cDtoItem.searchParams)"
-        />
+      <template v-if="cDtoItem?.moveSearchResult?.simpMoveList && cDtoItem.moveSearchResult.simpMoveList.length > 1">
+        <v-container>
+          <v-row>
+            <v-col style="padding-bottom:0px;">
+              {{ `検索結果：${cDtoItem.moveSearchResult.simpMoveList.length}件` }}
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col class="py-0 subtitle-2">
+              複数件ヒットしました。技を選択してください。
+            </v-col>
+          </v-row>
+          <v-row v-if="cDtoItem.moveSearchResult.maybe">
+            <v-col class="py-0 subtitle-2">
+              ※あいまい検索
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col>
+              <v-list style="border: solid thin grey;">
+                <v-list-item
+                  v-for="m in cDtoItem.moveSearchResult.simpMoveList"
+                  :key="m.moveId"
+                  @click="transitionResultPage(m.moveId)"
+                >
+                  <v-list-item-title>
+                    {{ m.name }}
+                  </v-list-item-title>
+                </v-list-item>
+              </v-list>
+            </v-col>
+          </v-row>
+        </v-container>
       </template>
     </div>
     <div v-show="isLoading">
@@ -49,16 +77,15 @@
 
 <script setup lang="ts">
 import {
-  EggsSearchDtoItem,
-  type EggsResponse,
-  type EggsSearchParams,
+  MoveLookupSearchDtoItem,
+  type MoveLookupResponse,
   get,
   check
-} from '~/components/interface/eggs'
+} from '~/components/interface/moveLookup'
 
-const searchPattern = 'eggs'
+const searchPattern = 'moveLookup'
 // current dto item
-const cDtoItem = ref<EggsSearchDtoItem>(new EggsSearchDtoItem())
+const cDtoItem = ref<MoveLookupSearchDtoItem>(new MoveLookupSearchDtoItem())
 const dto: any = useAttrs().dto
 dto.params = cDtoItem
 
@@ -66,7 +93,7 @@ const isLoading = ref<boolean>(false)
 const isSearchBtnClick = ref<boolean>(false)
 
 // created: 画面を復元する
-searchCommon().restoreSearchScreen(['searchParams', 'pokemonSearchResult'], cDtoItem.value)
+searchCommon().restoreSearchScreen(['searchParams', 'moveSearchResult'], cDtoItem.value)
 
 const clickSearchBtn = async () => {
   isSearchBtnClick.value = true
@@ -76,13 +103,14 @@ const clickSearchBtn = async () => {
     isSearchBtnClick.value = false
     return
   }
-  if (cDtoItem.value.searchParams.pid) {
-    // pidが存在する場合
-    transitionResultPage(cDtoItem.value.searchParams.pid, cDtoItem.value.searchParams)
+  if (cDtoItem.value.searchParams.mid) {
+    // midが存在する場合
+    transitionResultPage(cDtoItem.value.searchParams.mid)
     return
   }
   isLoading.value = true
   const res = await get(cDtoItem.value.searchParams)
+  console.log(res)
   if (!res) {
     isSearchBtnClick.value = false
     isLoading.value = false
@@ -96,16 +124,16 @@ const clickSearchBtn = async () => {
  *
  * @param rd
  */
-const handleApiResult = (rd: EggsResponse) => {
+const handleApiResult = (rd: MoveLookupResponse) => {
   if (rd.success) {
-    cDtoItem.value.pokemonSearchResult = rd.pokemonSearchResult
-    if (rd.pokemonSearchResult.unique) {
+    cDtoItem.value.moveSearchResult = rd.moveSearchResult
+    if (rd.moveSearchResult.unique) {
       // 1件のみヒットした場合
-      transitionResultPage(rd.pokedexId, cDtoItem.value.searchParams, rd)
+      transitionResultPage(rd.moveId, rd)
     } else {
       // 複数件 or 0件ヒットした場合
       useRouter().replace({
-        name: 'search-eggs'
+        name: 'search-moveLookup'
       })
       isSearchBtnClick.value = false
       isLoading.value = false
@@ -117,13 +145,13 @@ const handleApiResult = (rd: EggsResponse) => {
  * result画面に遷移する
  * ここで遷移する場合は、ポケモンが一意に特定できている
  *
- * @param pid
+ * @param mid
  * @param searchParams
  * @param resData
  */
-const transitionResultPage = (pid: string, searchParams: EggsSearchParams, resData?: EggsResponse): void => {
+const transitionResultPage = (mid: string, resData?: MoveLookupResponse): void => {
   // result画面にresDataをセット
-  const pathName: string = 'search-result-eggsResult'
+  const pathName: string = 'search-result-moveLookupResult'
   const params: Record<string, any> = {}
   if (resData) { params.resData = resData }
   dtoUtils().prePushScreenInfo(dtoUtils().createScreenInfo(
@@ -135,7 +163,7 @@ const transitionResultPage = (pid: string, searchParams: EggsSearchParams, resDa
   // 遷移
   useRouter().push({
     name: pathName,
-    query: searchCommon().makeQuery(pid, searchParams)
+    query: { mid }
   })
 }
 

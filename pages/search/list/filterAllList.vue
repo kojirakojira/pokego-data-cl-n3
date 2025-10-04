@@ -73,12 +73,16 @@
               :headers="headers"
               :items="cDtoItem.resData.pfr.gpAndCpList"
               :items-per-page-options="itemsPerPageOptions"
+              multi-sort
               item-value="goPokedex.pokedexId"
               no-data-text="loading now..."
               no-results-text="該当するデータがありません。"
               hover
               @click:row="screenControlMethods().onClickRow"
             >
+              <template #[`item.no`]="{ index }">
+                {{ index + 1 }}
+              </template>
               <template #[`item.goPokedex.pokedexId`]="{ item }">
                 {{ editUtils().getPdxNo(item.goPokedex.pokedexId) }}
               </template>
@@ -86,7 +90,7 @@
                 <v-avatar :image="editUtils().getPokemonImageUrl(item.goPokedex.image1)" />
               </template>
               <template #[`item.goPokedex.name`]="{ item }">
-                <div>
+                <div style="min-width: 140px;">
                   {{ item.goPokedex.name }}
                   <p v-if="item.goPokedex.remarks" class="text-caption">
                     {{ `(${item.goPokedex.remarks})` }}
@@ -232,7 +236,8 @@ const disabledChkboxes = ref<Array<{ label: string, value: string }>>([
 
 /** 列が全部そろったv-data-tableのヘッダ */
 const baseHeaders = readonly<Array<any>>([
-  { title: '図鑑№', key: 'goPokedex.pokedexId', align: 'center' },
+  { title: 'No', key: 'no', align: 'center', sortable: false },
+  { title: '図鑑No', key: 'goPokedex.pokedexId', align: 'center' },
   { title: '', key: 'goPokedex.image1', sortable: false, width: '52px' },
   { title: 'ポケモン', key: 'goPokedex.name' },
   { title: 'タイプ', key: 'goPokedex.type1', sortable: false },

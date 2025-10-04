@@ -73,7 +73,7 @@ const clickSearchBtn = async () => {
   const msg = check(cDtoItem.value.searchParams)
   if (msg) {
     alert(msg)
-    isLoading.value = false
+    isSearchBtnClick.value = false
     return
   }
   if (cDtoItem.value.searchParams.pid) {

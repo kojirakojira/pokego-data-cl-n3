@@ -179,7 +179,7 @@ const caBaseHeaders = readonly<Array<any>>([
   { title: '全体時間', key: 'gymRaid.totalSecond' },
   { title: 'DPS', key: 'gymRaid.dps' },
   { title: 'ダメージ', key: 'pvp.pvpPower' },
-  { title: 'ゲージ減少量', key: 'pvp.energy' },
+  { title: 'ゲージ増加量', key: 'pvp.energy' },
   { title: 'DPE', key: 'pvp.dpe' },
   { title: 'バフ', key: 'pvp.buff.buffMsg' },
   { title: 'バフ確率', key: 'pvp.buff.activationChanceStr' },

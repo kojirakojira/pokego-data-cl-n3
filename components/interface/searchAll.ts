@@ -66,4 +66,6 @@ export const get = async (searchParams: SearchAllSearchParams): Promise<SearchAl
  * 入力チェック関数
  * @returns エラーメッセージ
  */
-// 入力チェックなし
+export const check = (searchParams: SearchAllSearchParams) => {
+  return validateUtils().checkRequired({ item: searchParams.name, itemName: 'ポケモン' })
+}

@@ -75,6 +75,7 @@ export default () => {
     moves: {
       name: '技',
       patternNames: {
+        moveLookup: '技検索',
         moveList: '技一覧',
         pokemonAttack: 'ポケモンが覚える技'
       }
