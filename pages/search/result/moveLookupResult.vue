@@ -12,6 +12,12 @@
             </v-icon>
             別の技を検索
           </v-btn>
+          <v-btn class="ml-2" rounded variant="outlined" :to="{ name: 'search-moveList' }">
+            <v-icon>
+              mdi-list-box
+            </v-icon>
+            技一覧をみる
+          </v-btn>
         </v-col>
       </v-row>
     </v-container>
@@ -256,7 +262,8 @@
                     height="400"
                     fixed-header
                     multi-sort
-                    no-data-text="覚えるポケモンは存在しません。"
+                    no-data-text="loading now..."
+                    no-results-text="該当するデータがありません。"
                     hover
                     @click:row="screenControlMethods().onClickSameTypeRow"
                   >
@@ -476,6 +483,13 @@
                   </v-data-table>
                 </v-col>
               </v-row>
+              <v-row class="my-0">
+                <v-col align="right">
+                  <p class="link" @click="transitionUtils().raceDiff([])">
+                    種族値を比較する >>
+                  </p>
+                </v-col>
+              </v-row>
             </v-container>
           </v-col>
         </v-row>
@@ -510,7 +524,8 @@
                     height="400"
                     fixed-header
                     multi-sort
-                    no-data-text="覚えるポケモンは存在しません。"
+                    no-data-text="loading now..."
+                    no-results-text="該当するデータがありません。"
                     hover
                     @click:row="screenControlMethods().onClickSameTypeRow"
                   >
@@ -690,12 +705,7 @@ const screenControlMethods = () => {
    * @param selected
    */
   const onClickLearningPokemonRow = (_: PointerEvent, selected: GoPokedexAndMoveInfoItem) => {
-    useRouter().push({
-      name: 'search-result-abundance',
-      query: {
-        pid: selected.item.goPokedex.pokedexId
-      }
-    })
+    transitionUtils().abundance(selected.item.goPokedex.pokedexId)
   }
 
   interface SameTypeMoveItem {
@@ -710,12 +720,7 @@ const screenControlMethods = () => {
    * @param selected
    */
   const onClickSameTypeRow = (_: PointerEvent, selected: SameTypeMoveItem) => {
-    useRouter().push({
-      name: 'search-result-moveLookupResult',
-      query: {
-        mid: selected.item.moveId
-      }
-    })
+    transitionUtils().moveLookupResult(selected.item.moveId)
   }
 
   return {

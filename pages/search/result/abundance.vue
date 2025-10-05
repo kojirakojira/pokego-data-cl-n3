@@ -381,9 +381,9 @@
                     :items="cDtoItem.pokemonAttackResData.fastAttackList"
                     item-value="moveId"
                     items-per-page="-1"
-                    no-data-text="loading now..."
-                    no-results-text="該当するデータがありません。"
+                    no-data-text="覚える技が存在しないみたいです。"
                     hover
+                    @click:row="screenControlMethods().onClickMoveRow"
                   >
                     <template #[`item.type`]="{ item }">
                       <SearchType :type="item.type" />
@@ -405,9 +405,9 @@
                     :items="cDtoItem.pokemonAttackResData.chargedAttackList"
                     item-value="moveId"
                     items-per-page="-1"
-                    no-data-text="loading now..."
-                    no-results-text="該当するデータがありません。"
+                    no-data-text="覚える技が存在しないみたいです。"
                     hover
+                    @click:row="screenControlMethods().onClickMoveRow"
                   >
                     <template #[`item.type`]="{ item }">
                       <SearchType :type="item.type" />
@@ -634,8 +634,24 @@ const screenControlMethods = () => {
     cDtoItem.value.pokemonAttackResData = resDataDic.pokemonAttackResData as PokemonAttackResponse
   }
 
+  interface DispAttack {
+    index: number,
+    item: {
+      moveId: string
+    }
+  }
+  /**
+   * v-data-tableの列をクリックしたときの処理
+   * @param _
+   * @param selected
+   */
+  const onClickMoveRow = (_: PointerEvent, selected: DispAttack) => {
+    transitionUtils().moveLookupResult(selected.item.moveId)
+  }
+
   return {
-    init
+    init,
+    onClickMoveRow
   }
 }
 
@@ -760,8 +776,8 @@ const faBaseHeaders = readonly<Array<any>>([
   { title: '技名', key: 'name' },
   { title: 'タイプ', key: 'type' },
   { title: 'ダメージ', key: 'gymRaid.gymPower', size: '8px' },
-  { title: '発生時間', key: 'gymRaid.damageSecond' },
-  { title: '全体時間', key: 'gymRaid.totalSecond' },
+  { title: '発生時間', key: 'gymRaid.damageSeconds' },
+  { title: '全体時間', key: 'gymRaid.totalSeconds' },
   { title: 'DPS', key: 'gymRaid.dps' },
   { title: 'EPS', key: 'gymRaid.eps' },
   { title: 'ダメージ', key: 'pvp.pvpPower' },
@@ -777,8 +793,8 @@ const caBaseHeaders = readonly<Array<any>>([
   { title: 'タイプ', key: 'type' },
   { title: 'ゲージ', key: 'gymRaid.energyBar' },
   { title: 'ダメージ', key: 'gymRaid.gymPower', size: '8px' },
-  { title: '発生時間', key: 'gymRaid.damageSecond' },
-  { title: '全体時間', key: 'gymRaid.totalSecond' },
+  { title: '発生時間', key: 'gymRaid.damageSeconds' },
+  { title: '全体時間', key: 'gymRaid.totalSeconds' },
   { title: 'DPS', key: 'gymRaid.dps' },
   { title: 'ダメージ', key: 'pvp.pvpPower' },
   { title: 'ゲージ増加量', key: 'pvp.energy' },

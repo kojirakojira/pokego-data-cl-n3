@@ -126,6 +126,13 @@ export default () => {
     })
   }
 
+  const moveLookupResult = (mid: string) => {
+    useRouter().push({
+      name: 'search-result-moveLookupResult',
+      query: { mid }
+    })
+  }
+
   return {
     abundance,
     filterAll,
@@ -134,6 +141,7 @@ export default () => {
     afterEvoScpRank,
     scpRank,
     scpRankList,
-    scpRankMaxMinResult
+    scpRankMaxMinResult,
+    moveLookupResult
   }
 }

@@ -63,9 +63,9 @@
                 :items="cDtoItem.resData.fastAttackList"
                 item-value="moveId"
                 items-per-page="-1"
-                no-data-text="loading now..."
-                no-results-text="該当するデータがありません。"
+                no-data-text="覚える技が存在しないみたいです。"
                 hover
+                @click:row="screenControlMethods().onClickRow"
               >
                 <template #[`item.type`]="{ item }">
                   <SearchType :type="item.type" />
@@ -87,9 +87,9 @@
                 :items="cDtoItem.resData.chargedAttackList"
                 item-value="moveId"
                 items-per-page="-1"
-                no-data-text="loading now..."
-                no-results-text="該当するデータがありません。"
+                no-data-text="覚える技が存在しないみたいです。"
                 hover
+                @click:row="screenControlMethods().onClickRow"
               >
                 <template #[`item.type`]="{ item }">
                   <SearchType :type="item.type" />
@@ -158,8 +158,8 @@ const faBaseHeaders = readonly<Array<any>>([
   { title: '技名', key: 'name' },
   { title: 'タイプ', key: 'type' },
   { title: 'ダメージ', key: 'gymRaid.gymPower', size: '8px' },
-  { title: '発生時間', key: 'gymRaid.damageSecond' },
-  { title: '全体時間', key: 'gymRaid.totalSecond' },
+  { title: '発生時間', key: 'gymRaid.damageSeconds' },
+  { title: '全体時間', key: 'gymRaid.totalSeconds' },
   { title: 'DPS', key: 'gymRaid.dps' },
   { title: 'EPS', key: 'gymRaid.eps' },
   { title: 'ダメージ', key: 'pvp.pvpPower' },
@@ -175,8 +175,8 @@ const caBaseHeaders = readonly<Array<any>>([
   { title: 'タイプ', key: 'type' },
   { title: 'ゲージ', key: 'gymRaid.energyBar' },
   { title: 'ダメージ', key: 'gymRaid.gymPower', size: '8px' },
-  { title: '発生時間', key: 'gymRaid.damageSecond' },
-  { title: '全体時間', key: 'gymRaid.totalSecond' },
+  { title: '発生時間', key: 'gymRaid.damageSeconds' },
+  { title: '全体時間', key: 'gymRaid.totalSeconds' },
   { title: 'DPS', key: 'gymRaid.dps' },
   { title: 'ダメージ', key: 'pvp.pvpPower' },
   { title: 'ゲージ増加量', key: 'pvp.energy' },
@@ -204,42 +204,64 @@ const caHeaders = computed((): Array<any> => {
   })
 })
 
-const init = async () => {
-  // route.queryからsearchParamsを復元
-  cDtoItem.value.searchParams = searchCommon()
-    .restoreSearchParams(useRoute().query, PokemonAttackResultSearchParams)
-  // dtoStoreからresDataを復元
-  const restoredParams: Record<string, any> | null = searchCommon().restoreCurrentScreen(['resData'])
-  const rd: PokemonAttackResponse | null = restoredParams?.resData
+const screenControlMethods = () => {
+  const init = async () => {
+    // route.queryからsearchParamsを復元
+    cDtoItem.value.searchParams = searchCommon()
+      .restoreSearchParams(useRoute().query, PokemonAttackResultSearchParams)
+    // dtoStoreからresDataを復元
+    const restoredParams: Record<string, any> | null = searchCommon().restoreCurrentScreen(['resData'])
+    const rd: PokemonAttackResponse | null = restoredParams?.resData
 
-  if (rd && rd.pokedexId) {
-    // resDataが復元できた場合
-    cDtoItem.value.resData = rd
-  } else {
-    // 存在しない場合は取得する
-    // 入力チェック不要
-    const ret = await get(cDtoItem.value.searchParams)
-    if (!ret) {
-      // resが正しくない場合
-      isValidInput.value = false
-      return
+    if (rd && rd.pokedexId) {
+      // resDataが復元できた場合
+      cDtoItem.value.resData = rd
+    } else {
+      // 存在しない場合は取得する
+      // 入力チェック不要
+      const ret = await get(cDtoItem.value.searchParams)
+      if (!ret) {
+        // resが正しくない場合
+        isValidInput.value = false
+        return
+      }
+      cDtoItem.value.resData = ret
     }
-    cDtoItem.value.resData = ret
+
+    isLoading.value = !cDtoItem.value.resData
   }
 
-  isLoading.value = !cDtoItem.value.resData
+  interface DispAttack {
+    index: number,
+    item: {
+      moveId: string
+    }
+  }
+  /**
+   * v-data-tableの列をクリックしたときの処理
+   * @param _
+   * @param selected
+   */
+  const onClickRow = (_: PointerEvent, selected: DispAttack) => {
+    transitionUtils().moveLookupResult(selected.item.moveId)
+  }
+
+  return {
+    init,
+    onClickRow
+  }
 }
 
 // 自画面遷移時
 watch(() => useRoute().fullPath, async () => {
   isLoading.value = true
-  await init()
+  await screenControlMethods().init()
   // evoInfoRef.value.refresh()
   if (import.meta.client) { scrollTo(0, 0) }
   isLoading.value = false
 })
 
-await init()
+await screenControlMethods().init()
 
 // Header
 const thisPath = useRuntimeConfig().public.url + useRoute().path
