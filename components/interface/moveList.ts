@@ -1,16 +1,19 @@
 import type { SortItem } from 'vuetify/lib/components/VDataTable/composables/sort'
-import type { DispFastAttack, DispChargedAttack } from './api/dto'
-import { ResearchResponse } from './api/response'
+import type { DispFastAttack, DispChargedAttack, DispFilterParam } from './api/dto'
+import { Response } from './api/response'
+import { FilterAllMoveSearchParams } from './filterAllMove'
 
 /**
  * レスポンスの型（API依存の部分）
  */
-export class MoveListResponse extends ResearchResponse {
+export class MoveListResponse extends Response {
+  filteredItems: Array<DispFilterParam>
   faList: Array<DispFastAttack>
   caList: Array<DispChargedAttack>
 
   constructor () {
     super()
+    this.filteredItems = []
     this.faList = []
     this.caList = []
   }
@@ -29,7 +32,8 @@ export class MoveListResponse extends ResearchResponse {
 /**
  * 結果画面用クエリパラメータの定義
  */
-// 検索画面、結果画面の分けなし
+export class MoveListResultSearchParams extends FilterAllMoveSearchParams {
+}
 
 /**
  * 結果画面用DTOの定義
@@ -43,13 +47,13 @@ export interface TableControl {
   caScrollTop: number
  }
 export class MoveListResultDtoItem implements ResultDtoItem {
-  searchParams: Record<string, any>
+  searchParams: MoveListResultSearchParams
   resData: MoveListResponse
   // tableの制御用（主に戻るボタン押下時の画面復元用）
   tableControl: TableControl
 
   constructor () {
-    this.searchParams = {}
+    this.searchParams = new MoveListResultSearchParams()
     this.resData = new MoveListResponse()
     this.tableControl = {
       radioStatus: 'gymRaid',

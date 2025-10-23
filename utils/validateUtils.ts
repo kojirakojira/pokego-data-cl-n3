@@ -21,6 +21,16 @@ export default () => {
     }
     return ''
   }
+  const checkRequiredArray = ({ item, itemName, additional }: CheckPattern) => {
+    if (!(item as Array<string>).length) {
+      let msg = `「${itemName}」は必須項目です。\n`
+      if (additional) {
+        msg = additional + msg
+      }
+      return msg
+    }
+    return ''
+  }
   const checkIv = ({ item, itemName, additional }: CheckPattern) => {
     const ivNames = ['攻撃', '防御', 'HP']
     let msg = ''
@@ -70,7 +80,7 @@ export default () => {
    *
    * iArrの要素のパターン：
    * | key | value | 必須 | 型 | 備考 |
-   * | valid | "required" or "iv" or "numeric" or "email" | 必須 | String or Array | 実行するチェックを指定する。 |
+   * | valid | "required" or "requiredArray" or "iv" or "numeric" or "email" | 必須 | String or Array | 実行するチェックを指定する。 |
    * | item | チェックする値 | 必須 | validに応ず |  |
    * | itemName | itemの日本語名 | 必須 | String |  |
    * | additional | メッセージの前に付加する値 | 任意 | String |  |
@@ -85,6 +95,7 @@ export default () => {
     }
     const checkFuncDic: Record<string, Function> = {
       checkRequired,
+      checkRequiredArray,
       checkIv,
       checkNumeric,
       checkEmail
@@ -116,6 +127,7 @@ export default () => {
   return {
     validate,
     checkRequired,
+    checkRequiredArray,
     checkIv,
     checkNumeric,
     checkEmail

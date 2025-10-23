@@ -63,7 +63,7 @@ const screenControlMethods = () => {
       cDtoItem.value.resData = rd
       // 取得成功した場合
       useRouter().push({
-        name: 'search-list-filterAllList',
+        name: 'search-list-pokemonList',
         query: searchCommon().makeQuery(cDtoItem.value.searchParams)
       })
     }

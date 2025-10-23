@@ -76,7 +76,7 @@ export default () => {
       name: '技',
       patternNames: {
         moveLookup: '技検索',
-        moveList: '技一覧',
+        filterAllMove: '全技絞り込み',
         pokemonAttack: 'ポケモンが覚える技'
       }
     },
@@ -160,7 +160,7 @@ export default () => {
             break
           default:
             if (Array.isArray(rsp[k])) {
-              (rsp[k] as Array<any>).push(routeQuery[k] as any)
+              (rsp[k] as Array<any>).push(...routeQuery[k] as any)
             } else {
               throw createError({ statusCode: 500, message: `An unexpected type was specified. type:${typeof rsp[k]}`, fatal: true })
             }

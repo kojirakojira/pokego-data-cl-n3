@@ -12,7 +12,7 @@
             </v-icon>
             別の技を検索
           </v-btn>
-          <v-btn class="ml-2" rounded variant="outlined" :to="{ name: 'search-moveList' }">
+          <v-btn class="ml-2" rounded variant="outlined" :to="{ name: 'search-list-moveList' }">
             <v-icon>
               mdi-list-box
             </v-icon>
@@ -557,6 +557,25 @@
           </v-col>
         </v-row>
       </v-container>
+      <v-container>
+        <v-row>
+          <v-col>
+            <h3>別のタイプの技一覧をみる</h3>
+            <div>
+              <div class="d-flex flex-wrap justify-center">
+                <div
+                  v-for="t in constant.TYPE"
+                  :key="`list-link-${t.type}`"
+                  :class="['d-flex', 'justify-center', 'align-center', 'px-10', $style.type_move_list]"
+                  @click="transitionUtils().moveList([t.type])"
+                >
+                  <SearchType :type="t.jpn" />
+                </div>
+              </div>
+            </div>
+          </v-col>
+        </v-row>
+      </v-container>
     </div>
     <div v-else>
       <Loading v-if="isValidInput" full-page />
@@ -846,5 +865,16 @@ useHead(metaObject)
   &:hover {
     border-color: blue;
   }
+}
+.type_move_list {
+  border: 1px solid black;
+  width: 100px;
+  height: 50px;
+  margin-left: -1px;
+  margin-top: -1px;
+  cursor: pointer;
+}
+.type_move_list:hover {
+  background-color: #f0f8ff;
 }
 </style>

@@ -1,5 +1,6 @@
 import { AfterEvoScpRankSearchParams } from '~/components/interface/afterEvoScpRank'
 import { FilterAllSearchParams } from '~/components/interface/filterAll'
+import type { MoveDispType } from '~/components/interface/filterAllMove'
 import { RaceDiffSearchParams } from '~/components/interface/raceDiff'
 import { ScpRankSearchParams } from '~/components/interface/scpRank'
 import { ScpRankListSearchParams } from '~/components/interface/scpRankList'
@@ -133,6 +134,13 @@ export default () => {
     })
   }
 
+  const moveList = (types: Array<string>, moveDispType?: MoveDispType) => {
+    useRouter().push({
+      name: 'search-list-moveList',
+      query: { types, ...(moveDispType && { moveDispType }) }
+    })
+  }
+
   return {
     abundance,
     filterAll,
@@ -142,6 +150,7 @@ export default () => {
     scpRank,
     scpRankList,
     scpRankMaxMinResult,
-    moveLookupResult
+    moveLookupResult,
+    moveList
   }
 }

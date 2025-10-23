@@ -110,7 +110,6 @@ const clickSearchBtn = async () => {
   }
   isLoading.value = true
   const res = await get(cDtoItem.value.searchParams)
-  console.log(res)
   if (!res) {
     isSearchBtnClick.value = false
     isLoading.value = false
