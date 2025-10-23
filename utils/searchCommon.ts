@@ -160,7 +160,8 @@ export default () => {
             break
           default:
             if (Array.isArray(rsp[k])) {
-              (rsp[k] as Array<any>).push(...routeQuery[k] as any)
+              // push元、push先が両方配列の場合は展開してpush、push元が配列じゃない場合は1要素のみの配列にしてpush
+              (rsp[k] as Array<any>).push(...(Array.isArray(routeQuery[k]) ? routeQuery[k] : [routeQuery[k]]))
             } else {
               throw createError({ statusCode: 500, message: `An unexpected type was specified. type:${typeof rsp[k]}`, fatal: true })
             }
