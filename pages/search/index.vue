@@ -58,7 +58,6 @@
           <v-col cols="12" sm="6" md="5" lg="4" xl="4">
             <SearchTopicPage class="my-2" />
             <SearchTopicPokemon class="my-2" />
-            <BlogArchive class="my-2 pb-6" />
           </v-col>
         </v-row>
       </v-container>
