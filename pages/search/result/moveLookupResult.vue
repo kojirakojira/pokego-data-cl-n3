@@ -1,18 +1,15 @@
 <template>
   <div>
-    <MajorPartsH2Common>
-      {{ `${cDtoItem?.resData.name}の技性能・覚えるポケモン` }}
-    </MajorPartsH2Common>
     <v-container>
       <v-row>
         <v-col align="right">
-          <v-btn rounded variant="outlined" :to="{ name: 'search-moveLookup' }">
+          <v-btn rounded variant="outlined" @click="transitionUtils().moveLookup()">
             <v-icon>
               mdi-magnify
             </v-icon>
             別の技を検索
           </v-btn>
-          <v-btn class="ml-2" rounded variant="outlined" :to="{ name: 'search-list-moveList' }">
+          <v-btn class="ml-2" rounded variant="outlined" @click="transitionUtils().moveList([])">
             <v-icon>
               mdi-list-box
             </v-icon>
@@ -21,6 +18,9 @@
         </v-col>
       </v-row>
     </v-container>
+    <MajorPartsH2Common>
+      {{ `${cDtoItem?.resData.name}の技性能・覚えるポケモン` }}
+    </MajorPartsH2Common>
     <div v-if="!isLoading">
       <v-container v-if="fastAttackDetails">
         <v-row>

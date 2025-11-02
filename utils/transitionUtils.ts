@@ -23,7 +23,11 @@ export default () => {
       query: { pid }
     })
   }
-
+  const searchAll = () => {
+    useRouter().push({
+      name: 'search-searchAll'
+    })
+  }
   const filterAll = (params: TransitionParamForFilterAll) => {
     const searchParams: FilterAllSearchParams = new FilterAllSearchParams()
     for (const [k, v] of Object.entries(params)) {
@@ -126,7 +130,11 @@ export default () => {
       query: { pid }
     })
   }
-
+  const moveLookup = () => {
+    useRouter().push({
+      name: 'search-moveLookup'
+    })
+  }
   const moveLookupResult = (mid: string) => {
     useRouter().push({
       name: 'search-result-moveLookupResult',
@@ -143,6 +151,7 @@ export default () => {
 
   return {
     abundance,
+    searchAll,
     filterAll,
     raceResult,
     raceDiff,
@@ -150,6 +159,7 @@ export default () => {
     scpRank,
     scpRankList,
     scpRankMaxMinResult,
+    moveLookup,
     moveLookupResult,
     moveList
   }

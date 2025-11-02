@@ -1,6 +1,24 @@
 <template>
   <div>
     <div v-if="isLoadedAbundance">
+      <v-container>
+        <v-row>
+          <v-col align="right">
+            <v-btn rounded variant="outlined" @click="transitionUtils().searchAll()">
+              <v-icon>
+                mdi-magnify
+              </v-icon>
+              別のポケモンを検索
+            </v-btn>
+            <v-btn class="ml-2" rounded variant="outlined" @click="transitionUtils().filterAll({})">
+              <v-icon>
+                mdi-list-box
+              </v-icon>
+              ポケモン一覧をみる
+            </v-btn>
+          </v-col>
+        </v-row>
+      </v-container>
       <MajorPartsH2Common>
         {{ editUtils().appendRemarks(cDtoItem.resData.name, cDtoItem.resData.remarks) }}
       </MajorPartsH2Common>
