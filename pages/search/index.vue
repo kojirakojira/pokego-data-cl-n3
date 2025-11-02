@@ -162,4 +162,3 @@ useHead({
     rgba(30,30,30,0) 100%);
 }
 </style>
-~/stores/historyState
