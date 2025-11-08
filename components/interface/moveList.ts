@@ -64,12 +64,3 @@ export class MoveListResultDtoItem implements ResultDtoItem {
     }
   }
 }
-
-/**
- * APIアクセス用get関数
- */
-export const get = async (): Promise<MoveListResponse> => {
-  const res = await fetchCommon('/api/moveList', 'GET')
-  const rd: MoveListResponse = res.data as MoveListResponse
-  return rd
-}

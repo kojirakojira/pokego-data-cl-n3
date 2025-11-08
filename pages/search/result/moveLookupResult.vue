@@ -71,6 +71,17 @@
               </v-row>
               <v-row :class="$style.row">
                 <v-col cols="5" :class="$style.title">
+                  ゲージ増加量
+                </v-col>
+                <v-col cols="7" :class="$style.content">
+                  {{ fastAttackDetails.fastAttack.gymRaid.energy }}
+                  <span class="caption">
+                    {{ `(全技${fastAttackDetails.fastAttackRank.gymEnergyIncrAmountRank} / ${fastAttackDetails.fastAttackRank.totalCount}位)` }}
+                  </span>
+                </v-col>
+              </v-row>
+              <v-row :class="$style.row">
+                <v-col cols="5" :class="$style.title">
                   ダメージ発生時間
                 </v-col>
                 <v-col cols="7" :class="$style.content">

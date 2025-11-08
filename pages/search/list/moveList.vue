@@ -204,6 +204,7 @@ const faBaseHeaders = readonly<Array<any>>([
   { title: '技名', key: 'name' },
   { title: 'タイプ', key: 'type' },
   { title: 'ダメージ', key: 'gymRaid.gymPower' },
+  { title: 'ゲージ増加量', key: 'gymRaid.energy' },
   { title: '発生時間', key: 'gymRaid.damageSeconds' },
   { title: '全体時間', key: 'gymRaid.totalSeconds' },
   { title: 'DPS', key: 'gymRaid.dps' },
@@ -253,7 +254,6 @@ const screenControlMethods = () => {
     // route.queryからsearchParamsを復元
     cDtoItem.value.searchParams = searchCommon()
       .restoreSearchParams(useRoute().query, FilterAllMoveResultSearchParams)
-    console.log(cDtoItem.value.searchParams)
     // dtoStoreからresDataを復元
     const restoredParams: Record<string, any> | null = searchCommon().restoreCurrentScreen(['resData', 'tableControl'])
     const rd: FilterAllMoveResponse | null = restoredParams?.resData

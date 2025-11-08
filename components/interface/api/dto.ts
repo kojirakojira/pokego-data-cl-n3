@@ -387,6 +387,7 @@ export class CatchCp {
 
 export class FastGymParam {
   gymPower: number
+  energy: number
   dps: number
   eps: number
   damageSeconds: number
@@ -394,6 +395,7 @@ export class FastGymParam {
 
   constructor () {
     this.gymPower = 0
+    this.energy = 0
     this.dps = 0
     this.eps = 0
     this.damageSeconds = 0
