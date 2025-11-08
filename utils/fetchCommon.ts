@@ -26,7 +26,10 @@ export default async (
       argEndpoint,
       () => $fetch(url, options))
 
-    if (transition && error.value) {
+    if (error.value?.statusCode === 422) {
+      // 422は入力チェックエラー。正常系として処理する。（エラー情報はそのまま返却する。）
+      data.value = error.value.data
+    } else if (transition && error.value) {
       // transitionがtrueの場合、エラー画面に遷移させる。
       const errVal: any = error.value
       const message = !errVal.statusCode && !errVal.data ? 'サーバとの通信に失敗しました。' : errVal.data
@@ -44,8 +47,13 @@ export default async (
     // クライアントで実行する場合
     const data = await $fetch(url, options)
       .catch((err) => {
-        const message = !err.statusCode && !err.data ? 'サーバとの通信に失敗しました。' : err.data
-        throw createError({ statusCode: err.statusCode, message, fatal: true })
+        if (err.statusCode === 422) {
+          // 入力チェックエラーは無視
+          return err.data
+        } else {
+          const message = !err.statusCode && !err.data ? 'サーバとの通信に失敗しました。' : err.data
+          throw createError({ statusCode: err.statusCode, message, fatal: true })
+        }
       }) as any
     return {
       data,

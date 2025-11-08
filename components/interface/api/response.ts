@@ -30,3 +30,9 @@ export class ResearchResponse extends Response {
     this.remarks = ''
   }
 }
+
+export interface NotValidResponse extends Response {
+  validationError: boolean,
+  errors: Record<string, string>,
+  messages: Array<string>
+}

@@ -6,7 +6,7 @@ import {
 } from 'vue-router'
 import { toastStore } from '~/stores/toastStore'
 import { dtoStore, type ScreenInfo } from '~/stores/dtoStore'
-import type { Response, ResearchResponse, MsgLevel } from '~/components/interface/api/response'
+import type { Response, ResearchResponse, MsgLevel, NotValidResponse } from '~/components/interface/api/response'
 import type { ResearchRequest } from '~/components/interface/api/request'
 
 export interface ResData extends Record<string, any> {}
@@ -329,21 +329,49 @@ export default () => {
   }
 
   /**
+   * 入力チェックエラーの有無判定とエラー処理
+   *
+   * @param resData
+   * @returns
+   */
+  const handleValidError = (resData: NotValidResponse | Response) => {
+    let success = true
+    if ('validationError' in resData) {
+      const message = resData.messages.join('\n')
+      if (import.meta.server) {
+        // サーバ側
+        throw createError({ statusCode: 422, message, fatal: true })
+      } else {
+        // クライアント側
+        success = resErrHandle(
+          message,
+          resData.msgLevel)
+      }
+    }
+    return success
+  }
+
+  /**
    * 汎用的なメッセージ処理をハンドリングする。
    *
    * @param {*} resData
    * @returns
    */
-  const handleApiMessage = (resData: Response | ResearchResponse | null | undefined) => {
+  const handleApiMessage = (resData: Response | ResearchResponse | NotValidResponse | null | undefined) => {
     if (!resData) {
       throw createError({ statusCode: 500, message: 'An error occurred.', fatal: true })
     }
+
+    let success = handleValidError(resData)
+    if (!success) {
+      return success
+    }
+
     // 個別機能由来のメッセージ
-    let success = resErrHandle(
+    success = resErrHandle(
       resData.message,
       resData.msgLevel)
     if (!success) {
-      success = false
       return success
     }
 
@@ -482,6 +510,7 @@ export default () => {
     // restoreResearchResData,
     getSearchPatternName,
     resErrHandle,
+    handleValidError,
     handleApiMessage,
     clickRowResultList,
     makeQuery,
