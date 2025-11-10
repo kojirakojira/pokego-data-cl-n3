@@ -692,3 +692,21 @@ export class ChargedAttackDetails {
     this.sameTypeMoveList = []
   }
 }
+
+export interface PokemonAttackCombination {
+  goPokedex: GoPokedex,
+  faMoveId: string,
+  faName: string,
+  faType: string,
+  fastAttackLearningPattern: string,
+  caMoveId: string,
+  caName: string,
+  caType: string,
+  chargedAttackLearningPattern: string,
+  faAttackScore: number,
+  caAttackScore: number,
+  attackScore: number,
+  mega: boolean,
+  shadow: boolean,
+  attribute: string
+}

@@ -11,7 +11,8 @@ export const constantStore = defineStore(
       GEN: [] as Array<SimpEntry>, // 世代
       FILTER_ITEMS: [] as Array<SimpEntry>, // 絞り込み検索項目
       PL: [] as Array<string>, // PL
-      SITUATION: [] as Array<SimpEntry> // ポケモンを捕まえるときのシチュエーション
+      SITUATION: [] as Array<SimpEntry>, // ポケモンを捕まえるときのシチュエーション
+      WEATHER: [] as Array<SimpEntry> // 天気
     })
 
     const get = () => {
@@ -42,6 +43,10 @@ export const constantStore = defineStore(
       constantValue.value.SITUATION = situationArr
     }
 
+    const setWeather = (weatherArr: Array<SimpEntry>) => {
+      constantValue.value.WEATHER = weatherArr
+    }
+
     const clear = () => {
       Object.entries(constantValue.value).forEach(([k]) => {
         constantValue.value[k as ConstantItem] = []
@@ -59,6 +64,7 @@ export const constantStore = defineStore(
       setFilterItems(Object.entries(constants.filterItemMap).map(([k, v]: Array<any>) => { return { k, v } }))
       setPl(Object.entries(constants.plList).map((arr: Array<any>) => arr[1]))
       setSituation(Object.entries(constants.situationMap).map(([k, v]: Array<any>) => { return { k, v } }))
+      setWeather(Object.entries(constants.weatherMap).map(([k, v]: Array<any>) => { return { k, v } }))
     }
 
     return {
@@ -69,6 +75,7 @@ export const constantStore = defineStore(
       setFilterItems,
       setPl,
       setSituation,
+      setWeather,
       clear,
       init
     }

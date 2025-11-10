@@ -38,6 +38,12 @@ export default () => {
         filterAll: '全ポケ絞り込み'
       }
     },
+    pinnacle: {
+      name: '最強ポケモンランキング',
+      patternNames: {
+        gymRaidPinnacleRank: 'ジム・レイド対策ポケモンランキング'
+      }
+    },
     captureCp: {
       name: '捕獲時CP',
       patternNames: {
@@ -414,7 +420,7 @@ export default () => {
    *  →遷移前の画面のクエリからnameを削除。pidを追加して返却する。
    * ②：makeQuery(Record<string, any>)
    */
-  const makeQuery = (arg1: string | null | undefined | Object, searchParams?: ResearchRequest) => {
+  const makeQuery = (arg1: string | null | undefined | Object, searchParams?: Record<string, any>) => {
     let pid: string | null | undefined = null
     let queryParams: Record<string, any> = {}
     if (arg1 && typeof arg1 !== 'string') {
