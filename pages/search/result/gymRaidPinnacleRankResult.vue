@@ -104,7 +104,6 @@
               v-model:sort-by="cDtoItem.tableControl.sortByArr"
               :headers="headers"
               :items="cDtoItem.resData.combiList"
-              item-value="goPokedex.pokedexId"
               items-per-page="-1"
               multi-sort
               no-data-text="loading now..."

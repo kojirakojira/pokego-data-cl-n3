@@ -233,7 +233,6 @@ const screenControlMethods = () => {
    * @param rd
    */
   const handleApiResult = (rd: GymRaidPinnacleRankResponse) => {
-    console.log(rd)
     if (rd.success) {
       transitionResultPage(rd.pokedexId, cDtoItem.value.searchParams, rd)
       // cDtoItem.value.pokemonSearchResult = rd.pokemonSearchResult
