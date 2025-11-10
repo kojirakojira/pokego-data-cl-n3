@@ -28,10 +28,10 @@
                   </v-row>
                   <v-row class="searched-param">
                     <v-col cols="7" md="6" lg="6" xl="6" class="pa-1">
-                      天候ブースト
+                      天気
                     </v-col>
                     <v-col cols="5" md="6" lg="6" xl="6" class="pa-1">
-                      あいうえお
+                      {{ cDtoItem.searchParams.weather ? constantAccessor.getValue(cDtoItem.searchParams.weather, 'WEATHER') : '指定なし' }}
                     </v-col>
                   </v-row>
                   <v-row v-if="cDtoItem.searchParams.shadowSelected !== 'only'" class="searched-param">
