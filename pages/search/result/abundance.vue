@@ -403,6 +403,14 @@
                     hover
                     @click:row="screenControlMethods().onClickMoveRow"
                   >
+                    <template #[`item.no`]="{ index }">
+                      {{ index + 1 }}
+                    </template>
+                    <template #[`item.name`]="{ item }">
+                      <div style="min-width: 140px;">
+                        {{ item.name }}
+                      </div>
+                    </template>
                     <template #[`item.type`]="{ item }">
                       <SearchType :type="item.type" />
                     </template>
@@ -427,6 +435,14 @@
                     hover
                     @click:row="screenControlMethods().onClickMoveRow"
                   >
+                    <template #[`item.no`]="{ index }">
+                      {{ index + 1 }}
+                    </template>
+                    <template #[`item.name`]="{ item }">
+                      <div style="min-width: 140px;">
+                        {{ item.name }}
+                      </div>
+                    </template>
                     <template #[`item.type`]="{ item }">
                       <SearchType :type="item.type" />
                     </template>

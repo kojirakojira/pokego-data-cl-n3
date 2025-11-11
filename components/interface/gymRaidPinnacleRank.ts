@@ -8,11 +8,13 @@ import { ResearchResponse } from './api/response'
 export class GymRaidPinnacleRankResponse extends ResearchResponse {
   combiList: Array<PokemonAttackCombination>
   typeComments: Array<string>
+  wbTypeList: Array<string>
 
   constructor () {
     super()
     this.combiList = []
     this.typeComments = []
+    this.wbTypeList = []
   }
 }
 /**

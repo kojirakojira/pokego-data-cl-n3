@@ -35,7 +35,7 @@ export default () => {
       name: '一般',
       patternNames: {
         searchAll: 'ポケモン検索',
-        filterAll: '全ポケ絞り込み'
+        filterAll: 'ポケモン一覧'
       }
     },
     pinnacle: {
@@ -82,7 +82,7 @@ export default () => {
       name: '技',
       patternNames: {
         moveLookup: '技検索',
-        filterAllMove: '全技絞り込み',
+        filterAllMove: '技一覧',
         pokemonAttack: 'ポケモンが覚える技'
       }
     },

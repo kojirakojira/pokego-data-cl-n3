@@ -195,7 +195,7 @@
                     :headers="learnPokemonHeaders"
                     :items="cDtoItem.resData.fastAttackDetails.learnPokemonList"
                     items-per-page="-1"
-                    height="400"
+                    :height="isXs && cDtoItem.resData.fastAttackDetails.learnPokemonList.length > 3 ? 600 : 400"
                     multi-sort
                     item-value="goPokedex.pokedexId"
                     no-data-text="覚えるポケモンは存在しません。"
@@ -270,7 +270,7 @@
                     :items="cDtoItem.resData.fastAttackDetails.sameTypeMoveList"
                     item-value="moveId"
                     items-per-page="-1"
-                    height="400"
+                    :height="isXs && cDtoItem.resData.fastAttackDetails.sameTypeMoveList.length > 3 ? 600 : 400"
                     fixed-header
                     multi-sort
                     no-data-text="loading now..."
@@ -450,7 +450,7 @@
                     :headers="learnPokemonHeaders"
                     :items="cDtoItem.resData.chargedAttackDetails.learnPokemonList"
                     items-per-page="-1"
-                    height="400"
+                    :height="isXs && cDtoItem.resData.chargedAttackDetails.learnPokemonList.length > 3 ? 600 : 400"
                     multi-sort
                     item-value="goPokedex.pokedexId"
                     no-data-text="覚えるポケモンは存在しません。"
@@ -532,7 +532,7 @@
                     :items="cDtoItem.resData.chargedAttackDetails.sameTypeMoveList"
                     item-value="moveId"
                     items-per-page="-1"
-                    height="400"
+                    :height="isXs && cDtoItem.resData.chargedAttackDetails.sameTypeMoveList.length > 3 ? 600 : 400"
                     fixed-header
                     multi-sort
                     no-data-text="loading now..."
@@ -571,18 +571,9 @@
       <v-container>
         <v-row>
           <v-col>
-            <h3>別のタイプの技一覧をみる</h3>
+            <h3>タイプ別の技一覧をみる</h3>
             <div>
-              <div class="d-flex flex-wrap justify-center">
-                <div
-                  v-for="t in constant.TYPE"
-                  :key="`list-link-${t.type}`"
-                  :class="['d-flex', 'justify-center', 'align-center', 'px-10', $style.type_move_list]"
-                  @click="transitionUtils().moveList([t.type])"
-                >
-                  <SearchType :type="t.jpn" />
-                </div>
-              </div>
+              <SearchMovesTypeMoveListLink />
             </div>
           </v-col>
         </v-row>
@@ -646,6 +637,7 @@ const learnPokemonHeaders = readonly<Array<any>>([
   { title: 'こうげき', key: 'goPokedex.attack' },
   { title: 'ぼうぎょ', key: 'goPokedex.defense' },
   { title: 'HP', key: 'goPokedex.hp' },
+  { title: 'CP', key: 'cp' },
   { title: '覚え方', key: 'learningPattern' }
 ])
 /** 列が全部そろったv-data-tableのヘッダ */
@@ -654,6 +646,7 @@ const faBaseSameTypeHeaders = readonly<Array<any>>([
   { title: '技名', key: 'name' },
   { title: 'タイプ', key: 'type' },
   { title: 'ダメージ', key: 'gymRaid.gymPower' },
+  { title: 'ゲージ増加量', key: 'gymRaid.energy' },
   { title: '発生時間', key: 'gymRaid.damageSeconds' },
   { title: '全体時間', key: 'gymRaid.totalSeconds' },
   { title: 'DPS', key: 'gymRaid.dps' },
@@ -692,6 +685,8 @@ const caSameTypeHeaders = computed((): Array<any> => {
     return col.key.substring(0, col.key.indexOf('.')) === cDtoItem.value.tableControl.radioStatus
   })
 })
+
+const isXs = useDisplay().xs
 
 /**
  * 画面制御用機能
@@ -794,6 +789,27 @@ const tableControlMethods = () => {
     restoreTableControl
   }
 }
+watch(
+  () => cDtoItem.value.tableControl.radioStatus,
+  (newValue) => {
+    const tc = cDtoItem.value.tableControl
+    // ラジオボタンに合わせてソートを更新。ジム・レイド、PvP固有の列はソートを除去する。
+    // 通常技
+    tc.faSameTypeSortByArr = tc.faSameTypeSortByArr.filter((sItem) => {
+      if (sItem.key.indexOf('.') < 1) {
+        return true
+      }
+      return sItem.key.substring(0, sItem.key.indexOf('.')) === newValue
+    })
+    // スペシャル技
+    tc.caSameTypeSortByArr = tc.caSameTypeSortByArr.filter((sItem) => {
+      if (sItem.key.indexOf('.') < 1) {
+        return true
+      }
+      return sItem.key.substring(0, sItem.key.indexOf('.')) === newValue
+    })
+  }
+)
 
 onMounted(() => {
   // スクロール位置の復元
@@ -876,16 +892,5 @@ useHead(metaObject)
   &:hover {
     border-color: blue;
   }
-}
-.type_move_list {
-  border: 1px solid black;
-  width: 100px;
-  height: 50px;
-  margin-left: -1px;
-  margin-top: -1px;
-  cursor: pointer;
-}
-.type_move_list:hover {
-  background-color: #f0f8ff;
 }
 </style>

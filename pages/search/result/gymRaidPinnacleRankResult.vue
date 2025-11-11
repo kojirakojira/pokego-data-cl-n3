@@ -14,10 +14,10 @@
               <v-card-text class="caption text-left py-1">
                 <v-container>
                   <v-row>
-                    <v-col cols="7" md="6" lg="6" xl="6" class="pa-1">
+                    <v-col cols="6" md="6" lg="6" xl="6" class="pa-1">
                       タイプ
                     </v-col>
-                    <v-col cols="5" md="6" lg="6" xl="6" class="pa-1">
+                    <v-col cols="6" md="6" lg="6" xl="6" class="pa-1">
                       <SearchType :type="cDtoItem.searchParams.defenderType1" />
                       <SearchType
                         v-if="cDtoItem.searchParams.defenderType2 && cDtoItem.searchParams.defenderType1 !== cDtoItem.searchParams.defenderType2"
@@ -27,42 +27,47 @@
                     </v-col>
                   </v-row>
                   <v-row class="searched-param">
-                    <v-col cols="7" md="6" lg="6" xl="6" class="pa-1">
+                    <v-col cols="6" md="6" lg="6" xl="6" class="pa-1">
                       天気
                     </v-col>
-                    <v-col cols="5" md="6" lg="6" xl="6" class="pa-1">
+                    <v-col cols="6" md="6" lg="6" xl="6" class="pa-1">
                       {{ cDtoItem.searchParams.weather ? constantAccessor.getValue(cDtoItem.searchParams.weather, 'WEATHER') : '指定なし' }}
+                      <p v-if="cDtoItem.resData.wbTypeList.length">
+                        {{ '(天候ブースト対象:' }}<!-- eslint-disable-next-line vue/no-v-html --><!--
+                        --><span v-html="typeColorUtils.typeDecoration(cDtoItem.resData.wbTypeList.map(t => constantAccessor.getTypeJpn(t)).join(' '))" /><!--
+                        -->{{ ')' }}
+                      </p>
                     </v-col>
                   </v-row>
                   <v-row v-if="cDtoItem.searchParams.shadowSelected !== 'only'" class="searched-param">
-                    <v-col cols="7" md="6" lg="6" xl="6" class="pa-1">
+                    <v-col cols="6" md="6" lg="6" xl="6" class="pa-1">
                       メガシンカ
                     </v-col>
-                    <v-col cols="5" md="6" lg="6" xl="6" class="pa-1">
+                    <v-col cols="6" md="6" lg="6" xl="6" class="pa-1">
                       {{ selectPatternDic[cDtoItem.searchParams.megaSelected] }}
                     </v-col>
                   </v-row>
                   <v-row v-if="cDtoItem.searchParams.megaSelected !== 'only'" class="searched-param">
-                    <v-col cols="7" md="6" lg="6" xl="6" class="pa-1">
+                    <v-col cols="6" md="6" lg="6" xl="6" class="pa-1">
                       シャドウ
                     </v-col>
-                    <v-col cols="5" md="6" lg="6" xl="6" class="pa-1">
+                    <v-col cols="6" md="6" lg="6" xl="6" class="pa-1">
                       {{ selectPatternDic[cDtoItem.searchParams.shadowSelected] }}
                     </v-col>
                   </v-row>
                   <v-row class="searched-param">
-                    <v-col cols="7" md="6" lg="6" xl="6" class="pa-1">
+                    <v-col cols="6" md="6" lg="6" xl="6" class="pa-1">
                       最強 or 最弱
                     </v-col>
-                    <v-col cols="5" md="6" lg="6" xl="6" class="pa-1">
+                    <v-col cols="6" md="6" lg="6" xl="6" class="pa-1">
                       {{ orderDic[cDtoItem.searchParams.order] }}
                     </v-col>
                   </v-row>
                   <v-row class="searched-param">
-                    <v-col cols="7" md="6" lg="6" xl="6" class="pa-1">
+                    <v-col cols="6" md="6" lg="6" xl="6" class="pa-1">
                       ポケモンの重複を除去する
                     </v-col>
-                    <v-col cols="5" md="6" lg="6" xl="6" class="pa-1">
+                    <v-col cols="6" md="6" lg="6" xl="6" class="pa-1">
                       {{ cDtoItem.searchParams.unique ? 'する' : 'しない' }}
                     </v-col>
                   </v-row>
@@ -73,9 +78,16 @@
         </v-row>
         <v-row v-if="cDtoItem.resData.typeComments">
           <v-col>
-            <SearchTypeComments :comments="cDtoItem.resData.typeComments" />
+            <SearchTypeComments
+              :type1="cDtoItem.searchParams.defenderType1"
+              :type2="cDtoItem.searchParams.defenderType2"
+              :comments="cDtoItem.resData.typeComments"
+            />
           </v-col>
         </v-row>
+      </v-container>
+      <h3>ランキング</h3>
+      <v-container>
         <v-row>
           <v-col>
             <p class="caption">
@@ -89,9 +101,6 @@
             </p>
           </v-col>
         </v-row>
-      </v-container>
-      <h3>ランキング</h3>
-      <v-container>
         <v-row>
           <v-col class="text-right">
             {{ `${cDtoItem.resData.combiList.length}件` }}
@@ -186,6 +195,7 @@ const isValidInput = ref<boolean>(true)
 
 const constant: ConstantValue = constantUtils().get()
 const constantAccessor: ConstantAccessor = new ConstantAccessor(constant)
+const typeColorUtils: TypeColorUtils = new TypeColorUtils(constant.TYPE)
 
 const headers = readonly<Array<any>>([
   { title: 'No', key: 'no', align: 'center', sortable: false },
@@ -251,6 +261,14 @@ const screenControlMethods = () => {
     onClickRow
   }
 }
+
+// const wbTypeStrList = computed(() => {
+//   if (!cDtoItem.value.resData.wbTypeList) { return '' }
+//   return cDtoItem.value.resData.wbTypeList.map((type) => {
+//     return constantAccessor.getTypeJpn(type)
+//   })
+//     .join(', ')
+// })
 
 /**
  * 画面遷移時のテーブル制御

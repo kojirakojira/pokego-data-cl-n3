@@ -660,6 +660,7 @@ export class ChargedAttackRank {
 export interface GoPokedexAndMoveInfo {
   no: number,
   goPokedex: GoPokedex,
+  cp: number,
   learningPattern: string,
   learningPatternName: string,
   learningPatternAnnos: string

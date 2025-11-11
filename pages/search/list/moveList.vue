@@ -65,7 +65,7 @@
                 :items="cDtoItem.resData.faList"
                 item-value="moveId"
                 items-per-page="-1"
-                height="400"
+                :height="isXs && cDtoItem.resData.faList.length > 3 ? 600 : 400"
                 fixed-header
                 multi-sort
                 no-data-text="loading now..."
@@ -109,7 +109,7 @@
                 :items="cDtoItem.resData.caList"
                 item-value="moveId"
                 items-per-page="-1"
-                height="400"
+                :height="isXs && cDtoItem.resData.caList.length > 3 ? 600 : 400"
                 fixed-header
                 multi-sort
                 no-data-text="loading now..."
@@ -142,6 +142,16 @@
             </v-col>
           </v-row>
         </template>
+      </v-container>
+      <v-container>
+        <v-row>
+          <v-col>
+            <h3>タイプ別の技一覧をみる</h3>
+            <div>
+              <SearchMovesTypeMoveListLink />
+            </div>
+          </v-col>
+        </v-row>
       </v-container>
       <div :class="$style.fixed">
         <v-radio-group v-model="cDtoItem.tableControl.radioStatus" inline hide-details>
@@ -248,6 +258,8 @@ const caHeaders = computed((): Array<any> => {
     return col.key.substring(0, col.key.indexOf('.')) === cDtoItem.value.tableControl.radioStatus
   })
 })
+
+const isXs = useDisplay().xs
 
 const screenControlMethods = () => {
   const init = async () => {
