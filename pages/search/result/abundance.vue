@@ -3,7 +3,7 @@
     <div v-if="isLoadedAbundance">
       <v-container>
         <v-row>
-          <v-col align="right">
+          <v-col class="text-right">
             <v-btn rounded variant="outlined" @click="transitionUtils().searchAll()">
               <v-icon>
                 mdi-magnify
@@ -24,13 +24,15 @@
       </MajorPartsH2Common>
       <v-container v-if="isLoadedAbundance">
         <v-row>
-          <v-col align="center">
-            <v-img
-              :src="editUtils().getPokemonImageUrl(cDtoItem.resData.image2)"
-              rounded
-              max-width="200px"
-              aspect-ratio="1"
-            />
+          <v-col>
+            <div style="margin: 0 auto; max-width: 200px;">
+              <v-img
+                :src="editUtils().getPokemonImageUrl(cDtoItem.resData.image2)"
+                rounded
+                max-width="200px"
+                aspect-ratio="1"
+              />
+            </div>
           </v-col>
         </v-row>
       </v-container>
@@ -282,7 +284,7 @@
             </v-container>
             <v-container class="py-0">
               <v-row v-if="!cDtoItem.resData.finEvo && !cDtoItem.resData.mega" class="py-0">
-                <v-col align="right">
+                <v-col class="text-right">
                   <p class="link" @click="transitionUtils().afterEvoScpRank(cDtoItem.resData)">
                     進化後のリーグ制限内PvP順位を確認する >>
                   </p>
@@ -316,7 +318,7 @@
               </v-col>
             </v-row>
             <v-row class="my-0">
-              <v-col align="right">
+              <v-col class="text-right">
                 <p class="link" @click="transitionUtils().raceResult(cDtoItem.raceResData.pokedexId)">
                   種族値の詳細をみる >>
                 </p>
@@ -353,7 +355,7 @@
               </v-col>
             </v-row>
             <v-row class="my-0">
-              <v-col align="right">
+              <v-col class="text-right">
                 <p class="link" @click="transitionUtils().scpRankMaxMinResult(cDtoItem.scpRankMaxMinResData.pokedexId)">
                   詳細をみる >>
                 </p>
@@ -389,7 +391,6 @@
                 </v-col>
               </v-row>
             </v-container>
-            <!-- メガシンカ後でない場合 -->
             <h4>通常技</h4>
             <v-container>
               <v-row>
@@ -447,7 +448,9 @@
                       <SearchType :type="item.type" />
                     </template>
                     <template #[`item.pvp.buff.buffMsg`]="{ item }">
-                      <span style="white-space: pre-wrap;">{{ item.pvp.buff.buffMsg }}</span>
+                      <div style="width: 100px;">
+                        <span style="white-space: pre-wrap;">{{ item.pvp.buff.buffMsg }}</span>
+                      </div>
                     </template>
                     <template #[`item.pvp.buff.activationChance`]="{ item }">
                       <span>{{ item.pvp.buff.activationChanceStr }}</span>
@@ -465,6 +468,13 @@
                     </template>
                     <template #bottom />
                   </v-data-table>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col class="text-right">
+                  <p class="link" @click="transitionUtils().moveList([])">
+                    全ての技の一覧をみる >>
+                  </p>
                 </v-col>
               </v-row>
             </v-container>

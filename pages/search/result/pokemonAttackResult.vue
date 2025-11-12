@@ -95,7 +95,9 @@
                   <SearchType :type="item.type" />
                 </template>
                 <template #[`item.pvp.buff.buffMsg`]="{ item }">
-                  <span style="white-space: pre-wrap;">{{ item.pvp.buff.buffMsg }}</span>
+                  <div style="width: 100px;">
+                    <span style="white-space: pre-wrap;">{{ item.pvp.buff.buffMsg }}</span>
+                  </div>
                 </template>
                 <template #[`item.pvp.buff.activationChance`]="{ item }">
                   <span>{{ item.pvp.buff.activationChanceStr }}</span>

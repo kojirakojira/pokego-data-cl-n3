@@ -65,8 +65,8 @@
                 :items="cDtoItem.resData.faList"
                 item-value="moveId"
                 items-per-page="-1"
-                :height="isXs && cDtoItem.resData.faList.length > 3 ? 600 : 400"
-                fixed-header
+                :height="cDtoItem.resData.faList.length > 5 ? 600 : ''"
+                :fixed-header="cDtoItem.resData.faList.length > 5"
                 multi-sort
                 no-data-text="loading now..."
                 no-results-text="該当するデータがありません。"
@@ -109,8 +109,8 @@
                 :items="cDtoItem.resData.caList"
                 item-value="moveId"
                 items-per-page="-1"
-                :height="isXs && cDtoItem.resData.caList.length > 3 ? 600 : 400"
-                fixed-header
+                :height="cDtoItem.resData.caList.length > 5 ? 600 : ''"
+                :fixed-header="cDtoItem.resData.caList.length > 5"
                 multi-sort
                 no-data-text="loading now..."
                 no-results-text="該当するデータがありません。"
@@ -129,7 +129,9 @@
                   <SearchType :type="item.type" />
                 </template>
                 <template #[`item.pvp.buff.buffMsg`]="{ item }">
-                  <span style="white-space: pre-wrap;">{{ item.pvp.buff.buffMsg }}</span>
+                  <div style="width: 100px;">
+                    <span style="white-space: pre-wrap;">{{ item.pvp.buff.buffMsg }}</span>
+                  </div>
                 </template>
                 <template #[`item.pvp.buff.activationChance`]="{ item }">
                   <span>{{ item.pvp.buff.activationChanceStr }}</span>
@@ -142,6 +144,20 @@
             </v-col>
           </v-row>
         </template>
+      </v-container>
+      <v-container>
+        <v-row>
+          <v-col>
+            <h4>用語</h4>
+            <ul class="caption ml-8">
+              <li>DPS: Damage Per Secondの略。純粋な技の火力を示す指標です。「ダメージ」と言いつつも、実際に相手に与えるダメージは一定の計算式で算出された値になります。</li>
+              <li>EPS: Energy Per Secondの略。この数値が高ければ高いほどスペシャル技の回転が良くなります。</li>
+              <li>DPT: Damage Per Turnの略。PvPの場合は0.5秒を1ターンとして扱います。大体DPSみたいなもん。</li>
+              <li>EPT: Energy Per Turnの略。DPT同様、大体EPSみたいなもん。</li>
+              <li>DPE: Damage Per Energyの略。スペシャル技のダメージ効率を表します。ゲージ減少量が少なくダメージが大きいと数値が大きくなります。</li>
+            </ul>
+          </v-col>
+        </v-row>
       </v-container>
       <v-container>
         <v-row>
@@ -259,51 +275,6 @@ const caHeaders = computed((): Array<any> => {
   })
 })
 
-const isXs = useDisplay().xs
-
-const screenControlMethods = () => {
-  const init = async () => {
-    // route.queryからsearchParamsを復元
-    cDtoItem.value.searchParams = searchCommon()
-      .restoreSearchParams(useRoute().query, FilterAllMoveResultSearchParams)
-    // dtoStoreからresDataを復元
-    const restoredParams: Record<string, any> | null = searchCommon().restoreCurrentScreen(['resData', 'tableControl'])
-    const rd: FilterAllMoveResponse | null = restoredParams?.resData
-    const tableControl: TableControl | null = restoredParams?.tableControl
-
-    if (rd) {
-      cDtoItem.value.resData = rd
-    } else {
-      // 存在しない場合は取得する
-      // 入力チェック不要
-      const ret = await get(cDtoItem.value.searchParams as FilterAllMoveResultSearchParams)
-      if (!ret) {
-        // resが正しくない場合
-        throw createError({ statusCode: 400, message: '不正なパラメータが指定されました。', fatal: true })
-      }
-      cDtoItem.value.resData = ret
-    }
-
-    tableControlMethods().restoreTableControl(tableControl)
-
-    isLoading.value = !cDtoItem.value.resData
-  }
-
-  /**
-   * v-data-tableの列をクリックしたときの処理
-   * @param _
-   * @param selected
-   */
-  const onClickRow = (_: PointerEvent, selected: { item: { moveId: string } }) => {
-    transitionUtils().moveLookupResult(selected.item.moveId)
-  }
-
-  return {
-    init,
-    onClickRow
-  }
-}
-
 /**
  * 画面遷移時のテーブル制御
  */
@@ -374,6 +345,58 @@ onBeforeRouteLeave((_to, _from, next) => {
     cDtoItem.value.tableControl.caScrollTop = caTable.children[0].scrollTop
   }
   next()
+})
+
+const screenControlMethods = () => {
+  const init = async () => {
+    // route.queryからsearchParamsを復元
+    cDtoItem.value.searchParams = searchCommon()
+      .restoreSearchParams(useRoute().query, FilterAllMoveResultSearchParams)
+    // dtoStoreからresDataを復元
+    const restoredParams: Record<string, any> | null = searchCommon().restoreCurrentScreen(['resData', 'tableControl'])
+    const rd: FilterAllMoveResponse | null = restoredParams?.resData
+    const tableControl: TableControl | null = restoredParams?.tableControl
+
+    if (rd) {
+      cDtoItem.value.resData = rd
+    } else {
+      // 存在しない場合は取得する
+      // 入力チェック不要
+      const ret = await get(cDtoItem.value.searchParams as FilterAllMoveResultSearchParams)
+      if (!ret) {
+        // resが正しくない場合
+        throw createError({ statusCode: 400, message: '不正なパラメータが指定されました。', fatal: true })
+      }
+      cDtoItem.value.resData = ret
+    }
+
+    tableControlMethods().restoreTableControl(tableControl)
+
+    isLoading.value = !cDtoItem.value.resData
+  }
+
+  /**
+   * v-data-tableの列をクリックしたときの処理
+   * @param _
+   * @param selected
+   */
+  const onClickRow = (_: PointerEvent, selected: { item: { moveId: string } }) => {
+    transitionUtils().moveLookupResult(selected.item.moveId)
+  }
+
+  return {
+    init,
+    onClickRow
+  }
+}
+
+// 自画面遷移時
+watch(() => useRoute().fullPath, async () => {
+  isLoading.value = true
+  await screenControlMethods().init()
+  // evoInfoRef.value.refresh()
+  if (import.meta.client) { scrollTo(0, 0) }
+  isLoading.value = false
 })
 
 await screenControlMethods().init()

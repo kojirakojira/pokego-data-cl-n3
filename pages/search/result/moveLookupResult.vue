@@ -195,7 +195,8 @@
                     :headers="learnPokemonHeaders"
                     :items="cDtoItem.resData.fastAttackDetails.learnPokemonList"
                     items-per-page="-1"
-                    :height="isXs && cDtoItem.resData.fastAttackDetails.learnPokemonList.length > 3 ? 600 : 400"
+                    :height="cDtoItem.resData.fastAttackDetails.learnPokemonList.length > 5 ? 600 : ''"
+                    :fixed-header="cDtoItem.resData.fastAttackDetails.learnPokemonList.length > 5"
                     multi-sort
                     item-value="goPokedex.pokedexId"
                     no-data-text="覚えるポケモンは存在しません。"
@@ -270,8 +271,8 @@
                     :items="cDtoItem.resData.fastAttackDetails.sameTypeMoveList"
                     item-value="moveId"
                     items-per-page="-1"
-                    :height="isXs && cDtoItem.resData.fastAttackDetails.sameTypeMoveList.length > 3 ? 600 : 400"
-                    fixed-header
+                    :height="cDtoItem.resData.fastAttackDetails.sameTypeMoveList.length > 5 ? 600 : ''"
+                    :fixed-header="cDtoItem.resData.fastAttackDetails.sameTypeMoveList.length > 5"
                     multi-sort
                     no-data-text="loading now..."
                     no-results-text="該当するデータがありません。"
@@ -450,7 +451,8 @@
                     :headers="learnPokemonHeaders"
                     :items="cDtoItem.resData.chargedAttackDetails.learnPokemonList"
                     items-per-page="-1"
-                    :height="isXs && cDtoItem.resData.chargedAttackDetails.learnPokemonList.length > 3 ? 600 : 400"
+                    :height="cDtoItem.resData.chargedAttackDetails.learnPokemonList.length > 5 ? 600 : ''"
+                    :fixed-header="cDtoItem.resData.chargedAttackDetails.learnPokemonList.length > 5"
                     multi-sort
                     item-value="goPokedex.pokedexId"
                     no-data-text="覚えるポケモンは存在しません。"
@@ -532,8 +534,8 @@
                     :items="cDtoItem.resData.chargedAttackDetails.sameTypeMoveList"
                     item-value="moveId"
                     items-per-page="-1"
-                    :height="isXs && cDtoItem.resData.chargedAttackDetails.sameTypeMoveList.length > 3 ? 600 : 400"
-                    fixed-header
+                    :height="cDtoItem.resData.chargedAttackDetails.sameTypeMoveList.length > 5 ? 600 : ''"
+                    :fixed-header="cDtoItem.resData.chargedAttackDetails.sameTypeMoveList.length > 5"
                     multi-sort
                     no-data-text="loading now..."
                     no-results-text="該当するデータがありません。"
@@ -685,8 +687,6 @@ const caSameTypeHeaders = computed((): Array<any> => {
     return col.key.substring(0, col.key.indexOf('.')) === cDtoItem.value.tableControl.radioStatus
   })
 })
-
-const isXs = useDisplay().xs
 
 /**
  * 画面制御用機能
