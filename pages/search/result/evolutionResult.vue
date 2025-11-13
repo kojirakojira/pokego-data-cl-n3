@@ -123,9 +123,7 @@ const evoInfoRef = ref()
 watch(() => useRoute().fullPath, async () => {
   isLoading.value = true
   await init()
-  // evoInfoRef.value.refresh()
   if (import.meta.client) { scrollTo(0, 0) }
-  isLoading.value = false
 })
 
 const prevTextFunc = (gp: GoPokedex): string =>

@@ -150,11 +150,11 @@
           <v-col>
             <h4>用語</h4>
             <ul class="caption ml-8">
-              <li>DPS: Damage Per Secondの略。純粋な技の火力を示す指標です。「ダメージ」と言いつつも、実際に相手に与えるダメージは一定の計算式で算出された値になります。</li>
-              <li>EPS: Energy Per Secondの略。この数値が高ければ高いほどスペシャル技の回転が良くなります。</li>
-              <li>DPT: Damage Per Turnの略。PvPの場合は0.5秒を1ターンとして扱います。大体DPSみたいなもん。</li>
+              <li>DPS: Damage Per Secondの略。技の純粋な火力を示す指標。「ダメージ」と言いつつも、実際に相手に与えるダメージは一定の計算式で算出された値になる。</li>
+              <li>EPS: Energy Per Secondの略。この数値が高ければ高いほどスペシャル技の回転が良くなる。</li>
+              <li>DPT: Damage Per Turnの略。PvPの場合は0.5秒を1ターンとして扱う。大体DPSみたいなもん。</li>
               <li>EPT: Energy Per Turnの略。DPT同様、大体EPSみたいなもん。</li>
-              <li>DPE: Damage Per Energyの略。スペシャル技のダメージ効率を表します。ゲージ減少量が少なくダメージが大きいと数値が大きくなります。</li>
+              <li>DPE: Damage Per Energyの略。スペシャル技のダメージ効率を表す。ゲージ減少量が少なくダメージが大きいとこの数値が大きくなる。</li>
             </ul>
           </v-col>
         </v-row>
@@ -394,9 +394,7 @@ const screenControlMethods = () => {
 watch(() => useRoute().fullPath, async () => {
   isLoading.value = true
   await screenControlMethods().init()
-  // evoInfoRef.value.refresh()
   if (import.meta.client) { scrollTo(0, 0) }
-  isLoading.value = false
 })
 
 await screenControlMethods().init()

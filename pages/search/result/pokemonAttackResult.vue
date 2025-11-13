@@ -258,9 +258,7 @@ const screenControlMethods = () => {
 watch(() => useRoute().fullPath, async () => {
   isLoading.value = true
   await screenControlMethods().init()
-  // evoInfoRef.value.refresh()
   if (import.meta.client) { scrollTo(0, 0) }
-  isLoading.value = false
 })
 
 await screenControlMethods().init()
