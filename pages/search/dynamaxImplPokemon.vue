@@ -11,7 +11,7 @@
           </v-col>
         </v-row>
         <v-row>
-          <v-col align="right">
+          <v-col class="text-right">
             {{ `最終更新日：${cDtoItem.resData?.lastUpdated}` }}
           </v-col>
         </v-row>
@@ -20,7 +20,7 @@
             <h3>ダイマックス</h3>
             <v-container>
               <v-row>
-                <v-col align="right">
+                <v-col class="text-right">
                   {{ `ダイマックス実装済みポケモン数：${dynamaxList.length}` }}
                 </v-col>
               </v-row>
@@ -41,7 +41,7 @@
                 </v-col>
               </v-row>
               <v-row class="my-0">
-                <v-col align="right">
+                <v-col class="text-right">
                   <p class="link" @click="transitionUtils().filterAll({ dynamax: true })">
                     ダイマックスを詳細に絞り込む >>
                   </p>
@@ -53,7 +53,7 @@
             <h3>キョダイマックス</h3>
             <v-container>
               <v-row>
-                <v-col align="right">
+                <v-col class="text-right">
                   {{ `キョダイマックス実装済みポケモン数：${gigantamaxList.length}` }}
                 </v-col>
               </v-row>
@@ -74,7 +74,7 @@
                 </v-col>
               </v-row>
               <v-row class="my-0">
-                <v-col align="right">
+                <v-col class="text-right">
                   <p class="link" @click="transitionUtils().filterAll({ gigantamax: true })">
                     キョダイマックスを詳細に絞り込む >>
                   </p>
@@ -162,7 +162,7 @@ const screenControlMethods = () => {
    * @param _
    * @param selected
    */
-  const onClickRow = (_: PointerEvent, selected: Item) => {
+  const onClickRow = (_: Event, selected: Item) => {
     useRouter().push({
       name: 'search-result-abundance',
       query: {

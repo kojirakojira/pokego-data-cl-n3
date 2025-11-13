@@ -3,17 +3,17 @@
     <div dark style="min-height: 90vh">
       <Navbar />
       <Toast />
-      <v-main>
+      <!-- v-navigation-drawerと重ねて表示させるためにpadding-left:0pxを適用させている。 -->
+      <v-main class="pl-0">
         <NuxtPage :dto="dto" />
       </v-main>
     </div>
     <v-footer padless>
-      <v-container style="padding: 0px;">
-        <v-row style="padding: 0px;">
+      <v-container class="pa-0">
+        <v-row class="pa-0">
           <v-col
-            class="text-right"
+            class="text-right pb-0"
             cols="12"
-            style="padding-bottom:0px;"
           >
             <router-link to="/help/inquiry">
               お問い合わせ

@@ -25,7 +25,7 @@
           {{ helpMessage }}
         </SearchInputHelpMsg>
       </v-col>
-      <v-col cols="4" align="right">
+      <v-col cols="4" class="text-right">
         <v-btn
           rounded
           variant="outlined"

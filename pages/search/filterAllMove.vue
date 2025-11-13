@@ -5,7 +5,7 @@
     </MajorPartsH2Common>
     <div v-if="!isLoading">
       <v-container>
-        <v-row align="center">
+        <v-row>
           <v-col cols="12" md="5" lg="4" xl="4" class="col-title">
             {{ constantAccessor.getValue('type', 'FILTER_ITEMS') }}
             <v-checkbox
@@ -35,7 +35,7 @@
             <v-divider />
           </v-col>
         </v-row>
-        <v-row align="center">
+        <v-row>
           <v-col cols="12" md="5" lg="4" xl="4" class="col-title">
             技の種類
           </v-col>

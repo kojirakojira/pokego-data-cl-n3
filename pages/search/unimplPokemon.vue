@@ -6,12 +6,12 @@
     <div v-show="!isLoading">
       <v-container v-if="cDtoItem.resData">
         <v-row>
-          <v-col align="right">
+          <v-col class="text-right">
             {{ `最終更新日：${cDtoItem.resData.lastUpdated}` }}
           </v-col>
         </v-row>
         <v-row>
-          <v-col align="right">
+          <v-col class="text-right">
             {{ `未実装ポケモン数：${unimplList.length}` }}
           </v-col>
         </v-row>
@@ -33,7 +33,7 @@
           </v-col>
         </v-row>
         <v-row class="my-0">
-          <v-col align="right">
+          <v-col class="text-right">
             <p class="link" @click="transitionUtils().filterAll({ impled: true, negaImpled: true })">
               未実装ポケモンを詳細に絞り込む >>
             </p>
@@ -104,7 +104,7 @@ const screenControlMethods = () => {
    * @param _
    * @param selected
    */
-  const onClickRow = (_: PointerEvent, selected: Item) => {
+  const onClickRow = (_: Event, selected: Item) => {
     useRouter().push({
       name: 'search-result-abundance',
       query: {

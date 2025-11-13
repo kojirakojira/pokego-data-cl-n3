@@ -48,7 +48,7 @@
             md="6"
             lg="6"
             xl="6"
-            align="center"
+            class="text-center"
           >
             <GraphRaceDiffGoRadarDiffGraph
               :race-arr="raceArr"
@@ -112,7 +112,7 @@
             md="12"
             lg="12"
             xl="6"
-            align="center"
+            class="text-center"
           >
             <GraphRaceDiffOriRadarDiffGraph
               :race-arr="raceArr"
@@ -159,7 +159,7 @@
                   <template #bottom />
                 </v-data-table>
               </div>
-              <p align="right" class="subtitle-2">
+              <p class="text-right subtitle-2">
                 {{ `※全ポケモン${cDtoItem.resData.oriTotalCount}体中(未実装、メガ、ゲンシ等含む)` }}
               </p>
             </div>

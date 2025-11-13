@@ -101,7 +101,7 @@
               </template>
               <template #bottom />
             </v-data-table>
-            <div v-else class="pl-4" align="center">
+            <div v-else class="pl-4 text-center">
               なし
             </div>
           </v-col>
@@ -171,7 +171,7 @@
               </template>
               <template #bottom />
             </v-data-table>
-            <div v-else class="pl-4" align="center">
+            <div v-else class="pl-4 text-center">
               メガシンカ状態ではPvP参加不可
             </div>
           </v-col>
@@ -179,7 +179,7 @@
       </v-container>
       <v-container>
         <v-row>
-          <v-col align="right">
+          <v-col class="text-right">
             <p class="link" @click="transitionUtils().abundance(cDtoItem.resData.pokedexId)">
               ポケモン情報をみる >>
             </p>

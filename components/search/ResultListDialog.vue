@@ -11,7 +11,7 @@
     <v-card-text>
       <v-container v-if="psr">
         <v-row>
-          <v-col align="right" style="padding-bottom:0px;">
+          <v-col class="text-right pb-0">
             {{ `検索結果：${psr.goPokedexList.length}件` }}
           </v-col>
         </v-row>

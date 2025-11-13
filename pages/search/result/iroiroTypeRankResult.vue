@@ -29,7 +29,7 @@
       </v-container>
       <v-container>
         <v-row>
-          <v-col class="body-2" align="right">
+          <v-col class="body-2 text-right">
             タイプ数：
             {{ cDtoItem.resData.typeRankList.length }}
           </v-col>

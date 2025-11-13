@@ -60,7 +60,7 @@
             </v-col>
           </v-row>
           <v-row>
-            <v-col class="py-0" align="right">
+            <v-col class="py-0 text-right">
               <v-btn
                 rounded
                 class="mx-2"

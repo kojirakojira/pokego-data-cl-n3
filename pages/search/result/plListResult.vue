@@ -29,7 +29,7 @@
                       {{ editUtils().appendRemarks(cDtoItem.resData.name, cDtoItem.resData.remarks) }}
                     </v-col>
                   </v-row>
-                  <v-row class="searched-param" align="center">
+                  <v-row class="searched-param">
                     <v-col cols="7" md="6" lg="6" xl="6" class="pa-1">
                       個体値<br>(こうげき - ぼうぎょ - HP)
                     </v-col>

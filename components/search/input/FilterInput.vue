@@ -5,7 +5,7 @@
         <v-divider />
       </v-col>
     </v-row>
-    <v-row align="center">
+    <v-row>
       <v-col cols="12" md="5" lg="4" xl="4" class="col-title">
         {{ constantAccessor.getValue('type', 'FILTER_ITEMS') }}
       </v-col>
@@ -40,7 +40,7 @@
         <v-divider />
       </v-col>
     </v-row>
-    <v-row align="center">
+    <v-row>
       <v-col cols="12" md="5" lg="4" xl="4" class="col-title">
         {{ constantAccessor.getValue('finEvo', 'FILTER_ITEMS') }}
       </v-col>
@@ -55,7 +55,7 @@
         />
       </v-col>
     </v-row>
-    <v-row align="center">
+    <v-row>
       <v-spacer />
       <v-col cols="12" md="7" lg="8" xl="8">
         <v-switch
@@ -74,7 +74,7 @@
         <v-divider />
       </v-col>
     </v-row>
-    <v-row align="center">
+    <v-row>
       <v-col cols="12" md="5" lg="4" xl="4" class="col-title">
         {{ constantAccessor.getValue('mega', 'FILTER_ITEMS') }}
       </v-col>
@@ -89,7 +89,7 @@
         />
       </v-col>
     </v-row>
-    <v-row align="center">
+    <v-row>
       <v-spacer />
       <v-col cols="12" md="7" lg="8" xl="8">
         <v-switch
@@ -108,7 +108,7 @@
         <v-divider />
       </v-col>
     </v-row>
-    <v-row align="center">
+    <v-row>
       <v-col cols="12" md="5" lg="4" xl="4" class="col-title">
         {{ constantAccessor.getValue('dynamax', 'FILTER_ITEMS') }}
       </v-col>
@@ -123,7 +123,7 @@
         />
       </v-col>
     </v-row>
-    <v-row align="center">
+    <v-row>
       <v-spacer />
       <v-col cols="12" md="7" lg="8" xl="8">
         <v-switch
@@ -142,7 +142,7 @@
         <v-divider />
       </v-col>
     </v-row>
-    <v-row align="center">
+    <v-row>
       <v-col cols="12" md="5" lg="4" xl="4" class="col-title">
         {{ constantAccessor.getValue('gigantamax', 'FILTER_ITEMS') }}
       </v-col>
@@ -157,7 +157,7 @@
         />
       </v-col>
     </v-row>
-    <v-row align="center">
+    <v-row>
       <v-spacer />
       <v-col cols="12" md="7" lg="8" xl="8">
         <v-switch
@@ -176,7 +176,7 @@
         <v-divider />
       </v-col>
     </v-row>
-    <v-row align="center">
+    <v-row>
       <v-col cols="12" md="5" lg="4" xl="4" class="col-title">
         {{ constantAccessor.getValue('impled', 'FILTER_ITEMS') }}
       </v-col>
@@ -191,7 +191,7 @@
         />
       </v-col>
     </v-row>
-    <v-row align="center">
+    <v-row>
       <v-spacer />
       <v-col cols="12" md="7" lg="8" xl="8">
         <v-switch
@@ -210,7 +210,7 @@
         <v-divider />
       </v-col>
     </v-row>
-    <v-row align="center">
+    <v-row>
       <v-col cols="12" md="5" lg="4" xl="4" class="col-title">
         {{ constantAccessor.getValue('tooStrong', 'FILTER_ITEMS') }}
         <SearchInputHelpMsg>
@@ -228,7 +228,7 @@
         />
       </v-col>
     </v-row>
-    <v-row align="center">
+    <v-row>
       <v-spacer />
       <v-col cols="12" md="7" lg="8" xl="8">
         <v-switch
@@ -247,7 +247,7 @@
         <v-divider />
       </v-col>
     </v-row>
-    <v-row align="center">
+    <v-row>
       <v-col cols="12" md="5" lg="4" xl="4" class="col-title">
         {{ constantAccessor.getValue('region', 'FILTER_ITEMS') }}
       </v-col>
@@ -264,7 +264,7 @@
         </div>
       </v-col>
     </v-row>
-    <v-row align="center">
+    <v-row>
       <v-spacer />
       <v-col cols="12" md="7" lg="8" xl="8">
         <v-switch
@@ -283,7 +283,7 @@
         <v-divider />
       </v-col>
     </v-row>
-    <v-row align="center">
+    <v-row>
       <v-col cols="12" md="5" lg="4" xl="4" class="col-title">
         {{ constantAccessor.getValue('gen', 'FILTER_ITEMS') }}
       </v-col>
@@ -300,7 +300,7 @@
         </div>
       </v-col>
     </v-row>
-    <v-row align="center">
+    <v-row>
       <v-spacer />
       <v-col cols="12" md="7" lg="8" xl="8">
         <v-switch
@@ -321,7 +321,7 @@
         </v-col>
       </v-row>
       <v-row>
-        <v-col cols="12" align="center">
+        <v-col cols="12" class="text-center">
           <v-btn
             rounded
             min-width="50%"

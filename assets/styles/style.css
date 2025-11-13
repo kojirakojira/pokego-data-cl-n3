@@ -1,19 +1,4 @@
-.error-message-text {
-  color: red;
-  padding-left: 12px;
-}
-.manage-title-line {
-  background-color: red;
-  margin-top: 20px;
-  margin-bottom: 10px;
-  color: white;
-}
-.title-line {
-  background-color: #1E1E1E;
-  margin-top: 20px;
-  margin-bottom: 20px;
-  color: white;
-}
+
 .link {
   color: #0000EE !important;
   /* transition: all 1s ease 0s !important; */

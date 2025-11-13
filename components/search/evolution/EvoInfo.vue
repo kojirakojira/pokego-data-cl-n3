@@ -11,8 +11,8 @@
         <h4 class="mt-0 col-title">
           進化ツリー
         </h4>
-        <div style="justify-content: center; display: flex;">
-          <div :class="$style.evo_tree" style="overflow-x: auto;">
+        <div class="d-flex justify-center">
+          <div :class="[$style.evo_tree, 'overflow-x-auto']">
             <div style="display: flex;">
               <div v-for="(yArr, i) in evolTreeInfo" :key="i">
                 <div v-for="(xArr, yIdx) in yArr" :key="`hierarchy-${yIdx + 1}`" :class="$style.hierarchy">
@@ -66,7 +66,7 @@
         <h4 class="mt-0 col-title">
           別のすがた
         </h4>
-        <v-container v-if="anotherForms.length" style="justify-content: center; display: grid;">
+        <v-container v-if="anotherForms.length" class="justify-center" style="display: grid;">
           <v-row :class="$style.another_form">
             <v-col v-for="itemPid in anotherForms" :key="`aot-form-${itemPid}`" class="pa-0">
               <div :class="$style.block">
@@ -79,13 +79,13 @@
             </v-col>
           </v-row>
         </v-container>
-        <div v-else align="center">
+        <div v-else class="text-center">
           なし
         </div>
         <h4 class="mt-0 col-title">
           同系統のポケモン
         </h4>
-        <v-container v-if="bfAfAotForms.length" style="justify-content: center; display: grid;">
+        <v-container v-if="bfAfAotForms.length" class="justify-center" style="display: grid;">
           <v-row :class="$style.bfaf_another_form">
             <v-col v-for="itemPid in bfAfAotForms" :key="`aot-form-${itemPid}`" class="pa-0">
               <div :class="$style.block">
@@ -98,7 +98,7 @@
             </v-col>
           </v-row>
         </v-container>
-        <div v-else align="center">
+        <div v-else class="text-center">
           なし
         </div>
       </v-col>

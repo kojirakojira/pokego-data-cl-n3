@@ -27,7 +27,7 @@
               列を非表示にする
             </v-btn>
           </v-col>
-          <v-col cols="4" align="right">
+          <v-col cols="4" class="text-right">
             <v-btn
               rounded
               variant="outlined"
@@ -59,7 +59,7 @@
       </v-container>
       <v-container>
         <v-row>
-          <v-col class="py-0 body-2" align="right">
+          <v-col class="py-0 body-2 text-right">
             {{ `絞り込み結果：${cDtoItem.resData.pfr.gpAndCpList.length}件` }}
           </v-col>
         </v-row>

@@ -14,7 +14,7 @@
         <v-row>
           <v-col cols="12" sm="12" md="5" lg="5" class="px-0">
             <v-container>
-              <v-row align="center">
+              <v-row>
                 <v-col cols="12" sm="5" md="6" lg="6" class="col-title">
                   <v-icon>
                     mdi-pen
@@ -51,18 +51,11 @@
             sm="12"
             md="1"
             lg="1"
-            class="px-0"
-            style="display: flex; align-items: center;"
+            class="d-flex align-center justify-center"
           >
-            <v-container>
-              <v-row>
-                <v-col align="center">
-                  <v-icon class="arrow-down">
-                    mdi-arrow-right-bold-outline
-                  </v-icon>
-                </v-col>
-              </v-row>
-            </v-container>
+            <v-icon :class="!isSmAndDown || $style.arrow_down">
+              mdi-arrow-right-bold-outline
+            </v-icon>
           </v-col>
           <v-col cols="12" sm="12" md="5" lg="5" class="px-0">
             <v-container>
@@ -109,7 +102,7 @@
             重視ポイント
           </v-col>
           <v-col cols="12" sm="12" md="7" lg="7">
-            <v-radio-group v-model="cDtoItem.searchParams.emphasis" row>
+            <v-radio-group v-model="cDtoItem.searchParams.emphasis" row inline>
               <v-radio label="設定しない" value="none" />
               <v-radio label="こうげき重視" value="attack" />
               <v-radio label="ぼうぎょ重視" value="defense" />
@@ -197,6 +190,8 @@ const handleApiResult = (rd: XTypeResponse) => {
   }
 }
 
+const isSmAndDown = useDisplay().smAndDown
+
 useHead({
   title: searchCommon().getSearchPatternName(searchPattern),
   meta: [
@@ -210,12 +205,8 @@ useHead({
 })
 </script>
 
-<style lang="scss">
-.arrow-down {
+<style lang="scss" module>
+.arrow_down {
   transform: rotate(90deg);
-
-  @include display_pc {
-    transform: rotate(0deg);
-  }
 }
 </style>

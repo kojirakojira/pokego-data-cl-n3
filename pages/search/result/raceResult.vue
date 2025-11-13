@@ -6,7 +6,7 @@
     <div v-if="!isLoading">
       <v-container>
         <v-row v-if="cDtoItem.resData.filteredItems.length">
-          <v-col align="center">
+          <v-col class="text-center">
             <SearchInputFilteredItems
               :items="cDtoItem.resData.filteredItems"
               :title-style="'background-color: yellow;'"
@@ -86,7 +86,7 @@
       </h3>
       <v-container>
         <v-row>
-          <v-col cols="12" md="6" lg="6" xl="6" align="right">
+          <v-col cols="12" md="6" lg="6" xl="6" class="text-right">
             <GraphRaceGoRadarGraph
               :go-pokedex="cDtoItem.resData.race.goPokedex"
               :race-go-rank="cDtoItem.resData.race.goRank || new RaceGoRank()"
@@ -124,7 +124,7 @@
       </h3>
       <v-container v-if="cDtoItem.resData.race.pokedex">
         <v-row>
-          <v-col cols="12" md="6" lg="6" xl="6" align="right">
+          <v-col cols="12" md="6" lg="6" xl="6" class="text-right">
             <GraphRaceOriRadarGraph
               :pokedex="cDtoItem.resData.race.pokedex"
               :race-ori-rank="cDtoItem.resData.race.oriRank || new RaceOriRank()"

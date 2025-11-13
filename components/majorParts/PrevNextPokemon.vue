@@ -26,7 +26,7 @@
         :md="nextGrid.md"
         :lg="nextGrid.lg"
         :xl="nextGrid.xl"
-        align="right"
+        class="text-right"
       >
         <nuxt-link :to="{ name: routerLink, query: queryFunc(next) }">
           {{ nextTextFunc(next) }}

@@ -2,7 +2,7 @@
   <div>
     <v-container>
       <v-row>
-        <v-col align="right">
+        <v-col class="text-right">
           <v-btn rounded variant="outlined" @click="transitionUtils().moveLookup()">
             <v-icon>
               mdi-magnify
@@ -497,7 +497,7 @@
                 </v-col>
               </v-row>
               <v-row class="my-0">
-                <v-col align="right">
+                <v-col class="text-right">
                   <p class="link" @click="transitionUtils().raceDiff([])">
                     種族値を比較する >>
                   </p>

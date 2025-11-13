@@ -12,7 +12,7 @@
           </v-col>
         </v-row>
         <v-row>
-          <v-col align="right">
+          <v-col class="text-right">
             {{ `最終更新日：${cDtoItem.resData?.lastUpdated}` }}
           </v-col>
         </v-row>

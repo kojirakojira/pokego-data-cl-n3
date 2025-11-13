@@ -53,7 +53,7 @@
         </v-row>
         <template v-if="cDtoItem.resData.targetScpRank.goPokedex.region !== 'M'">
           <v-row>
-            <v-col align="center">
+            <v-col class="text-center">
               <p>{{ `スーパーリーグ：${cDtoItem.resData.targetScpRank.sl.rank}位` }}</p>
               <p>{{ `ハイパーリーグ：${cDtoItem.resData.targetScpRank.hl.rank}位` }}</p>
               <p>{{ `マスターリーグ：${cDtoItem.resData.targetScpRank.ml.rank}位` }}</p>
@@ -85,7 +85,7 @@
         <template v-else>
           <v-row>
             <v-col>
-              <div class="pl-4" align="center">
+              <div class="pl-4 text-center">
                 メガシンカ状態ではPvP参加不可
               </div>
             </v-col>
@@ -123,7 +123,7 @@
               </template>
               <template #bottom />
             </v-data-table>
-            <div v-else class="pl-4" align="center">
+            <div v-else class="pl-4 text-center">
               なし
             </div>
           </v-col>
@@ -160,7 +160,7 @@
               </template>
               <template #bottom />
             </v-data-table>
-            <div v-else class="pl-4" align="center">
+            <div v-else class="pl-4 text-center">
               なし
             </div>
           </v-col>
@@ -168,7 +168,7 @@
       </v-container>
       <v-container>
         <v-row>
-          <v-col align="right">
+          <v-col class="text-right">
             <p class="link" @click="transitionUtils().abundance(cDtoItem.resData.pokedexId)">
               ポケモン情報をみる >>
             </p>
