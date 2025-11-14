@@ -7,6 +7,7 @@
   },
   "scripts": {
     "dev": "cross-env APP_ENV=development nuxt dev",
+    "dev:host": "cross-env APP_ENV=development nuxt dev --host",
     "build": "nuxt build",
     "build:dev": "cross-env APP_ENV=development nuxt build",
     "start": "node .output/server/index.mjs",
