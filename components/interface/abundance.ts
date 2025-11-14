@@ -12,8 +12,11 @@ import { TypeScoreResponse } from './typeScore'
 export class AbundanceResponse extends ResearchResponse {
   goPokedex: GoPokedex
   cp40: number
+  cp40Max: number
   cp50: number
-  maxCp: number
+  cp50Max: number
+  cp51: number
+  cp51Max: number
   wild: CatchCp
   raid: CatchCp
   rocket: CatchCp
@@ -38,8 +41,11 @@ export class AbundanceResponse extends ResearchResponse {
     super()
     this.goPokedex = new GoPokedex()
     this.cp40 = 0
+    this.cp40Max = 0
     this.cp50 = 0
-    this.maxCp = 0
+    this.cp50Max = 0
+    this.cp51 = 0
+    this.cp51Max = 0
     this.wild = new CatchCp()
     this.raid = new CatchCp()
     this.rocket = new CatchCp()

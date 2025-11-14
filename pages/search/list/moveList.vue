@@ -394,7 +394,8 @@ const screenControlMethods = () => {
 watch(() => useRoute().fullPath, async () => {
   isLoading.value = true
   await screenControlMethods().init()
-  if (import.meta.client) { scrollTo(0, 0) }
+  // ローディングが完了し、画面が描画された後に実行したいため、nextTickだと少し早い
+  setTimeout(() => { scrollTo(0, 0) }, 0)
 })
 
 await screenControlMethods().init()

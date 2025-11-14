@@ -123,7 +123,7 @@
               <v-col cols="5" :class="$style.title">
                 強ポケ補正
                 <SearchInputHelpMsg>
-                  ポケモンGOの種族値は、原作の種族値から一定の変換式で算出されます。種族値が高すぎる一部のポケモンは算出された種族値から×0.91されます。<br>この補正には通称がないため、このサイトでは「強ポケ補正」と呼んでいます。
+                  ポケモンGOの種族値は、原作の種族値から一定の変換式で算出されます。種族値が高すぎる一部のポケモンは算出された種族値から×0.91(メガシンカ、ゲンシカイキの場合は×0.97)されます。<br>この補正には通称がないため、このサイトでは「強ポケ補正」と呼んでいます。
                 </SearchInputHelpMsg>
               </v-col>
               <v-col cols="7" :class="$style.content">
@@ -143,7 +143,7 @@
                   CP(PL40)
                 </v-col>
                 <v-col cols="7" :class="$style.content">
-                  {{ cDtoItem.resData.cp40 }}
+                  {{ `${cDtoItem.resData.cp40} 〜 ${cDtoItem.resData.cp40Max}` }}
                 </v-col>
               </v-row>
               <v-row :class="$style.row">
@@ -151,7 +151,7 @@
                   CP(PL50)
                 </v-col>
                 <v-col cols="7" :class="$style.content">
-                  {{ cDtoItem.resData.cp50 }}
+                  {{ `${cDtoItem.resData.cp50} 〜 ${cDtoItem.resData.cp50Max}` }}
                 </v-col>
               </v-row>
               <v-row :class="$style.row">
@@ -159,7 +159,7 @@
                   最大CP(PL51)
                 </v-col>
                 <v-col cols="7" :class="$style.content">
-                  {{ cDtoItem.resData.maxCp }}
+                  {{ `${cDtoItem.resData.cp51} 〜 ${cDtoItem.resData.cp51Max}` }}
                 </v-col>
               </v-row>
               <v-row :class="$style.row">
