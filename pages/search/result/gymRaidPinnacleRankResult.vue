@@ -32,7 +32,7 @@
                     </v-col>
                     <v-col cols="6" md="6" lg="6" xl="6" class="pa-1">
                       {{ cDtoItem.searchParams.weather ? constantAccessor.getValue(cDtoItem.searchParams.weather, 'WEATHER') : '指定なし' }}
-                      <p v-if="cDtoItem.resData.wbTypeList.length">
+                      <p v-if="cDtoItem.resData.wbTypeList?.length">
                         {{ '(天候ブースト対象:' }}<!-- eslint-disable-next-line vue/no-v-html --><!--
                         --><span v-html="typeColorUtils.typeDecoration(cDtoItem.resData.wbTypeList.map(t => constantAccessor.getTypeJpn(t)).join(' '))" /><!--
                         -->{{ ')' }}
@@ -261,14 +261,6 @@ const screenControlMethods = () => {
     onClickRow
   }
 }
-
-// const wbTypeStrList = computed(() => {
-//   if (!cDtoItem.value.resData.wbTypeList) { return '' }
-//   return cDtoItem.value.resData.wbTypeList.map((type) => {
-//     return constantAccessor.getTypeJpn(type)
-//   })
-//     .join(', ')
-// })
 
 /**
  * 画面遷移時のテーブル制御
