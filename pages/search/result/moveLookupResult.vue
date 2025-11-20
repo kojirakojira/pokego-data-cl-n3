@@ -19,7 +19,7 @@
       </v-row>
     </v-container>
     <MajorPartsH2Common>
-      {{ `${cDtoItem?.resData.name}の技性能・覚えるポケモン` }}
+      {{ `${cDtoItem?.resData.name || '？？？'}の技性能・覚えるポケモン` }}
     </MajorPartsH2Common>
     <div v-if="!isLoading">
       <v-container v-if="fastAttackDetails">
@@ -717,6 +717,16 @@ const screenControlMethods = () => {
     }
     tableControlMethods().restoreTableControl(tableControl)
 
+    if (cDtoItem.value.searchParams.mid !== cDtoItem.value.resData.moveId) {
+      // 指定したmoveIdと検索結果のmoveIdが異なる場合(めざめるパワーの考慮)
+      const mid = cDtoItem.value.resData.moveId
+      cDtoItem.value.searchParams.mid = mid
+      useRouter().replace({
+        name: 'search-result-moveLookupResult',
+        query: { mid }
+      })
+    }
+
     isLoading.value = !cDtoItem.value.resData
   }
 
@@ -839,7 +849,7 @@ await screenControlMethods().init()
 // Header
 const thisPath = useRuntimeConfig().public.url + useRoute().path
 const metaObject = computed((): MetaObject => {
-  const pokeName = cDtoItem.value.resData.name || ''
+  const pokeName = cDtoItem.value.resData.name || '？？？'
   const pokeImage = 'pokego/peripper-eyes.png'
   return {
     title: `${pokeName}の技性能・覚えるポケモン`,

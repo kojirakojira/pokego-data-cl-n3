@@ -29,7 +29,14 @@
           </v-col>
         </v-row>
         <v-row>
-          <v-col cols="12" sm="6" md="7" lg="8" xl="8">
+          <v-col
+            xs="12"
+            sm="12"
+            md="7"
+            lg="8"
+            xl="8"
+            xxl="8"
+          >
             <v-row>
               <v-col>
                 <div v-for="(largeScale, index) in searchCommon().searchPatternNames" :key="index">
@@ -43,7 +50,7 @@
                       class="px-0"
                       :to="{ name: `search-${key}` }"
                     >
-                      <v-list-item-title>
+                      <v-list-item-title :title="value">
                         <v-icon large>
                           mdi-pokemon-go
                         </v-icon>
@@ -55,7 +62,12 @@
               </v-col>
             </v-row>
           </v-col>
-          <v-col cols="12" sm="6" md="5" lg="4" xl="4">
+          <v-col
+            cols="12"
+            sm="12"
+            md="5"
+            lg="4"
+          >
             <SearchTopicPage class="my-2" />
             <SearchTopicPokemon class="my-2" />
           </v-col>

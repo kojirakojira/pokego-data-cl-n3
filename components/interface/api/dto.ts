@@ -711,3 +711,17 @@ export interface PokemonAttackCombination {
   shadow: boolean,
   attribute: string
 }
+
+export interface MoveCombination {
+  no: number,
+  faMoveId: string,
+  faName: string,
+  faType: string,
+  caMoveId: string,
+  caName: string,
+  caType: string,
+  faAttackScore: number,
+  caAttackScore: number,
+  attackScore: number,
+  shadow: boolean
+}

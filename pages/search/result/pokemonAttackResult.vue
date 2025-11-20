@@ -63,7 +63,7 @@
                 :items="cDtoItem.resData.fastAttackList"
                 item-value="moveId"
                 items-per-page="-1"
-                no-data-text="覚える技が存在しないみたいです。"
+                no-data-text="覚える技が存在しないか、未実装のポケモンです。"
                 hover
                 @click:row="screenControlMethods().onClickRow"
               >
@@ -87,7 +87,7 @@
                 :items="cDtoItem.resData.chargedAttackList"
                 item-value="moveId"
                 items-per-page="-1"
-                no-data-text="覚える技が存在しないみたいです。"
+                no-data-text="覚える技が存在しないか、未実装のポケモンです。"
                 hover
                 @click:row="screenControlMethods().onClickRow"
               >

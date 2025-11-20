@@ -14,8 +14,8 @@ export const toastStore = defineStore(
     const pushToast = (elem: ToastItem) => {
       elem.color = elem.color || 'black'
       elem.timeout = elem.timeout || 4000
-      if (elem.msg === waitingMsgs.value.arr.slice(-1)[0]?.msg) {
-        // waitingMsgsの一番後ろと追加しようとしているメッセージが全く同じ場合は追加しない。
+      if (import.meta.server || elem.msg === waitingMsgs.value.arr.slice(-1)[0]?.msg) {
+        // サーバ側の場合、waitingMsgsの一番後ろと追加しようとしているメッセージが全く同じ場合は追加しない。
         return
       }
       waitingMsgs.value.arr.push(elem)
