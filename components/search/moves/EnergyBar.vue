@@ -1,5 +1,5 @@
 <template>
-  <div :class="$style.energy_bar">
+  <div v-if="divide > 0" :class="$style.energy_bar">
     <div v-if="divide >= 2" :class="$style.separator" />
     <div v-if="divide >= 3" :class="$style.separator" />
   </div>

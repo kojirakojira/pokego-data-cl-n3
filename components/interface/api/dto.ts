@@ -667,12 +667,14 @@ export interface GoPokedexAndMoveInfo {
 }
 
 export class FastAttackDetails {
+  generalDescription: string
   fastAttack: DispFastAttack
   fastAttackRank: FastAttackRank
   learnPokemonList: Array<GoPokedexAndMoveInfo>
   sameTypeMoveList: Array<DispFastAttack>
 
   constructor () {
+    this.generalDescription = ''
     this.fastAttack = new DispFastAttack()
     this.fastAttackRank = new FastAttackRank()
     this.learnPokemonList = []
@@ -681,12 +683,14 @@ export class FastAttackDetails {
 }
 
 export class ChargedAttackDetails {
+  generalDescription: string
   chargedAttack: DispChargedAttack
   chargedAttackRank: ChargedAttackRank
   learnPokemonList: Array<GoPokedexAndMoveInfo>
   sameTypeMoveList: Array<DispChargedAttack>
 
   constructor () {
+    this.generalDescription = ''
     this.chargedAttack = new DispChargedAttack()
     this.chargedAttackRank = new ChargedAttackRank()
     this.learnPokemonList = []

@@ -51,6 +51,14 @@
                   <SearchType :type="constantAccessor.getTypeJpn(fastAttackDetails.fastAttack.type)" />
                 </v-col>
               </v-row>
+              <v-row v-if="fastAttackDetails.generalDescription" :class="$style.row">
+                <v-col cols="5" :class="$style.title">
+                  特徴
+                </v-col>
+                <v-col cols="7" :class="$style.content">
+                  {{ fastAttackDetails.generalDescription }}
+                </v-col>
+              </v-row>
             </v-container>
           </v-col>
         </v-row>
@@ -325,6 +333,14 @@
                 </v-col>
                 <v-col cols="7" :class="$style.content">
                   <SearchType :type="constantAccessor.getTypeJpn(chargedAttackDetails.chargedAttack.type)" />
+                </v-col>
+              </v-row>
+              <v-row v-if="chargedAttackDetails.generalDescription" :class="$style.row">
+                <v-col cols="5" :class="$style.title">
+                  特徴
+                </v-col>
+                <v-col cols="7" :class="$style.content">
+                  {{ chargedAttackDetails.generalDescription }}
                 </v-col>
               </v-row>
             </v-container>
