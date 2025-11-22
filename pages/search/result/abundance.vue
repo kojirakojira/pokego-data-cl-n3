@@ -479,6 +479,63 @@
               </v-row>
             </v-container>
           </div>
+          <!-- 技の組み合わせ -->
+          <h4>強い技の組み合わせ(ジム・レイド)</h4>
+          <div v-if="isLoadedGymRaidPokeMoveCombi">
+            <v-container>
+              <v-row>
+                <v-col>
+                  <v-data-table
+                    id="move-combination-table"
+                    :headers="gymRaidCombiHeaders"
+                    :items="cDtoItem.gymRaidPokeMoveCombiResData.moveCombiList"
+                    items-per-page="-1"
+                    no-data-text="loading now..."
+                    no-results-text="該当するデータがありません。"
+                    hover
+                  >
+                    <template #[`item.no`]="{ index }">
+                      {{ index + 1 }}
+                    </template>
+                    <template #[`item.faName`]="{ item }">
+                      <div
+                        style="min-width: 100px; cursor: pointer;"
+                        @click="transitionUtils().moveLookupResult(item.faMoveId)"
+                      >
+                        {{ item.faName }}
+                      </div>
+                    </template>
+                    <template #[`item.caName`]="{ item }">
+                      <div
+                        style="min-width: 100px; cursor: pointer;"
+                        @click="transitionUtils().moveLookupResult(item.faMoveId)"
+                      >
+                        {{ item.caName }}
+                      </div>
+                    </template>
+                    <template #bottom />
+                  </v-data-table>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col>
+                  <p class="caption">
+                    ※1: 「スコア」は、スペシャル技が溜まったら撃つ、溜まったら撃つを繰り返し、5分間攻撃し続けた場合に理論値で出せる最大の火力を示しています。
+                  </p>
+                  <p class="caption">
+                    ※2: シャドウポケモンのみが覚える技であっても、他の技との公平性を考慮してシャドウ倍率は乗せずに算出しています。
+                  </p>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col class="text-right">
+                  <p class="link" @click="transitionUtils().gymRaidPokeMoveCombiResult(cDtoItem.gymRaidPokeMoveCombiResData.pokedexId)">
+                    技の組み合わせの詳細をみる >>
+                  </p>
+                </v-col>
+              </v-row>
+            </v-container>
+          </div>
           <!-- タイプ倍率 -->
           <h3>タイプ倍率</h3>
           <div v-if="isLoadedTypeScore">
@@ -574,6 +631,7 @@ import { TypeScoreResultSearchParams, type TypeScoreResponse } from '~/component
 import { type GoPokedex, RaceGoRank, GoPokedexAndCpPl, ScpRank } from '~/components/interface/api/dto'
 import { ScpRankMaxMinResponse, ScpRankMaxMinSearchParams } from '~/components/interface/scpRankMaxMin'
 import { PokemonAttackResultSearchParams, type PokemonAttackResponse } from '~/components/interface/pokemonAttack'
+import { GymRaidPokeMoveCombiSearchParams, type GymRaidPokeMoveCombiResponse } from '~/components/interface/gymRaidPokeMoveCombi'
 const MajorPartsH2Common = defineAsyncComponent(() => import('~/components/majorParts/H2Common.vue'))
 const IconAwakeningIconMegaIcon = defineAsyncComponent(() => import('~/components/icon/awakeningIcon/MegaIcon.vue'))
 const IconAwakeningIconDynamaxIcon = defineAsyncComponent(() => import('~/components/icon/awakeningIcon/DynamaxIcon.vue'))
@@ -611,13 +669,15 @@ const screenControlMethods = () => {
       const evoReq = new EvolutionResultSearchParams()
       const typeScoreReq = new TypeScoreResultSearchParams()
       const pokemonAttackReq = new PokemonAttackResultSearchParams()
+      const gymRaidPokeMoveCombiReq = new GymRaidPokeMoveCombiSearchParams()
       // すべてのリクエストにpokedexIdを設定する
       abundanceReq.pid =
       raceReq.pid =
       scpRankMaxMinReq.pid =
       evoReq.pid =
       typeScoreReq.pid =
-      pokemonAttackReq.pid = cDtoItem.value.searchParams.pid
+      pokemonAttackReq.pid =
+      gymRaidPokeMoveCombiReq.pid = cDtoItem.value.searchParams.pid
 
       // 閲覧数をカウントしない
       raceReq.enableCount = true
@@ -625,6 +685,10 @@ const screenControlMethods = () => {
       evoReq.enableCount = true
       typeScoreReq.enableCount = true
       pokemonAttackReq.enableCount = true
+      gymRaidPokeMoveCombiReq.enableCount = true
+
+      // 表示件数設定
+      gymRaidPokeMoveCombiReq.limit = 20
 
       // 入力チェック不要
       await Promise.all([
@@ -633,7 +697,8 @@ const screenControlMethods = () => {
         get('/api/scpRankMaxMin', cDtoItem.value, scpRankMaxMinReq, 'scpRankMaxMinResData'),
         get('/api/evolution', cDtoItem.value, evoReq, 'evoResData'),
         get('/api/typeScore', cDtoItem.value, typeScoreReq, 'typeScoreResData'),
-        get('/api/pokemonAttack', cDtoItem.value, pokemonAttackReq, 'pokemonAttackResData')
+        get('/api/pokemonAttack', cDtoItem.value, pokemonAttackReq, 'pokemonAttackResData'),
+        get('/api/gymRaidPokeMoveCombi', cDtoItem.value, gymRaidPokeMoveCombiReq, 'gymRaidPokeMoveCombiResData')
       ])
         .then((rdArr) => {
           for (const rd of rdArr) {
@@ -653,7 +718,8 @@ const screenControlMethods = () => {
       'scpRankMaxMinResData',
       'evoResData',
       'typeScoreResData',
-      'pokemonAttackResData'
+      'pokemonAttackResData',
+      'gymRaidPokeMoveCombiResData'
     ]
     const resDataDic: Record<string, ResearchResponse> | null =
       searchCommon().restoreCurrentScreen(resDataNameArr) as Record<string, ResearchResponse>
@@ -676,6 +742,7 @@ const screenControlMethods = () => {
     cDtoItem.value.evoResData = resDataDic.evoResData as EvolutionResponse
     cDtoItem.value.typeScoreResData = resDataDic.typeScoreResData as TypeScoreResponse
     cDtoItem.value.pokemonAttackResData = resDataDic.pokemonAttackResData as PokemonAttackResponse
+    cDtoItem.value.gymRaidPokeMoveCombiResData = resDataDic.gymRaidPokeMoveCombiResData as GymRaidPokeMoveCombiResponse
   }
 
   interface DispAttack {
@@ -867,6 +934,21 @@ const caHeaders = computed((): Array<any> => {
     return col.key.substring(0, col.key.indexOf('.')) === cDtoItem.value.pokemonAttackTableControl.radioStatus
   })
 })
+
+/**
+ * gymRaidPokeMoveCombi
+ */
+/** gymRaidPokeMoveCombi */
+const isLoadedGymRaidPokeMoveCombi = computed(() => {
+  return !!cDtoItem.value.gymRaidPokeMoveCombiResData.pokedexId
+})
+
+const gymRaidCombiHeaders = readonly<Array<any>>([
+  { title: 'No', key: 'no', align: 'center', sortable: false },
+  { title: '通常技', key: 'faName' },
+  { title: 'スペシャル技', key: 'caName' },
+  { title: 'スコア', key: 'attackScore' }
+])
 
 /**
  * 共通系

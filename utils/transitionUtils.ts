@@ -149,6 +149,13 @@ export default () => {
     })
   }
 
+  const gymRaidPokeMoveCombiResult = (pid: string) => {
+    useRouter().push({
+      name: 'search-result-gymRaidPokeMoveCombiResult',
+      query: { pid }
+    })
+  }
+
   return {
     abundance,
     searchAll,
@@ -161,6 +168,7 @@ export default () => {
     scpRankMaxMinResult,
     moveLookup,
     moveLookupResult,
-    moveList
+    moveList,
+    gymRaidPokeMoveCombiResult
   }
 }

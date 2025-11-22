@@ -23,6 +23,7 @@ export class GymRaidPokeMoveCombiResponse extends ResearchResponse {
 export class GymRaidPokeMoveCombiSearchParams extends ResearchRequest {
   override pid: string
   override name: string
+  limit?: number
 
   constructor () {
     super()
@@ -69,10 +70,15 @@ export class GymRaidPokeMoveCombiResultDtoItem implements ResultDtoItem {
  * APIアクセス用get関数
  */
 export const get = async (
-  searchParams: GymRaidPokeMoveCombiSearchParams | GymRaidPokeMoveCombiResultSearchParams
+  searchParams: GymRaidPokeMoveCombiSearchParams | GymRaidPokeMoveCombiResultSearchParams,
+  limit?: number
 ): Promise<GymRaidPokeMoveCombiResponse | void> => {
+  const dic: Record<string, any> = { ...searchParams }
+  if (limit) {
+    dic.limit = limit
+  }
   const res = await fetchCommon('/api/gymRaidPokeMoveCombi', 'GET', {
-    query: searchParams
+    query: dic
   })
   const rd: GymRaidPokeMoveCombiResponse | null = res.data as GymRaidPokeMoveCombiResponse
   if (!searchCommon().handleApiMessage(rd)) {
