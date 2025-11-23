@@ -146,7 +146,7 @@ useHead({
     { property: 'og:title', content: `${searchCommon().getSearchPatternName(searchPattern)} - ペリずかん` },
     { property: 'og:url', content: useRuntimeConfig().public.url + useRoute().path },
     { property: 'og:site_name', content: 'ペリずかん' },
-    { property: 'og:description', content: 'タマゴから孵化したポケモンにおける、CPの振れ幅を確認することができます。' },
+    { property: 'og:description', content: 'ジム・レイドにおいて、最も火力がでる最強の技の組み合わせをランキング形式で見ることができます。' },
     { property: 'og:image', content: editUtils().getUrl('pokego/peripper-eyes.png') }
   ]
 })

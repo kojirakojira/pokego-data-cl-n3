@@ -490,7 +490,7 @@
                     :headers="gymRaidCombiHeaders"
                     :items="cDtoItem.gymRaidPokeMoveCombiResData.moveCombiList"
                     items-per-page="-1"
-                    no-data-text="loading now..."
+                    no-data-text="覚える技が存在しないか、未実装のポケモンです。"
                     no-results-text="該当するデータがありません。"
                     hover
                   >

@@ -43,7 +43,7 @@
               :headers="headers"
               :items="cDtoItem.resData.moveCombiList"
               items-per-page="-1"
-              no-data-text="loading now..."
+              no-data-text="覚える技が存在しないか、未実装のポケモンです。"
               no-results-text="該当するデータがありません。"
               hover
             >
@@ -157,13 +157,13 @@ const metaObject = computed((): MetaObject => {
   const pokeName = cDtoItem.value.resData.name || ''
   const pokeImage = editUtils().getUrl(cDtoItem.value.resData.image2 || 'pokego/peripper-eyes.png')
   return {
-    title: `${pokeName}のタマゴCP`,
+    title: `${pokeName}の技の組み合わせランキング(ジム・レイド)`,
     meta: [
       { property: 'og:type', content: 'article' },
-      { property: 'og:title', content: `${pokeName}のタマゴCP - ペリずかん` },
+      { property: 'og:title', content: `${pokeName}の技の組み合わせランキング(ジム・レイド) - ペリずかん` },
       { property: 'og:url', content: thisPath },
       { property: 'og:site_name', content: 'ペリずかん' },
-      { property: 'og:description', content: `${pokeName}のCPを確認できます。` },
+      { property: 'og:description', content: `ジム・レイドにおいて、${pokeName}の最も火力がでる最強の技の組み合わせをランキング形式で見ることができます。` },
       { property: 'og:image', content: pokeImage }
     ]
   }
