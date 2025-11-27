@@ -1,3 +1,4 @@
+import type { SortItem } from 'vuetify/lib/components/VDataTable/composables/sort'
 import { PokemonFilterResult } from './api/dto'
 import { ResearchRequest } from './api/request'
 import { Response } from './api/response'
@@ -41,7 +42,6 @@ export class FilterAllResultSearchParams extends FilterAllSearchParams {
 /**
  * 結果画面用DTOの定義
  */
-type SortItem = { key: string, order?: boolean | 'asc' | 'desc' }
 export interface TableControl {
   chkboxSelected: Array<string>, // 列を非表示にするチェックボックス
   sortByArr: Array<SortItem>, // v-data-tableのソート中のItem

@@ -98,9 +98,10 @@ export class GymRaidPinnacleRankResultSearchParams {
  * 結果画面用DTOの定義
  */
 export interface TableControl {
-   sortByArr: Array<SortItem>,
-   scrollTop: number
-  }
+  sortByArr: Array<SortItem>, // v-data-tableのソート中のItem
+  itemsPerPage: number, // 現在の1ページ当たり表示件数
+  currentPage: number // 現在のページ
+}
 export class GymRaidPinnacleRankResultDtoItem implements ResultDtoItem {
   searchParams: GymRaidPinnacleRankResultSearchParams
   resData: GymRaidPinnacleRankResponse
@@ -111,7 +112,8 @@ export class GymRaidPinnacleRankResultDtoItem implements ResultDtoItem {
     this.resData = new GymRaidPinnacleRankResponse()
     this.tableControl = {
       sortByArr: [],
-      scrollTop: 0
+      itemsPerPage: -1,
+      currentPage: 1
     }
   }
 }

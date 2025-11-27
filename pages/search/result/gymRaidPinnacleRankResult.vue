@@ -111,9 +111,11 @@
             <v-data-table
               id="pokemon-attack-combination-table"
               v-model:sort-by="cDtoItem.tableControl.sortByArr"
+              v-model:items-per-page="cDtoItem.tableControl.itemsPerPage"
+              v-model:page="cDtoItem.tableControl.currentPage"
               :headers="headers"
               :items="cDtoItem.resData.combiList"
-              items-per-page="-1"
+              :items-per-page-options="itemsPerPageOptions"
               multi-sort
               no-data-text="loading now..."
               no-results-text="該当するデータがありません。"
@@ -155,7 +157,6 @@
                   {{ item.caName }}
                 </div>
               </template>
-              <template #bottom />
             </v-data-table>
           </v-col>
         </v-row>
@@ -262,6 +263,20 @@ const screenControlMethods = () => {
   }
 }
 
+const itemsPerPageOptions = computed((): Array<number> => {
+  const retArr: Array<number> = []
+  const count = cDtoItem.value.resData.combiList.length
+
+  const limit = 200
+  if (count > limit) {
+    for (let i = limit; i < count; i += limit) {
+      retArr.push(i)
+    }
+  }
+  retArr.push(-1)
+
+  return retArr
+})
 /**
  * 画面遷移時のテーブル制御
  */
@@ -274,8 +289,10 @@ const tableControlMethods = () => {
     const tc = cDtoItem.value.tableControl
     // ソートの復元
     tc.sortByArr = tableControl?.sortByArr || tc.sortByArr
-    // スクロール位置
-    tc.scrollTop = tableControl?.scrollTop || tc.scrollTop
+    // 現在の1ページ当たり表示件数の復元
+    tc.itemsPerPage = tableControl?.itemsPerPage || itemsPerPageOptions.value[0]
+    // 現在のページ
+    tc.currentPage = tableControl?.currentPage || 1
   }
 
   return {
@@ -283,22 +300,22 @@ const tableControlMethods = () => {
   }
 }
 
-onMounted(() => {
-  // スクロール位置の復元
-  const table = document.getElementById('pokemon-attack-combination-table')
-  if (table) {
-    table.children[0].scrollTop = cDtoItem.value.tableControl.scrollTop
-  }
-})
+// onMounted(() => {
+//   // スクロール位置の復元
+//   const table = document.getElementById('pokemon-attack-combination-table')
+//   if (table) {
+//     table.children[0].scrollTop = cDtoItem.value.tableControl.scrollTop
+//   }
+// })
 
-onBeforeRouteLeave((_to, _from, next) => {
-  // 画面を離れる前にスクロール位置を退避
-  const table = document.getElementById('pokemon-attack-combination-table')
-  if (table) {
-    cDtoItem.value.tableControl.scrollTop = table.children[0].scrollTop
-  }
-  next()
-})
+// onBeforeRouteLeave((_to, _from, next) => {
+//   // 画面を離れる前にスクロール位置を退避
+//   const table = document.getElementById('pokemon-attack-combination-table')
+//   if (table) {
+//     cDtoItem.value.tableControl.scrollTop = table.children[0].scrollTop
+//   }
+//   next()
+// })
 
 await screenControlMethods().init()
 
