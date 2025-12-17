@@ -15,15 +15,30 @@
                 <v-container>
                   <v-row>
                     <v-col cols="6" md="6" lg="6" xl="6" class="pa-1">
-                      タイプ
+                      相手のポケモン
                     </v-col>
                     <v-col cols="6" md="6" lg="6" xl="6" class="pa-1">
-                      <SearchType :type="cDtoItem.searchParams.defenderType1" />
+                      <SearchType :type="cDtoItem.searchParams.oppType1" />
                       <SearchType
-                        v-if="cDtoItem.searchParams.defenderType2 && cDtoItem.searchParams.defenderType1 !== cDtoItem.searchParams.defenderType2"
-                        :type="cDtoItem.searchParams.defenderType2"
+                        v-if="cDtoItem.searchParams.oppType2 && cDtoItem.searchParams.oppType1 !== cDtoItem.searchParams.oppType2"
+                        :type="cDtoItem.searchParams.oppType2"
                         style="margin-left: 3px;"
                       />
+                    </v-col>
+                  </v-row>
+                  <v-row class="searched-param">
+                    <v-col cols="7" md="6" lg="6" xl="6" class="pa-1">
+                      自分のポケモン
+                    </v-col>
+                    <v-col cols="5" md="6" lg="6" xl="6" class="pa-1">
+                      <div v-if="cDtoItem.searchParams.ownTypes.length !== 0 && cDtoItem.searchParams.ownTypes.length !== constant.TYPE.length">
+                        <span v-for="(t, i) in cDtoItem.searchParams.ownTypes" :key="`saerch-${i}`" class="mr-2">
+                          <SearchType :type="t" />
+                        </span>
+                      </div>
+                      <div v-else>
+                        全タイプ
+                      </div>
                     </v-col>
                   </v-row>
                   <v-row class="searched-param">
@@ -79,8 +94,8 @@
         <v-row v-if="cDtoItem.resData.typeComments">
           <v-col>
             <SearchTypeComments
-              :type1="cDtoItem.searchParams.defenderType1"
-              :type2="cDtoItem.searchParams.defenderType2"
+              :type1="cDtoItem.searchParams.oppType1"
+              :type2="cDtoItem.searchParams.oppType2"
               :comments="cDtoItem.resData.typeComments"
             />
           </v-col>
@@ -322,9 +337,9 @@ await screenControlMethods().init()
 // Header
 const thisPath = useRuntimeConfig().public.url + useRoute().path
 const metaObject = computed((): MetaObject => {
-  const type1 = constantAccessor.getTypeJpn(cDtoItem.value.searchParams.defenderType1)
-  const type2 = cDtoItem.value.searchParams.defenderType2
-    ? constantAccessor.getTypeJpn(cDtoItem.value.searchParams.defenderType2)
+  const type1 = constantAccessor.getTypeJpn(cDtoItem.value.searchParams.oppType1)
+  const type2 = cDtoItem.value.searchParams.oppType2
+    ? constantAccessor.getTypeJpn(cDtoItem.value.searchParams.oppType2)
     : ''
   const typeTitle = `ジム・レイド対策！タイプ ${type1}${type2 ? ',' + type2 : ''}への対策ポケモンのランキングまとめ`
   const typeDescription = `タイプが${type1}${type2 ? ',' + type2 : ''}のジム・レイドポケモンの対策ポケモンのランキングを確認することができます。\

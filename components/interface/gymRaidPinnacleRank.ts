@@ -33,8 +33,9 @@ export const orderDic: Record<Order, string> = {
 }
 // export class GymRaidPinnacleRankSearchParams extends ResearchRequest {
 export class GymRaidPinnacleRankSearchParams {
-  defenderType1: string
-  defenderType2: string
+  oppType1: string
+  oppType2: string
+  ownTypes: Array<string>
   weather: string
   megaSelected: SelectPattern
   shadowSelected: SelectPattern
@@ -47,8 +48,9 @@ export class GymRaidPinnacleRankSearchParams {
 
   constructor () {
     // super()
-    this.defenderType1 = ''
-    this.defenderType2 = ''
+    this.oppType1 = ''
+    this.oppType2 = ''
+    this.ownTypes = []
     this.weather = ''
     this.megaSelected = 'include'
     this.shadowSelected = 'include'
@@ -76,8 +78,9 @@ export class GymRaidPinnacleRankSearchDtoItem implements SearchDtoItem {
  * 結果画面用クエリパラメータの定義
  */
 export class GymRaidPinnacleRankResultSearchParams {
-  defenderType1: string
-  defenderType2: string
+  oppType1: string
+  oppType2: string
+  ownTypes: Array<string>
   weather: string
   megaSelected: SelectPattern
   shadowSelected: SelectPattern
@@ -85,8 +88,9 @@ export class GymRaidPinnacleRankResultSearchParams {
   unique: boolean
 
   constructor () {
-    this.defenderType1 = ''
-    this.defenderType2 = ''
+    this.oppType1 = ''
+    this.oppType2 = ''
+    this.ownTypes = []
     this.weather = ''
     this.megaSelected = 'include'
     this.shadowSelected = 'include'
@@ -126,7 +130,7 @@ export const get = async (
 ): Promise<GymRaidPinnacleRankResponse | void> => {
   const query: Record<string, any> = { ...searchParams }
   // タイプ2が設定されていない場合はnullに置き換える
-  query.defenderType2 = searchParams.defenderType2 || null
+  query.oppType2 = searchParams.oppType2 || null
   const res = await fetchCommon('/api/gymRaidPinnacleRank', 'GET', { query })
 
   const rd: GymRaidPinnacleRankResponse | null = res.data as GymRaidPinnacleRankResponse
@@ -145,6 +149,6 @@ export const check = (searchParams: GymRaidPinnacleRankSearchParams | GymRaidPin
   // if ('name' in searchParams) {
   //   msg += validateUtils().checkRequired({ item: searchParams.name, itemName: 'ポケモン' })
   // }
-  msg += validateUtils().checkRequired({ item: searchParams.defenderType1, itemName: 'タイプ1' })
+  msg += validateUtils().checkRequired({ item: searchParams.oppType1, itemName: 'タイプ1' })
   return msg
 }

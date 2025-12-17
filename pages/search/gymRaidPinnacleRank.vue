@@ -10,12 +10,11 @@
             <v-icon>
               mdi-pen
             </v-icon>
-            タイプ1
-            <span class="required-mark">必須</span>
+            相手のポケモン
           </v-col>
-          <v-col cols="12" md="8" lg="8" xl="8">
+          <v-col cols="12" md="4" lg="4" xl="4">
             <v-select
-              v-model="cDtoItem.searchParams.defenderType1"
+              v-model="cDtoItem.searchParams.oppType1"
               :items="constant.TYPE"
               item-value="type"
               item-title="jpn"
@@ -24,22 +23,13 @@
               hide-details
             />
           </v-col>
-        </v-row>
-        <v-row>
-          <v-col cols="12" md="4" lg="4" xl="4" class="col-title">
-            <v-icon>
-              mdi-pen
-            </v-icon>
-            タイプ2
-            <span class="optional-mark">任意</span>
-          </v-col>
-          <v-col cols="12" md="8" lg="8" xl="8">
+          <v-col cols="12" md="4" lg="4" xl="4">
             <v-select
-              v-model="cDtoItem.searchParams.defenderType2"
+              v-model="cDtoItem.searchParams.oppType2"
               :items="constant.TYPE"
               item-value="type"
               item-title="jpn"
-              label="タイプ2を入力"
+              label="タイプ2を入力(任意)"
               clearable
               hide-details
             />
@@ -50,8 +40,35 @@
             <v-icon>
               mdi-pen
             </v-icon>
+            自分のポケモン
+            <v-checkbox
+              v-model="allCheck"
+              label="すべて選択"
+              hide-details
+              color="success"
+            />
+          </v-col>
+          <v-col cols="12" md="8" lg="8" xl="8">
+            <div class="d-flex flex-wrap">
+              <v-checkbox
+                v-for="t in constant.TYPE"
+                :key="`TYPE-${t}`"
+                v-model="cDtoItem.searchParams.ownTypes"
+                :label="t.jpn"
+                :value="t.type"
+                hide-details
+                multiple
+                color="info"
+              />
+            </div>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col cols="12" md="4" lg="4" xl="4" class="col-title">
+            <v-icon>
+              mdi-pen
+            </v-icon>
             天候
-            <span class="optional-mark">任意</span>
           </v-col>
           <v-col cols="12" md="8" lg="8" xl="8">
             <v-select
@@ -59,7 +76,7 @@
               :items="constant.WEATHER"
               item-value="k"
               item-title="v"
-              label="天気を入力"
+              label="天気を入力(任意)"
               clearable
               hide-details
             />
@@ -192,6 +209,19 @@ const isLoading = ref<boolean>(false)
 const isSearchBtnClick = ref<boolean>(false)
 
 const constant: ConstantValue = constantUtils().get()
+
+const typeLength: number = constant.TYPE.length
+const allCheck = computed({
+  get () {
+    return typeLength === cDtoItem.value.searchParams.ownTypes.length
+  },
+  set (newVal) {
+    cDtoItem.value.searchParams.ownTypes.splice(0)
+    if (newVal) {
+      cDtoItem.value.searchParams.ownTypes.push(...constant.TYPE.map(type => type.type))
+    }
+  }
+})
 
 // メガとシャドウはいずれかしかonlyにできない
 const isMegaOnly = computed(() => cDtoItem.value.searchParams.megaSelected === 'only')
