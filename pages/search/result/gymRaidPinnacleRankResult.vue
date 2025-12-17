@@ -27,10 +27,10 @@
                     </v-col>
                   </v-row>
                   <v-row class="searched-param">
-                    <v-col cols="7" md="6" lg="6" xl="6" class="pa-1">
+                    <v-col cols="6" md="6" lg="6" xl="6" class="pa-1">
                       自分のポケモン
                     </v-col>
-                    <v-col cols="5" md="6" lg="6" xl="6" class="pa-1">
+                    <v-col cols="6" md="6" lg="6" xl="6" class="pa-1">
                       <div v-if="cDtoItem.searchParams.ownTypes.length !== 0 && cDtoItem.searchParams.ownTypes.length !== constant.TYPE.length">
                         <span v-for="(t, i) in cDtoItem.searchParams.ownTypes" :key="`saerch-${i}`" class="mr-2">
                           <SearchType :type="t" />
