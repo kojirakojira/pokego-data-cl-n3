@@ -238,7 +238,7 @@ const screenControlMethods = () => {
 
   const transAbundance = (pid: string) => {
     useRouter().push({
-      name: 'search-result-abundance',
+      name: searchCommon().getRouteName('abundance', true),
       query: {
         pid
       }
@@ -251,7 +251,7 @@ const screenControlMethods = () => {
    */
   const transAbundanceForRow = (_: PointerEvent, selected: Record<string, any>) => {
     useRouter().push({
-      name: 'search-result-abundance',
+      name: searchCommon().getRouteName('abundance', true),
       query: {
         pid: selected.item.pokedexId
       }

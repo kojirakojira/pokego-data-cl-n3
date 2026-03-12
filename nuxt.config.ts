@@ -8,7 +8,7 @@ const defineNuxtConfig = async () => {
   }
   console.log(`envVars=${JSON.stringify(envVars)}`) // eslint-disable-line no-console
   return {
-  // devtools: { enabled: true },
+    // devtools: { enabled: true },
     runtimeConfig: envVars,
     server: {
       port: process.env.PORT || 3000
@@ -17,7 +17,8 @@ const defineNuxtConfig = async () => {
       '@nuxtjs/eslint-module',
       '@pinia/nuxt',
       'pinia-plugin-persistedstate/nuxt',
-      'vuetify-nuxt-module'
+      'vuetify-nuxt-module',
+      '@nuxtjs/robots'
     ],
     app: {
       head: {
@@ -64,7 +65,14 @@ const defineNuxtConfig = async () => {
           }
         }
       }
-
+    },
+    robots: {
+      groups: [
+        {
+          userAgent: ['*'],
+          disallow: ['/manage', '/search/tool/']
+        }
+      ]
     }
   }
 }

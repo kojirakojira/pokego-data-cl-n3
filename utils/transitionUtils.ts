@@ -19,13 +19,13 @@ export interface TransitionParamForFilterAll {
 export default () => {
   const abundance = (pid: string) => {
     useRouter().push({
-      name: 'search-result-abundance',
+      name: searchCommon().getRouteName('abundance', true),
       query: { pid }
     })
   }
   const searchAll = () => {
     useRouter().push({
-      name: 'search-searchAll'
+      name: searchCommon().getRouteName('searchAll')
     })
   }
   const filterAll = (params: TransitionParamForFilterAll) => {
@@ -33,7 +33,7 @@ export default () => {
     for (const [k, v] of Object.entries(params)) {
       (searchParams as any)[k] = v
     }
-    const pathName = 'search-filterAll'
+    const pathName = searchCommon().getRouteName('filterAll')
     dtoUtils().prePushScreenInfo(dtoUtils().createScreenInfo(
       pathName,
       {},
@@ -47,7 +47,7 @@ export default () => {
 
   const raceResult = (pid: string) => {
     useRouter().push({
-      name: 'search-result-raceResult',
+      name: searchCommon().getRouteName('race', true),
       query: { pid }
     })
   }
@@ -61,7 +61,7 @@ export default () => {
         errMsg: ''
       })
     }
-    const pathName = 'search-raceDiff'
+    const pathName = searchCommon().getRouteName('raceDiff')
     dtoUtils().prePushScreenInfo(dtoUtils().createScreenInfo(
       pathName,
       {},
@@ -79,7 +79,7 @@ export default () => {
     searchParams.name = editUtils().appendRemarks(params.name, params.remarks)
     if (iv) { searchParams.iv = iv }
     if (cp) { searchParams.cp = cp }
-    const pathName = 'search-afterEvoScpRank'
+    const pathName = searchCommon().getRouteName('afterEvoScpRank')
     dtoUtils().prePushScreenInfo(dtoUtils().createScreenInfo(
       pathName,
       {},
@@ -96,7 +96,7 @@ export default () => {
     searchParams.pid = params.pokedexId
     searchParams.name = editUtils().appendRemarks(params.name, params.remarks)
     if (iv) { searchParams.iv = iv }
-    const pathName = 'search-scpRank'
+    const pathName = searchCommon().getRouteName('scpRank')
     dtoUtils().prePushScreenInfo(dtoUtils().createScreenInfo(
       pathName,
       {},
@@ -112,7 +112,7 @@ export default () => {
     const searchParams: ScpRankListSearchParams = new ScpRankListSearchParams()
     searchParams.pid = params.pokedexId
     searchParams.name = editUtils().appendRemarks(params.name, params.remarks)
-    const pathName = 'search-scpRankList'
+    const pathName = searchCommon().getRouteName('scpRankList')
     dtoUtils().prePushScreenInfo(dtoUtils().createScreenInfo(
       pathName,
       {},
@@ -126,18 +126,18 @@ export default () => {
 
   const scpRankMaxMinResult = (pid: string) => {
     useRouter().push({
-      name: 'search-result-scpRankMaxMinResult',
+      name: searchCommon().getRouteName('scpRankMaxMin', true),
       query: { pid }
     })
   }
   const moveLookup = () => {
     useRouter().push({
-      name: 'search-moveLookup'
+      name: searchCommon().getRouteName('moveLookup')
     })
   }
   const moveLookupResult = (mid: string) => {
     useRouter().push({
-      name: 'search-result-moveLookupResult',
+      name: searchCommon().getRouteName('moveLookup', true),
       query: { mid }
     })
   }
@@ -149,9 +149,16 @@ export default () => {
     })
   }
 
+  const pokemonList = (searchParams: FilterAllSearchParams) => {
+    useRouter().push({
+      name: 'search-list-pokemonList',
+      query: searchCommon().makeQuery(searchParams)
+    })
+  }
+
   const gymRaidPokeMoveCombiResult = (pid: string) => {
     useRouter().push({
-      name: 'search-result-gymRaidPokeMoveCombiResult',
+      name: searchCommon().getRouteName('gymRaidPokeMoveCombi', true),
       query: { pid }
     })
   }
@@ -169,6 +176,7 @@ export default () => {
     moveLookup,
     moveLookupResult,
     moveList,
+    pokemonList,
     gymRaidPokeMoveCombiResult
   }
 }

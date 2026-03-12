@@ -171,7 +171,7 @@ const screenControlMethods = () => {
    */
   const onClickRow = (_: Event, selected: Item) => {
     useRouter().push({
-      name: 'search-result-dynamaxResult',
+      name: searchCommon().getRouteName(searchPattern, true),
       query: {
         pid: selected.id
       }

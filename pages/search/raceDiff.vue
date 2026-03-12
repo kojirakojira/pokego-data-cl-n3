@@ -223,7 +223,7 @@ const screenControlMethods = () => {
     })
 
     useRouter().push({
-      name: 'search-result-raceDiffResult',
+      name: searchCommon().getRouteName('raceDiff', true),
       query: dic
     })
   }

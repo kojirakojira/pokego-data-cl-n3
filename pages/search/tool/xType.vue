@@ -184,7 +184,7 @@ const clickSearchBtn = async () => {
 const handleApiResult = (rd: XTypeResponse) => {
   if (rd.success) {
     useRouter().push({
-      name: 'search-result-xTypeResult',
+      name: searchCommon().getRouteName(searchPattern, true),
       query: searchCommon().makeQuery(cDtoItem.value.searchParams)
     })
   }

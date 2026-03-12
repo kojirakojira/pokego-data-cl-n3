@@ -22,33 +22,13 @@
           </v-col>
         </v-row>
         <v-row>
-          <v-col cols="12" md="4" lg="4" xl="4" class="col-title">
-            <v-icon>
-              mdi-pen
-            </v-icon>
-            リーグ
-            <span class="required-mark">必須</span>
-          </v-col>
-          <v-col cols="12" md="8" lg="8" xl="8">
-            <v-select
-              v-model="cDtoItem.searchParams.league"
-              :items="leagueArr"
-              item-value="key"
-              label="リーグを選択"
-              dense
-              outlined
-              hide-details
-            />
-          </v-col>
-        </v-row>
-        <v-row>
           <v-col cols="12" class="text-center">
             <v-btn
               rounded
               min-width="50%"
               color="success"
               :disabled="isSearchBtnClick"
-              @click="clickSearchBtn()"
+              @click="clickSearchBtn"
             >
               検索
             </v-btn>
@@ -70,25 +50,18 @@
 
 <script setup lang="ts">
 import {
-  ScpRankListSearchDtoItem,
-  type ScpRankListResponse,
-  type ScpRankListSearchParams,
+  EvolutionSearchDtoItem,
+  type EvolutionResponse,
+  type EvolutionSearchParams,
   get,
   check
-} from '~/components/interface/scpRankList'
+} from '~/components/interface/evolution'
 
-const searchPattern = 'scpRankList'
-
+const searchPattern = 'evolution'
 // current dto item
-const cDtoItem = ref<ScpRankListSearchDtoItem>(new ScpRankListSearchDtoItem())
+const cDtoItem = ref<EvolutionSearchDtoItem>(new EvolutionSearchDtoItem())
 const dto: any = useAttrs().dto
 dto.params = cDtoItem
-
-const leagueArr = readonly<Array<Record<string, string>>>([
-  { key: 'sl', title: 'スーパーリーグ' },
-  { key: 'hl', title: 'ハイパーリーグ' },
-  { key: 'ml', title: 'マスターリーグ' }
-])
 
 const isLoading = ref<boolean>(false)
 const isSearchBtnClick = ref<boolean>(false)
@@ -96,9 +69,6 @@ const isSearchBtnClick = ref<boolean>(false)
 // created: 画面を復元する
 searchCommon().restoreSearchScreen(['searchParams', 'pokemonSearchResult'], cDtoItem.value)
 
-/**
- * 検索ボタン押下時の処理
- */
 const clickSearchBtn = async () => {
   isSearchBtnClick.value = true
   const msg = check(cDtoItem.value.searchParams)
@@ -127,7 +97,7 @@ const clickSearchBtn = async () => {
  *
  * @param rd
  */
-const handleApiResult = (rd: ScpRankListResponse) => {
+const handleApiResult = (rd: EvolutionResponse) => {
   if (rd.success) {
     cDtoItem.value.pokemonSearchResult = rd.pokemonSearchResult
     if (rd.pokemonSearchResult.unique) {
@@ -136,7 +106,7 @@ const handleApiResult = (rd: ScpRankListResponse) => {
     } else {
       // 複数件 or 0件ヒットした場合
       useRouter().replace({
-        name: 'search-scpRankList'
+        name: searchCommon().getRouteName(searchPattern)
       })
       isSearchBtnClick.value = false
       isLoading.value = false
@@ -152,9 +122,9 @@ const handleApiResult = (rd: ScpRankListResponse) => {
  * @param searchParams
  * @param resData
  */
-const transitionResultPage = (pid: string, searchParams: ScpRankListSearchParams, resData?: ScpRankListResponse): void => {
+const transitionResultPage = (pid: string, searchParams: EvolutionSearchParams, resData?: EvolutionResponse): void => {
   // result画面にresDataをセット
-  const pathName: string = 'search-result-scpRankListResult'
+  const pathName: string = searchCommon().getRouteName(searchPattern, true)
   const params: Record<string, any> = {}
   if (resData) { params.resData = resData }
   dtoUtils().prePushScreenInfo(dtoUtils().createScreenInfo(
@@ -177,7 +147,7 @@ useHead({
     { property: 'og:title', content: `${searchCommon().getSearchPatternName(searchPattern)} - ペリずかん` },
     { property: 'og:url', content: useRuntimeConfig().public.url + useRoute().path },
     { property: 'og:site_name', content: 'ペリずかん' },
-    { property: 'og:description', content: 'PvP順位のランキングを確認できます。' },
+    { property: 'og:description', content: '特定のポケモンの進化ツリーを確認できます。' },
     { property: 'og:image', content: editUtils().getUrl('pokego/peripper-eyes.png') }
   ]
 })

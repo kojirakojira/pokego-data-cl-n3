@@ -111,7 +111,7 @@ const screenControlMethods = () => {
       } else {
         // 複数件 or 0件ヒットした場合
         useRouter().replace({
-          name: 'search-searchAll'
+          name: searchCommon().getRouteName('searchAll')
         })
         isSearchBtnClick.value = false
         isLoading.value = false
@@ -130,7 +130,7 @@ const screenControlMethods = () => {
   // searchAllでabundanceの情報を取得することはないため、prePushは不要
   // 遷移
     useRouter().push({
-      name: 'search-result-abundance',
+      name: searchCommon().getRouteName('abundance', true),
       query: searchCommon().makeQuery(pid, searchParams)
     })
   }

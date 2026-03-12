@@ -128,7 +128,7 @@ const screenControlMethods = () => {
     }
     isLoading.value = true
     useRouter().push({
-      name: 'search-result-threeGalarBirdsResult',
+      name: searchCommon().getRouteName(searchPattern, true),
       query: searchCommon().makeQuery(cDtoItem.value.searchParams.pid, cDtoItem.value.searchParams)
     })
   }

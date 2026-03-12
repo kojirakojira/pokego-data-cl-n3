@@ -1,15 +1,12 @@
 import { readonly } from 'vue'
-import {
-  // type RouteLocationNormalizedLoaded,
-  // type RouteRecordName,
-  type LocationQuery
-} from 'vue-router'
+import type { LocationQuery } from 'vue-router'
 import { toastStore } from '~/stores/toastStore'
 import { dtoStore, type ScreenInfo } from '~/stores/dtoStore'
 import type { Response, ResearchResponse, MsgLevel, NotValidResponse } from '~/components/interface/api/response'
 import type { ResearchRequest } from '~/components/interface/api/request'
+import type { SearchPatternNames } from '~/app.config'
 
-export interface ResData extends Record<string, any> {}
+export interface ResData extends Record<string, any> { }
 /**
  * 検索系の画面(pageがsearch配下の画面)でdtoStoreに値を追加するときは、
  * このインターフェースを使用する。
@@ -29,82 +26,12 @@ export interface RestoreCondition {
   resDataKey: string,
   routeKey: string
 }
+
 export default () => {
-  const searchPatternNames = readonly({
-    main: {
-      name: '一般',
-      patternNames: {
-        searchAll: 'ポケモン検索',
-        filterAll: 'ポケモン一覧'
-      }
-    },
-    pinnacle: {
-      name: '最強ポケモンランキング',
-      patternNames: {
-        gymRaidPinnacleRank: 'ジム・レイド対策ポケモンランキング'
-      }
-    },
-    captureCp: {
-      name: '捕獲時CP',
-      patternNames: {
-        wild: '野生CP',
-        raid: 'レイドボス勝利ボーナスCP',
-        frTask: 'フィールドリサーチCP',
-        eggs: 'タマゴCP',
-        rocket: 'ロケット団勝利ボーナスCP',
-        dynamax: 'MAX,G-MAX勝利ボーナスCP'
-      }
-    },
-    race: {
-      name: '種族値',
-      patternNames: {
-        race: '種族値検索',
-        raceDiff: '種族値比較'
-      }
-    },
-    iv: {
-      name: '個体値',
-      patternNames: {
-        scpRank: 'PvP順位',
-        scpRankList: 'PvP順位ランキング',
-        scpRankMaxMin: 'PvP最高(最低)順位',
-        afterEvoScpRank: '進化後PvP順位',
-        afterEvoCp: '進化後CP',
-        threeGalarBirds: 'ガラル三鳥の野生個体値',
-        cpIv: 'CP→個体値検索',
-        cp: '個体値→CP算出',
-        plList: 'PLごとのCPリスト',
-        cpRank: 'CP順位',
-        cpRankList: 'CPランキング'
-      }
-    },
-    moves: {
-      name: '技',
-      patternNames: {
-        moveLookup: '技検索',
-        filterAllMove: '技一覧',
-        pokemonAttack: 'ポケモンが覚える技',
-        gymRaidPokeMoveCombi: '技の組み合わせランキング(ジム・レイド)'
-      }
-    },
-    type: {
-      name: 'タイプ',
-      patternNames: {
-        typeScore: 'タイプ評価',
-        xType: 'Xタイプ検索',
-        iroiroTypeRank: '色々タイプランキング'
-      }
-    },
-    others: {
-      name: 'その他',
-      patternNames: {
-        unimplPokemon: '未実装ポケモンリスト',
-        dynamaxImplPokemon: 'MAX,G-MAX実装済みリスト',
-        evoCost: '進化コスト',
-        evolution: '進化ツリーと別のすがた'
-      }
-    }
-  })
+  const route = useRoute()
+  const router = useRouter()
+
+  const searchPatternNames = useAppConfig().searchPatternNames as unknown as SearchPatternNames
 
   const rules = readonly({
     name: [
@@ -124,7 +51,7 @@ export default () => {
       // リロードの場合
       if (keys.includes('searchParams')) {
         const spKeys = Object.keys(dto.searchParams) // searchParamsに定義したキー
-        for (const [k, v] of Object.entries(useRoute().query)) {
+        for (const [k, v] of Object.entries(route.query)) {
           if (spKeys.includes(k)) {
             // searchParamsに定義したキーしか復元しない。
             dto.searchParams[k] = v
@@ -188,7 +115,7 @@ export default () => {
   const restoreCurrentScreen = (keys: Array<string>): Record<string, any> | null => {
     const currentSi: ScreenInfo | null = dtoStore().currentScreenInfo()
     // routeの取得
-    const routeName: string = useRoute().name as string
+    const routeName: string = route.name as string
 
     if (!(currentSi && currentSi.pathName === routeName && Object.keys(currentSi.params).length)) {
       // currentSiがnull、または現在のrouteと違う、またはparamsが存在しない場合はnullを返す。
@@ -301,12 +228,40 @@ export default () => {
    */
   const getSearchPatternName = (searchPattern: string) => {
     let ret: string = ''
-    Object.entries(searchPatternNames).forEach(([, v]) => {
-      Object.entries(v).forEach(([, v2]) => {
-        ret = v2[searchPattern] || ret
+    Object.entries(searchPatternNames).forEach(([, category]) => {
+      Object.entries(category.patternNames).forEach(([k, pattern]) => {
+        if (k === searchPattern) {
+          ret = pattern.name
+        }
       })
     })
     return ret
+  }
+
+  const isToolPage = (searchPattern: string) => {
+    let isTool = false
+    Object.entries(searchPatternNames).forEach(([, category]) => {
+      Object.entries(category.patternNames).forEach(([k, pattern]) => {
+        if (k === searchPattern && pattern.isTool) {
+          isTool = true
+        }
+      })
+    })
+    return isTool
+  }
+
+  /**
+   * 検索パターンのキー（例: "filterAll"）から、正しいNuxtルート名（例: "search-tool-filterAll"）を生成する
+   */
+  const getRouteName = (searchPattern: string, isResultPage = false): string => {
+    const isTool = isToolPage(searchPattern)
+    const routePrefix = isTool ? 'tool-' : ''
+    const resultSuffix = isResultPage ? 'result-' : ''
+
+    // abundanceは例外としてpageSuffix(Result)を付けない
+    const pageSuffix = (isResultPage && searchPattern !== 'abundance') ? 'Result' : ''
+
+    return `search-${routePrefix}${resultSuffix}${searchPattern}${pageSuffix}`
   }
 
   /**
@@ -407,9 +362,10 @@ export default () => {
     if (!pid) { return }
     // 遷移後の画面のqueryを作成する
     const query = makeQuery(pid, searchParams)
+
     // 遷移
-    useRouter().push({
-      name: `search-result-${searchPattern}Result`,
+    router.push({
+      name: getRouteName(searchPattern, true),
       query
     })
   }
@@ -470,7 +426,7 @@ export default () => {
    * @param dictionary
    * @return
    */
-  const spreadArray = (dictionary: {[key: string]: any}) => {
+  const spreadArray = (dictionary: { [key: string]: any }) => {
     const entries = Object.entries(dictionary)
     if (!entries.length) {
       return ''
@@ -516,6 +472,7 @@ export default () => {
     // restoreResData,
     // restoreResearchResData,
     getSearchPatternName,
+    getRouteName,
     resErrHandle,
     handleValidError,
     handleApiMessage,

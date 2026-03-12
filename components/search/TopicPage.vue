@@ -12,7 +12,7 @@
             v-for="(p, index) in topicPages.arr"
             :key="index"
             class="px-0"
-            :to="{name: `search-${p.page}`}"
+            :to="{name: searchCommon().getRouteName(p.page)}"
           >
             <v-list-item-title class="subtitle-2" :title="p.name">
               <v-icon v-if="index < 3" :color="getTrophyColor(index)">

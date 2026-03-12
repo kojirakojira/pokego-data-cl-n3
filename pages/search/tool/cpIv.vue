@@ -10,15 +10,20 @@
             <v-icon>
               mdi-pen
             </v-icon>
-            ポケモン
+            シチュエーション
             <span class="required-mark">必須</span>
           </v-col>
           <v-col cols="12" md="8" lg="8" xl="8">
-            <SearchInputPokeName
-              v-model:name="cDtoItem.searchParams.name"
-              v-model:pid="cDtoItem.searchParams.pid"
-              :keyup-enter="clickSearchBtn"
-            />
+            <client-only>
+              <v-select
+                v-model="cDtoItem.searchParams.situation"
+                :items="constant.SITUATION"
+                item-value="k"
+                item-title="v"
+                label="シチュエーションを選択"
+                hide-details
+              />
+            </client-only>
           </v-col>
         </v-row>
         <v-row>
@@ -26,12 +31,13 @@
             <v-icon>
               mdi-pen
             </v-icon>
-            個体値
+            ポケモン
             <span class="required-mark">必須</span>
           </v-col>
           <v-col cols="12" md="8" lg="8" xl="8">
-            <SearchInputIv
-              v-model="cDtoItem.searchParams.iv"
+            <SearchInputPokeName
+              v-model:name="cDtoItem.searchParams.name"
+              v-model:pid="cDtoItem.searchParams.pid"
               :keyup-enter="clickSearchBtn"
             />
           </v-col>
@@ -57,13 +63,36 @@
           </v-col>
         </v-row>
         <v-row>
+          <v-col cols="12" md="4" lg="4" xl="4" class="col-title">
+            <v-icon>
+              mdi-pen
+            </v-icon>
+            天候ブースト
+            <SearchInputHelpMsg>
+              フィールドリサーチクリア後のボーナス、タマゴ孵化は、天候ブーストの影響を受けません。
+            </SearchInputHelpMsg>
+            <span class="required-mark">必須</span>
+          </v-col>
+          <v-col cols="12" md="8" lg="8" xl="8">
+            <v-switch
+              v-model="cDtoItem.searchParams.wbFlg"
+              inset
+              hide-details
+              :label="cDtoItem.searchParams.wbFlg ? 'あり' : 'なし'"
+              :disabled="
+                cDtoItem.searchParams.situation === 'frTask' || cDtoItem.searchParams.situation === 'egg'"
+              style="margin-top: 0px;"
+            />
+          </v-col>
+        </v-row>
+        <v-row>
           <v-col cols="12" class="text-center">
             <v-btn
               rounded
               min-width="50%"
               color="success"
               :disabled="isSearchBtnClick"
-              @click="clickSearchBtn()"
+              @click="clickSearchBtn"
             >
               検索
             </v-btn>
@@ -85,28 +114,29 @@
 
 <script setup lang="ts">
 import {
-  AfterEvoCpSearchDtoItem,
-  type AfterEvoCpResponse,
-  type AfterEvoCpSearchParams,
+  type CpIvResponse,
+  type CpIvSearchParams,
+  CpIvSearchDtoItem,
   get,
   check
-} from '~/components/interface/afterEvoCp'
-const searchPattern = 'afterEvoCp'
+} from '~/components/interface/cpIv'
 
+const searchPattern = 'cpIv'
 // current dto item
-const cDtoItem = ref<AfterEvoCpSearchDtoItem>(new AfterEvoCpSearchDtoItem())
+const cDtoItem = ref<CpIvSearchDtoItem>(new CpIvSearchDtoItem())
 const dto: any = useAttrs().dto
 dto.params = cDtoItem
 
 const isLoading = ref<boolean>(false)
 const isSearchBtnClick = ref<boolean>(false)
 
-// created: 画面を復元する
-searchCommon().restoreSearchScreen(['searchParams', 'pokemonSearchResult'], cDtoItem.value)
+const constant: ConstantValue = constantUtils().get()
 
-/**
- * 検索ボタン押下時の処理
- */
+// created: 画面を復元する
+const restoredParams: Record<string, any> | null = searchCommon().restoreCurrentScreen(['searchParams', 'pokemonSearchResult'])
+if (restoredParams && restoredParams.searchParams) { cDtoItem.value.searchParams = restoredParams.searchParams }
+if (restoredParams && restoredParams.pokemonSearchResult) { cDtoItem.value.pokemonSearchResult = restoredParams.pokemonSearchResult }
+
 const clickSearchBtn = async () => {
   isSearchBtnClick.value = true
   const msg = check(cDtoItem.value.searchParams)
@@ -131,11 +161,11 @@ const clickSearchBtn = async () => {
 }
 
 /**
- * APIのレスポンスを処理する。
- *
- * @param rd
- */
-const handleApiResult = (rd: AfterEvoCpResponse) => {
+   * APIのレスポンスを処理する。
+   *
+   * @param rd
+   */
+const handleApiResult = (rd: CpIvResponse) => {
   if (rd.success) {
     cDtoItem.value.pokemonSearchResult = rd.pokemonSearchResult
     if (rd.pokemonSearchResult.unique) {
@@ -144,7 +174,7 @@ const handleApiResult = (rd: AfterEvoCpResponse) => {
     } else {
       // 複数件 or 0件ヒットした場合
       useRouter().replace({
-        name: 'search-afterEvoCp'
+        name: searchCommon().getRouteName(searchPattern)
       })
       isSearchBtnClick.value = false
       isLoading.value = false
@@ -160,9 +190,9 @@ const handleApiResult = (rd: AfterEvoCpResponse) => {
  * @param searchParams
  * @param resData
  */
-const transitionResultPage = (pid: string, searchParams: AfterEvoCpSearchParams, resData?: AfterEvoCpResponse): void => {
+const transitionResultPage = (pid: string, searchParams: CpIvSearchParams, resData?: CpIvResponse): void => {
   // result画面にresDataをセット
-  const pathName: string = 'search-result-afterEvoCpResult'
+  const pathName: string = searchCommon().getRouteName(searchPattern, true)
   const params: Record<string, any> = {}
   if (resData) { params.resData = resData }
   dtoUtils().prePushScreenInfo(dtoUtils().createScreenInfo(
@@ -185,19 +215,8 @@ useHead({
     { property: 'og:title', content: `${searchCommon().getSearchPatternName(searchPattern)} - ペリずかん` },
     { property: 'og:url', content: useRuntimeConfig().public.url + useRoute().path },
     { property: 'og:site_name', content: 'ペリずかん' },
-    { property: 'og:description', content: '進化後のCPのランキングを確認できます。' },
+    { property: 'og:description', content: 'ポケモン、CP、ポケモンを捕まえるときのシチュエーションから、個体値を検索することができます。' },
     { property: 'og:image', content: editUtils().getUrl('pokego/peripper-eyes.png') }
   ]
 })
 </script>
-
-<style>
-input[type="number"]::-webkit-outer-spin-button,
-input[type="number"]::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-}
-input[type="number"] {
-  -moz-appearance:textfield;
-}
-</style>

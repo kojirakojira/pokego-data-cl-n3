@@ -6,16 +6,38 @@
     <div v-show="!isLoading">
       <v-container>
         <v-row>
+          <v-col class="caption">
+            ポケモンGOでは、こうげき、ぼうぎょ、HPでそれぞれ16段階のステータスがあり、個体値は16×16×16で4096通り存在します。<br>
+            指定した個体値が4096位中の何位かを求めることができます。
+          </v-col>
+        </v-row>
+        <v-row>
           <v-col cols="12" md="4" lg="4" xl="4" class="col-title">
             <v-icon>
               mdi-pen
             </v-icon>
             ポケモン
+            <span class="required-mark">必須</span>
           </v-col>
           <v-col cols="12" md="8" lg="8" xl="8">
             <SearchInputPokeName
               v-model:name="cDtoItem.searchParams.name"
               v-model:pid="cDtoItem.searchParams.pid"
+              :keyup-enter="clickSearchBtn"
+            />
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col cols="12" md="4" lg="4" xl="4" class="col-title">
+            <v-icon>
+              mdi-pen
+            </v-icon>
+            個体値
+            <span class="required-mark">必須</span>
+          </v-col>
+          <v-col cols="12" md="8" lg="8" xl="8">
+            <SearchInputIv
+              v-model="cDtoItem.searchParams.iv"
               :keyup-enter="clickSearchBtn"
             />
           </v-col>
@@ -49,21 +71,21 @@
 
 <script setup lang="ts">
 import {
-  FrTaskSearchDtoItem,
-  type FrTaskResponse,
-  type FrTaskSearchParams,
+  CpRankSearchDtoItem,
+  type CpRankResponse,
+  type CpRankSearchParams,
   get,
   check
-} from '~/components/interface/frTask'
+} from '~/components/interface/cpRank'
 
-const searchPattern = 'frTask'
+const searchPattern = 'cpRank'
 // current dto item
-const cDtoItem = ref<FrTaskSearchDtoItem>(new FrTaskSearchDtoItem())
+const cDtoItem = ref<CpRankSearchDtoItem>(new CpRankSearchDtoItem())
 const dto: any = useAttrs().dto
 dto.params = cDtoItem
 
 const isLoading = ref<boolean>(false)
-const isSearchBtnClick = ref<boolean>(false)
+const isSearchBtnClick = ref(false)
 
 // created: 画面を復元する
 searchCommon().restoreSearchScreen(['searchParams', 'pokemonSearchResult'], cDtoItem.value)
@@ -92,11 +114,11 @@ const clickSearchBtn = async () => {
 }
 
 /**
- * APIのレスポンスを処理する。
- *
- * @param rd
- */
-const handleApiResult = (rd: FrTaskResponse) => {
+   * APIのレスポンスを処理する。
+   *
+   * @param rd
+   */
+const handleApiResult = (rd: CpRankResponse) => {
   if (rd.success) {
     cDtoItem.value.pokemonSearchResult = rd.pokemonSearchResult
     if (rd.pokemonSearchResult.unique) {
@@ -105,7 +127,7 @@ const handleApiResult = (rd: FrTaskResponse) => {
     } else {
       // 複数件 or 0件ヒットした場合
       useRouter().replace({
-        name: 'search-frTask'
+        name: searchCommon().getRouteName(searchPattern)
       })
       isSearchBtnClick.value = false
       isLoading.value = false
@@ -121,9 +143,9 @@ const handleApiResult = (rd: FrTaskResponse) => {
  * @param searchParams
  * @param resData
  */
-const transitionResultPage = (pid: string, searchParams: FrTaskSearchParams, resData?: FrTaskResponse): void => {
+const transitionResultPage = (pid: string, searchParams: CpRankSearchParams, resData?: CpRankResponse): void => {
   // result画面にresDataをセット
-  const pathName: string = 'search-result-frTaskResult'
+  const pathName: string = searchCommon().getRouteName(searchPattern, true)
   const params: Record<string, any> = {}
   if (resData) { params.resData = resData }
   dtoUtils().prePushScreenInfo(dtoUtils().createScreenInfo(
@@ -146,7 +168,7 @@ useHead({
     { property: 'og:title', content: `${searchCommon().getSearchPatternName(searchPattern)} - ペリずかん` },
     { property: 'og:url', content: useRuntimeConfig().public.url + useRoute().path },
     { property: 'og:site_name', content: 'ペリずかん' },
-    { property: 'og:description', content: 'フィールドリサーチでゲットできるポケモンにおけるCPの振れ幅を確認できます。' },
+    { property: 'og:description', content: '個体値を入力することにより、その個体のCPが全個体値中の何番目に高いかを調べることができます。' },
     { property: 'og:image', content: editUtils().getUrl('pokego/peripper-eyes.png') }
   ]
 })

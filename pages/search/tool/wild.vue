@@ -49,16 +49,16 @@
 
 <script setup lang="ts">
 import {
-  GymRaidPokeMoveCombiSearchDtoItem,
-  type GymRaidPokeMoveCombiResponse,
-  type GymRaidPokeMoveCombiSearchParams,
+  WildSearchDtoItem,
+  type WildResponse,
+  type WildSearchParams,
   get,
   check
-} from '~/components/interface/gymRaidPokeMoveCombi'
+} from '~/components/interface/wild'
 
-const searchPattern = 'gymRaidPokeMoveCombi'
+const searchPattern = 'wild'
 // current dto item
-const cDtoItem = ref<GymRaidPokeMoveCombiSearchDtoItem>(new GymRaidPokeMoveCombiSearchDtoItem())
+const cDtoItem = ref<WildSearchDtoItem>(new WildSearchDtoItem())
 const dto: any = useAttrs().dto
 dto.params = cDtoItem
 
@@ -96,7 +96,7 @@ const clickSearchBtn = async () => {
  *
  * @param rd
  */
-const handleApiResult = (rd: GymRaidPokeMoveCombiResponse) => {
+const handleApiResult = (rd: WildResponse) => {
   if (rd.success) {
     cDtoItem.value.pokemonSearchResult = rd.pokemonSearchResult
     if (rd.pokemonSearchResult.unique) {
@@ -105,7 +105,7 @@ const handleApiResult = (rd: GymRaidPokeMoveCombiResponse) => {
     } else {
       // 複数件 or 0件ヒットした場合
       useRouter().replace({
-        name: 'search-gymRaidPokeMoveCombi'
+        name: searchCommon().getRouteName(searchPattern)
       })
       isSearchBtnClick.value = false
       isLoading.value = false
@@ -121,9 +121,9 @@ const handleApiResult = (rd: GymRaidPokeMoveCombiResponse) => {
  * @param searchParams
  * @param resData
  */
-const transitionResultPage = (pid: string, searchParams: GymRaidPokeMoveCombiSearchParams, resData?: GymRaidPokeMoveCombiResponse): void => {
+const transitionResultPage = (pid: string, searchParams: WildSearchParams, resData?: WildResponse): void => {
   // result画面にresDataをセット
-  const pathName: string = 'search-result-gymRaidPokeMoveCombiResult'
+  const pathName: string = searchCommon().getRouteName(searchPattern, true)
   const params: Record<string, any> = {}
   if (resData) { params.resData = resData }
   dtoUtils().prePushScreenInfo(dtoUtils().createScreenInfo(
@@ -146,7 +146,7 @@ useHead({
     { property: 'og:title', content: `${searchCommon().getSearchPatternName(searchPattern)} - ペリずかん` },
     { property: 'og:url', content: useRuntimeConfig().public.url + useRoute().path },
     { property: 'og:site_name', content: 'ペリずかん' },
-    { property: 'og:description', content: 'ジム・レイドにおいて、最も火力がでる最強の技の組み合わせをランキング形式で見ることができます。' },
+    { property: 'og:description', content: '野生におけるCPの振れ幅を確認できます。' },
     { property: 'og:image', content: editUtils().getUrl('pokego/peripper-eyes.png') }
   ]
 })

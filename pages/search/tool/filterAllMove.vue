@@ -133,10 +133,10 @@ const screenControlMethods = () => {
    */
   const handleApiResult = () => {
     // 取得成功した場合
-    useRouter().push({
-      name: 'search-list-moveList',
-      query: cDtoItem.value.searchParams
-    })
+    transitionUtils().moveList(
+      cDtoItem.value.searchParams.types,
+      cDtoItem.value.searchParams.moveDispType
+    )
   }
 
   return {

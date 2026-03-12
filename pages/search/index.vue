@@ -45,16 +45,16 @@
                   </h3>
                   <v-list>
                     <v-list-item
-                      v-for="(value, key) in largeScale.patternNames"
+                      v-for="(pattern, key) in largeScale.patternNames"
                       :key="key"
                       class="px-0"
-                      :to="{ name: `search-${key}` }"
+                      :to="{ name: `search-${pattern.isTool ? 'tool-' : ''}${key}` }"
                     >
-                      <v-list-item-title :title="value">
+                      <v-list-item-title :title="pattern.name">
                         <v-icon large>
                           mdi-pokemon-go
                         </v-icon>
-                        {{ value }}
+                        {{ pattern.name }}
                       </v-list-item-title>
                     </v-list-item>
                   </v-list>

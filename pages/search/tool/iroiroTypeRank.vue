@@ -74,7 +74,7 @@ const screenControlMethods = () => {
     isSearchBtnClick.value = true
     isLoading.value = true
     useRouter().push({
-      name: 'search-result-iroiroTypeRankResult',
+      name: searchCommon().getRouteName(searchPattern, true),
       query: searchCommon().makeQuery(cDtoItem.value.searchParams)
     })
     isSearchBtnClick.value = false

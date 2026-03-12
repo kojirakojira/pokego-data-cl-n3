@@ -6,11 +6,18 @@
     <div v-show="!isLoading">
       <v-container>
         <v-row>
+          <v-col class="caption">
+            ポケモンGOでは、こうげき、ぼうぎょ、HPでそれぞれ16段階のステータスがあり、個体値は16×16×16で4096通り存在します。<br>
+            個体値のランキングを確認することができます。
+          </v-col>
+        </v-row>
+        <v-row>
           <v-col cols="12" md="4" lg="4" xl="4" class="col-title">
             <v-icon>
               mdi-pen
             </v-icon>
             ポケモン
+            <span class="required-mark">必須</span>
           </v-col>
           <v-col cols="12" md="8" lg="8" xl="8">
             <SearchInputPokeName
@@ -27,7 +34,7 @@
               min-width="50%"
               color="success"
               :disabled="isSearchBtnClick"
-              @click="clickSearchBtn()"
+              @click="clickSearchBtn"
             >
               検索
             </v-btn>
@@ -49,29 +56,25 @@
 
 <script setup lang="ts">
 import {
-  ScpRankMaxMinSearchDtoItem,
-  type ScpRankMaxMinResponse,
-  type ScpRankMaxMinSearchParams,
+  CpRankListSearchDtoItem,
+  type CpRankListResponse,
+  type CpRankListSearchParams,
   get,
   check
-} from '~/components/interface/scpRankMaxMin'
+} from '~/components/interface/cpRankList'
 
-const searchPattern = 'scpRankMaxMin'
-
+const searchPattern = 'cpRankList'
 // current dto item
-const cDtoItem = ref<ScpRankMaxMinSearchDtoItem>(new ScpRankMaxMinSearchDtoItem())
+const cDtoItem = ref<CpRankListSearchDtoItem>(new CpRankListSearchDtoItem())
 const dto: any = useAttrs().dto
 dto.params = cDtoItem
 
 const isLoading = ref<boolean>(false)
-const isSearchBtnClick = ref<boolean>(false)
+const isSearchBtnClick = ref(false)
 
 // created: 画面を復元する
 searchCommon().restoreSearchScreen(['searchParams', 'pokemonSearchResult'], cDtoItem.value)
 
-/**
- * 検索ボタン押下時の処理
- */
 const clickSearchBtn = async () => {
   isSearchBtnClick.value = true
   const msg = check(cDtoItem.value.searchParams)
@@ -96,11 +99,11 @@ const clickSearchBtn = async () => {
 }
 
 /**
- * APIのレスポンスを処理する。
- *
- * @param rd
- */
-const handleApiResult = (rd: ScpRankMaxMinResponse) => {
+   * APIのレスポンスを処理する。
+   *
+   * @param rd
+   */
+const handleApiResult = (rd: CpRankListResponse) => {
   if (rd.success) {
     cDtoItem.value.pokemonSearchResult = rd.pokemonSearchResult
     if (rd.pokemonSearchResult.unique) {
@@ -109,7 +112,7 @@ const handleApiResult = (rd: ScpRankMaxMinResponse) => {
     } else {
       // 複数件 or 0件ヒットした場合
       useRouter().replace({
-        name: 'search-scpRankMaxMin'
+        name: searchCommon().getRouteName(searchPattern)
       })
       isSearchBtnClick.value = false
       isLoading.value = false
@@ -125,9 +128,9 @@ const handleApiResult = (rd: ScpRankMaxMinResponse) => {
  * @param searchParams
  * @param resData
  */
-const transitionResultPage = (pid: string, searchParams: ScpRankMaxMinSearchParams, resData?: ScpRankMaxMinResponse): void => {
+const transitionResultPage = (pid: string, searchParams: CpRankListSearchParams, resData?: CpRankListResponse): void => {
   // result画面にresDataをセット
-  const pathName: string = 'search-result-scpRankMaxMinResult'
+  const pathName: string = searchCommon().getRouteName(searchPattern, true)
   const params: Record<string, any> = {}
   if (resData) { params.resData = resData }
   dtoUtils().prePushScreenInfo(dtoUtils().createScreenInfo(
@@ -150,7 +153,7 @@ useHead({
     { property: 'og:title', content: `${searchCommon().getSearchPatternName(searchPattern)} - ペリずかん` },
     { property: 'og:url', content: useRuntimeConfig().public.url + useRoute().path },
     { property: 'og:site_name', content: 'ペリずかん' },
-    { property: 'og:description', content: 'PvPにおける最高個体値、最低個体値を確認することができます。' },
+    { property: 'og:description', content: 'CPのランキングを確認することができます。' },
     { property: 'og:image', content: editUtils().getUrl('pokego/peripper-eyes.png') }
   ]
 })

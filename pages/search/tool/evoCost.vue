@@ -63,7 +63,7 @@ const clickSearchBtn = () => {
   // 結果画面側でAPIアクセスする。
 
   useRouter().push({
-    name: 'search-result-evoCostResult',
+    name: searchCommon().getRouteName(searchPattern, true),
     query: searchCommon().makeQuery(cDtoItem.value.searchParams)
   })
 }

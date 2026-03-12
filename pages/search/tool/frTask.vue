@@ -11,27 +11,11 @@
               mdi-pen
             </v-icon>
             ポケモン
-            <span class="required-mark">必須</span>
           </v-col>
           <v-col cols="12" md="8" lg="8" xl="8">
             <SearchInputPokeName
               v-model:name="cDtoItem.searchParams.name"
               v-model:pid="cDtoItem.searchParams.pid"
-              :keyup-enter="clickSearchBtn"
-            />
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col cols="12" md="4" lg="4" xl="4" class="col-title">
-            <v-icon>
-              mdi-pen
-            </v-icon>
-            個体値
-            <span class="required-mark">必須</span>
-          </v-col>
-          <v-col cols="12" md="8" lg="8" xl="8">
-            <SearchInputIv
-              v-model="cDtoItem.searchParams.iv"
               :keyup-enter="clickSearchBtn"
             />
           </v-col>
@@ -43,7 +27,7 @@
               min-width="50%"
               color="success"
               :disabled="isSearchBtnClick"
-              @click="clickSearchBtn()"
+              @click="clickSearchBtn"
             >
               検索
             </v-btn>
@@ -65,17 +49,16 @@
 
 <script setup lang="ts">
 import {
-  ScpRankSearchDtoItem,
-  type ScpRankResponse,
-  type ScpRankSearchParams,
+  FrTaskSearchDtoItem,
+  type FrTaskResponse,
+  type FrTaskSearchParams,
   get,
   check
-} from '~/components/interface/scpRank'
+} from '~/components/interface/frTask'
 
-const searchPattern = 'scpRank'
-
+const searchPattern = 'frTask'
 // current dto item
-const cDtoItem = ref<ScpRankSearchDtoItem>(new ScpRankSearchDtoItem())
+const cDtoItem = ref<FrTaskSearchDtoItem>(new FrTaskSearchDtoItem())
 const dto: any = useAttrs().dto
 dto.params = cDtoItem
 
@@ -85,9 +68,6 @@ const isSearchBtnClick = ref<boolean>(false)
 // created: 画面を復元する
 searchCommon().restoreSearchScreen(['searchParams', 'pokemonSearchResult'], cDtoItem.value)
 
-/**
- * 検索ボタン押下時の処理
- */
 const clickSearchBtn = async () => {
   isSearchBtnClick.value = true
   const msg = check(cDtoItem.value.searchParams)
@@ -116,7 +96,7 @@ const clickSearchBtn = async () => {
  *
  * @param rd
  */
-const handleApiResult = (rd: ScpRankResponse) => {
+const handleApiResult = (rd: FrTaskResponse) => {
   if (rd.success) {
     cDtoItem.value.pokemonSearchResult = rd.pokemonSearchResult
     if (rd.pokemonSearchResult.unique) {
@@ -125,7 +105,7 @@ const handleApiResult = (rd: ScpRankResponse) => {
     } else {
       // 複数件 or 0件ヒットした場合
       useRouter().replace({
-        name: 'search-scpRank'
+        name: searchCommon().getRouteName(searchPattern)
       })
       isSearchBtnClick.value = false
       isLoading.value = false
@@ -141,9 +121,9 @@ const handleApiResult = (rd: ScpRankResponse) => {
  * @param searchParams
  * @param resData
  */
-const transitionResultPage = (pid: string, searchParams: ScpRankSearchParams, resData?: ScpRankResponse): void => {
+const transitionResultPage = (pid: string, searchParams: FrTaskSearchParams, resData?: FrTaskResponse): void => {
   // result画面にresDataをセット
-  const pathName: string = 'search-result-scpRankResult'
+  const pathName: string = searchCommon().getRouteName(searchPattern, true)
   const params: Record<string, any> = {}
   if (resData) { params.resData = resData }
   dtoUtils().prePushScreenInfo(dtoUtils().createScreenInfo(
@@ -166,19 +146,8 @@ useHead({
     { property: 'og:title', content: `${searchCommon().getSearchPatternName(searchPattern)} - ペリずかん` },
     { property: 'og:url', content: useRuntimeConfig().public.url + useRoute().path },
     { property: 'og:site_name', content: 'ペリずかん' },
-    { property: 'og:description', content: '個体値を入力することにより、PvP順位を求めることができます。' },
+    { property: 'og:description', content: 'フィールドリサーチでゲットできるポケモンにおけるCPの振れ幅を確認できます。' },
     { property: 'og:image', content: editUtils().getUrl('pokego/peripper-eyes.png') }
   ]
 })
 </script>
-
-<style>
-input[type="number"]::-webkit-outer-spin-button,
-input[type="number"]::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-}
-input[type="number"] {
-  -moz-appearance:textfield;
-}
-</style>

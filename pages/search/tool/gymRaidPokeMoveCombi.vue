@@ -49,17 +49,16 @@
 
 <script setup lang="ts">
 import {
-  RaidSearchDtoItem,
-  type RaidResponse,
-  type RaidSearchParams,
+  GymRaidPokeMoveCombiSearchDtoItem,
+  type GymRaidPokeMoveCombiResponse,
+  type GymRaidPokeMoveCombiSearchParams,
   get,
   check
-} from '~/components/interface/raid'
+} from '~/components/interface/gymRaidPokeMoveCombi'
 
-const searchPattern = 'raid'
-
+const searchPattern = 'gymRaidPokeMoveCombi'
 // current dto item
-const cDtoItem = ref<RaidSearchDtoItem>(new RaidSearchDtoItem())
+const cDtoItem = ref<GymRaidPokeMoveCombiSearchDtoItem>(new GymRaidPokeMoveCombiSearchDtoItem())
 const dto: any = useAttrs().dto
 dto.params = cDtoItem
 
@@ -97,7 +96,7 @@ const clickSearchBtn = async () => {
  *
  * @param rd
  */
-const handleApiResult = (rd: RaidResponse) => {
+const handleApiResult = (rd: GymRaidPokeMoveCombiResponse) => {
   if (rd.success) {
     cDtoItem.value.pokemonSearchResult = rd.pokemonSearchResult
     if (rd.pokemonSearchResult.unique) {
@@ -106,7 +105,7 @@ const handleApiResult = (rd: RaidResponse) => {
     } else {
       // 複数件 or 0件ヒットした場合
       useRouter().replace({
-        name: 'search-raid'
+        name: searchCommon().getRouteName(searchPattern)
       })
       isSearchBtnClick.value = false
       isLoading.value = false
@@ -122,9 +121,9 @@ const handleApiResult = (rd: RaidResponse) => {
  * @param searchParams
  * @param resData
  */
-const transitionResultPage = (pid: string, searchParams: RaidSearchParams, resData?: RaidResponse): void => {
+const transitionResultPage = (pid: string, searchParams: GymRaidPokeMoveCombiSearchParams, resData?: GymRaidPokeMoveCombiResponse): void => {
   // result画面にresDataをセット
-  const pathName: string = 'search-result-raidResult'
+  const pathName: string = searchCommon().getRouteName(searchPattern, true)
   const params: Record<string, any> = {}
   if (resData) { params.resData = resData }
   dtoUtils().prePushScreenInfo(dtoUtils().createScreenInfo(
@@ -147,7 +146,7 @@ useHead({
     { property: 'og:title', content: `${searchCommon().getSearchPatternName(searchPattern)} - ペリずかん` },
     { property: 'og:url', content: useRuntimeConfig().public.url + useRoute().path },
     { property: 'og:site_name', content: 'ペリずかん' },
-    { property: 'og:description', content: 'レイドバトル後にゲットできるポケモンのCPの振れ幅を確認できます。' },
+    { property: 'og:description', content: 'ジム・レイドにおいて、最も火力がでる最強の技の組み合わせをランキング形式で見ることができます。' },
     { property: 'og:image', content: editUtils().getUrl('pokego/peripper-eyes.png') }
   ]
 })

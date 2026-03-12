@@ -49,16 +49,16 @@
 
 <script setup lang="ts">
 import {
-  WildSearchDtoItem,
-  type WildResponse,
-  type WildSearchParams,
+  EggsSearchDtoItem,
+  type EggsResponse,
+  type EggsSearchParams,
   get,
   check
-} from '~/components/interface/wild'
+} from '~/components/interface/eggs'
 
-const searchPattern = 'wild'
+const searchPattern = 'eggs'
 // current dto item
-const cDtoItem = ref<WildSearchDtoItem>(new WildSearchDtoItem())
+const cDtoItem = ref<EggsSearchDtoItem>(new EggsSearchDtoItem())
 const dto: any = useAttrs().dto
 dto.params = cDtoItem
 
@@ -96,7 +96,7 @@ const clickSearchBtn = async () => {
  *
  * @param rd
  */
-const handleApiResult = (rd: WildResponse) => {
+const handleApiResult = (rd: EggsResponse) => {
   if (rd.success) {
     cDtoItem.value.pokemonSearchResult = rd.pokemonSearchResult
     if (rd.pokemonSearchResult.unique) {
@@ -105,7 +105,7 @@ const handleApiResult = (rd: WildResponse) => {
     } else {
       // 複数件 or 0件ヒットした場合
       useRouter().replace({
-        name: 'search-wild'
+        name: searchCommon().getRouteName(searchPattern)
       })
       isSearchBtnClick.value = false
       isLoading.value = false
@@ -121,9 +121,9 @@ const handleApiResult = (rd: WildResponse) => {
  * @param searchParams
  * @param resData
  */
-const transitionResultPage = (pid: string, searchParams: WildSearchParams, resData?: WildResponse): void => {
+const transitionResultPage = (pid: string, searchParams: EggsSearchParams, resData?: EggsResponse): void => {
   // result画面にresDataをセット
-  const pathName: string = 'search-result-wildResult'
+  const pathName: string = searchCommon().getRouteName(searchPattern, true)
   const params: Record<string, any> = {}
   if (resData) { params.resData = resData }
   dtoUtils().prePushScreenInfo(dtoUtils().createScreenInfo(
@@ -146,7 +146,7 @@ useHead({
     { property: 'og:title', content: `${searchCommon().getSearchPatternName(searchPattern)} - ペリずかん` },
     { property: 'og:url', content: useRuntimeConfig().public.url + useRoute().path },
     { property: 'og:site_name', content: 'ペリずかん' },
-    { property: 'og:description', content: '野生におけるCPの振れ幅を確認できます。' },
+    { property: 'og:description', content: 'タマゴから孵化したポケモンにおける、CPの振れ幅を確認することができます。' },
     { property: 'og:image', content: editUtils().getUrl('pokego/peripper-eyes.png') }
   ]
 })

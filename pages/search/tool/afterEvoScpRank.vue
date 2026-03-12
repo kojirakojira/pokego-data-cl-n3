@@ -10,27 +10,6 @@
             <v-icon>
               mdi-pen
             </v-icon>
-            シチュエーション
-            <span class="required-mark">必須</span>
-          </v-col>
-          <v-col cols="12" md="8" lg="8" xl="8">
-            <client-only>
-              <v-select
-                v-model="cDtoItem.searchParams.situation"
-                :items="constant.SITUATION"
-                item-value="k"
-                item-title="v"
-                label="シチュエーションを選択"
-                hide-details
-              />
-            </client-only>
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col cols="12" md="4" lg="4" xl="4" class="col-title">
-            <v-icon>
-              mdi-pen
-            </v-icon>
             ポケモン
             <span class="required-mark">必須</span>
           </v-col>
@@ -47,8 +26,28 @@
             <v-icon>
               mdi-pen
             </v-icon>
-            CP
+            個体値
             <span class="required-mark">必須</span>
+          </v-col>
+          <v-col cols="12" md="8" lg="8" xl="8">
+            <SearchInputIv
+              v-model="cDtoItem.searchParams.iv"
+              :keyup-enter="clickSearchBtn"
+            />
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col cols="12" md="4" lg="4" xl="4" class="col-title">
+            <v-icon>
+              mdi-pen
+            </v-icon>
+            CP
+            <div class="optional-mark">
+              <span>任意</span>
+            </div>
+            <SearchInputHelpMsg>
+              入力すると、進化後のCPもいっしょに調べることができます。
+            </SearchInputHelpMsg>
           </v-col>
           <v-col cols="12" md="8" lg="8" xl="8">
             <v-text-field
@@ -63,36 +62,13 @@
           </v-col>
         </v-row>
         <v-row>
-          <v-col cols="12" md="4" lg="4" xl="4" class="col-title">
-            <v-icon>
-              mdi-pen
-            </v-icon>
-            天候ブースト
-            <SearchInputHelpMsg>
-              フィールドリサーチクリア後のボーナス、タマゴ孵化は、天候ブーストの影響を受けません。
-            </SearchInputHelpMsg>
-            <span class="required-mark">必須</span>
-          </v-col>
-          <v-col cols="12" md="8" lg="8" xl="8">
-            <v-switch
-              v-model="cDtoItem.searchParams.wbFlg"
-              inset
-              hide-details
-              :label="cDtoItem.searchParams.wbFlg ? 'あり' : 'なし'"
-              :disabled="
-                cDtoItem.searchParams.situation === 'frTask' || cDtoItem.searchParams.situation === 'egg'"
-              style="margin-top: 0px;"
-            />
-          </v-col>
-        </v-row>
-        <v-row>
           <v-col cols="12" class="text-center">
             <v-btn
               rounded
               min-width="50%"
               color="success"
               :disabled="isSearchBtnClick"
-              @click="clickSearchBtn"
+              @click="clickSearchBtn()"
             >
               検索
             </v-btn>
@@ -114,29 +90,30 @@
 
 <script setup lang="ts">
 import {
-  type CpIvResponse,
-  type CpIvSearchParams,
-  CpIvSearchDtoItem,
+  AfterEvoScpRankSearchDtoItem,
+  type
+  AfterEvoScpRankResponse,
+  AfterEvoScpRankSearchParams,
   get,
   check
-} from '~/components/interface/cpIv'
+} from '~/components/interface/afterEvoScpRank'
 
-const searchPattern = 'cpIv'
+const searchPattern = 'afterEvoScpRank'
+
 // current dto item
-const cDtoItem = ref<CpIvSearchDtoItem>(new CpIvSearchDtoItem())
+const cDtoItem = ref<AfterEvoScpRankSearchDtoItem>(new AfterEvoScpRankSearchDtoItem())
 const dto: any = useAttrs().dto
 dto.params = cDtoItem
 
 const isLoading = ref<boolean>(false)
 const isSearchBtnClick = ref<boolean>(false)
 
-const constant: ConstantValue = constantUtils().get()
-
 // created: 画面を復元する
-const restoredParams: Record<string, any> | null = searchCommon().restoreCurrentScreen(['searchParams', 'pokemonSearchResult'])
-if (restoredParams && restoredParams.searchParams) { cDtoItem.value.searchParams = restoredParams.searchParams }
-if (restoredParams && restoredParams.pokemonSearchResult) { cDtoItem.value.pokemonSearchResult = restoredParams.pokemonSearchResult }
+searchCommon().restoreSearchScreen(['searchParams', 'pokemonSearchResult'], cDtoItem.value)
 
+/**
+ * 検索ボタン押下時の処理
+ */
 const clickSearchBtn = async () => {
   isSearchBtnClick.value = true
   const msg = check(cDtoItem.value.searchParams)
@@ -161,11 +138,11 @@ const clickSearchBtn = async () => {
 }
 
 /**
-   * APIのレスポンスを処理する。
-   *
-   * @param rd
-   */
-const handleApiResult = (rd: CpIvResponse) => {
+ * APIのレスポンスを処理する。
+ *
+ * @param rd
+ */
+const handleApiResult = (rd: AfterEvoScpRankResponse) => {
   if (rd.success) {
     cDtoItem.value.pokemonSearchResult = rd.pokemonSearchResult
     if (rd.pokemonSearchResult.unique) {
@@ -174,7 +151,7 @@ const handleApiResult = (rd: CpIvResponse) => {
     } else {
       // 複数件 or 0件ヒットした場合
       useRouter().replace({
-        name: 'search-cpIv'
+        name: searchCommon().getRouteName(searchPattern)
       })
       isSearchBtnClick.value = false
       isLoading.value = false
@@ -190,9 +167,9 @@ const handleApiResult = (rd: CpIvResponse) => {
  * @param searchParams
  * @param resData
  */
-const transitionResultPage = (pid: string, searchParams: CpIvSearchParams, resData?: CpIvResponse): void => {
+const transitionResultPage = (pid: string, searchParams: AfterEvoScpRankSearchParams, resData?: AfterEvoScpRankResponse): void => {
   // result画面にresDataをセット
-  const pathName: string = 'search-result-cpIvResult'
+  const pathName: string = searchCommon().getRouteName(searchPattern, true)
   const params: Record<string, any> = {}
   if (resData) { params.resData = resData }
   dtoUtils().prePushScreenInfo(dtoUtils().createScreenInfo(
@@ -215,8 +192,20 @@ useHead({
     { property: 'og:title', content: `${searchCommon().getSearchPatternName(searchPattern)} - ペリずかん` },
     { property: 'og:url', content: useRuntimeConfig().public.url + useRoute().path },
     { property: 'og:site_name', content: 'ペリずかん' },
-    { property: 'og:description', content: 'ポケモン、CP、ポケモンを捕まえるときのシチュエーションから、個体値を検索することができます。' },
+    { property: 'og:description', content: '進化後のPvP順位のランキングを確認できます。' },
     { property: 'og:image', content: editUtils().getUrl('pokego/peripper-eyes.png') }
   ]
 })
 </script>
+
+<style>
+/* 入力ボックスフォーカス時に出てくる上下矢印のボタンを非表示にする。 */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+input[type="number"] {
+  -moz-appearance:textfield;
+}
+</style>

@@ -164,7 +164,7 @@ const screenControlMethods = () => {
    */
   const onClickRow = (_: Event, selected: Item) => {
     useRouter().push({
-      name: 'search-result-abundance',
+      name: searchCommon().getRouteName('abundance', true),
       query: {
         pid: selected.id
       }

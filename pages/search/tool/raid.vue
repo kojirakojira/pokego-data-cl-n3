@@ -11,27 +11,11 @@
               mdi-pen
             </v-icon>
             ポケモン
-            <span class="required-mark">必須</span>
           </v-col>
           <v-col cols="12" md="8" lg="8" xl="8">
             <SearchInputPokeName
               v-model:name="cDtoItem.searchParams.name"
               v-model:pid="cDtoItem.searchParams.pid"
-              :keyup-enter="clickSearchBtn"
-            />
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col cols="12" md="4" lg="4" xl="4" class="col-title">
-            <v-icon>
-              mdi-pen
-            </v-icon>
-            個体値
-            <span class="required-mark">必須</span>
-          </v-col>
-          <v-col cols="12" md="8" lg="8" xl="8">
-            <SearchInputIv
-              v-model="cDtoItem.searchParams.iv"
               :keyup-enter="clickSearchBtn"
             />
           </v-col>
@@ -65,16 +49,17 @@
 
 <script setup lang="ts">
 import {
-  PlListSearchDtoItem,
-  type PlListResponse,
-  type PlListSearchParams,
+  RaidSearchDtoItem,
+  type RaidResponse,
+  type RaidSearchParams,
   get,
   check
-} from '~/components/interface/plList'
+} from '~/components/interface/raid'
 
-const searchPattern = 'plList'
+const searchPattern = 'raid'
+
 // current dto item
-const cDtoItem = ref<PlListSearchDtoItem>(new PlListSearchDtoItem())
+const cDtoItem = ref<RaidSearchDtoItem>(new RaidSearchDtoItem())
 const dto: any = useAttrs().dto
 dto.params = cDtoItem
 
@@ -112,7 +97,7 @@ const clickSearchBtn = async () => {
  *
  * @param rd
  */
-const handleApiResult = (rd: PlListResponse) => {
+const handleApiResult = (rd: RaidResponse) => {
   if (rd.success) {
     cDtoItem.value.pokemonSearchResult = rd.pokemonSearchResult
     if (rd.pokemonSearchResult.unique) {
@@ -121,7 +106,7 @@ const handleApiResult = (rd: PlListResponse) => {
     } else {
       // 複数件 or 0件ヒットした場合
       useRouter().replace({
-        name: 'search-plList'
+        name: searchCommon().getRouteName(searchPattern)
       })
       isSearchBtnClick.value = false
       isLoading.value = false
@@ -137,9 +122,9 @@ const handleApiResult = (rd: PlListResponse) => {
  * @param searchParams
  * @param resData
  */
-const transitionResultPage = (pid: string, searchParams: PlListSearchParams, resData?: PlListResponse): void => {
+const transitionResultPage = (pid: string, searchParams: RaidSearchParams, resData?: RaidResponse): void => {
   // result画面にresDataをセット
-  const pathName: string = 'search-result-plListResult'
+  const pathName: string = searchCommon().getRouteName(searchPattern, true)
   const params: Record<string, any> = {}
   if (resData) { params.resData = resData }
   dtoUtils().prePushScreenInfo(dtoUtils().createScreenInfo(
@@ -162,7 +147,7 @@ useHead({
     { property: 'og:title', content: `${searchCommon().getSearchPatternName(searchPattern)} - ペリずかん` },
     { property: 'og:url', content: useRuntimeConfig().public.url + useRoute().path },
     { property: 'og:site_name', content: 'ペリずかん' },
-    { property: 'og:description', content: '個体値を入力し、PLごとのCPの一覧を確認することができます。' },
+    { property: 'og:description', content: 'レイドバトル後にゲットできるポケモンのCPの振れ幅を確認できます。' },
     { property: 'og:image', content: editUtils().getUrl('pokego/peripper-eyes.png') }
   ]
 })

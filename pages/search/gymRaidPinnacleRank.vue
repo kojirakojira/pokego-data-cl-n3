@@ -272,7 +272,7 @@ const screenControlMethods = () => {
       // } else {
       //   // 複数件 or 0件ヒットした場合
       //   useRouter().replace({
-      //     name: 'search-gymRaidPinnacleRank'
+      //     name: searchCommon().getRouteName('gymRaidPinnacleRank')
       //   })
       //   isSearchBtnClick.value = false
       //   isLoading.value = false

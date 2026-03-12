@@ -12,7 +12,7 @@
             v-for="(p, index) in topicPokemons.arr"
             :key="index"
             class="px-0"
-            :to="{name: 'search-result-abundance', query: { pid: p.pokedexId }}"
+            :to="{name: searchCommon().getRouteName('abundance', true), query: { pid: p.pokedexId }}"
           >
             <v-list-item-title class="subtitle-2" :title="p.name">
               <div class="pokemon-icon">

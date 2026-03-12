@@ -11,11 +11,27 @@
               mdi-pen
             </v-icon>
             ポケモン
+            <span class="required-mark">必須</span>
           </v-col>
           <v-col cols="12" md="8" lg="8" xl="8">
             <SearchInputPokeName
               v-model:name="cDtoItem.searchParams.name"
               v-model:pid="cDtoItem.searchParams.pid"
+              :keyup-enter="clickSearchBtn"
+            />
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col cols="12" md="4" lg="4" xl="4" class="col-title">
+            <v-icon>
+              mdi-pen
+            </v-icon>
+            個体値
+            <span class="required-mark">必須</span>
+          </v-col>
+          <v-col cols="12" md="8" lg="8" xl="8">
+            <SearchInputIv
+              v-model="cDtoItem.searchParams.iv"
               :keyup-enter="clickSearchBtn"
             />
           </v-col>
@@ -49,16 +65,16 @@
 
 <script setup lang="ts">
 import {
-  PokemonAttackSearchDtoItem,
-  type PokemonAttackResponse,
-  type PokemonAttackSearchParams,
+  PlListSearchDtoItem,
+  type PlListResponse,
+  type PlListSearchParams,
   get,
   check
-} from '~/components/interface/pokemonAttack'
+} from '~/components/interface/plList'
 
-const searchPattern = 'pokemonAttack'
+const searchPattern = 'plList'
 // current dto item
-const cDtoItem = ref<PokemonAttackSearchDtoItem>(new PokemonAttackSearchDtoItem())
+const cDtoItem = ref<PlListSearchDtoItem>(new PlListSearchDtoItem())
 const dto: any = useAttrs().dto
 dto.params = cDtoItem
 
@@ -96,7 +112,7 @@ const clickSearchBtn = async () => {
  *
  * @param rd
  */
-const handleApiResult = (rd: PokemonAttackResponse) => {
+const handleApiResult = (rd: PlListResponse) => {
   if (rd.success) {
     cDtoItem.value.pokemonSearchResult = rd.pokemonSearchResult
     if (rd.pokemonSearchResult.unique) {
@@ -105,7 +121,7 @@ const handleApiResult = (rd: PokemonAttackResponse) => {
     } else {
       // 複数件 or 0件ヒットした場合
       useRouter().replace({
-        name: 'search-pokemonAttack'
+        name: searchCommon().getRouteName(searchPattern)
       })
       isSearchBtnClick.value = false
       isLoading.value = false
@@ -121,9 +137,9 @@ const handleApiResult = (rd: PokemonAttackResponse) => {
  * @param searchParams
  * @param resData
  */
-const transitionResultPage = (pid: string, searchParams: PokemonAttackSearchParams, resData?: PokemonAttackResponse): void => {
+const transitionResultPage = (pid: string, searchParams: PlListSearchParams, resData?: PlListResponse): void => {
   // result画面にresDataをセット
-  const pathName: string = 'search-result-pokemonAttackResult'
+  const pathName: string = searchCommon().getRouteName(searchPattern, true)
   const params: Record<string, any> = {}
   if (resData) { params.resData = resData }
   dtoUtils().prePushScreenInfo(dtoUtils().createScreenInfo(
@@ -146,7 +162,7 @@ useHead({
     { property: 'og:title', content: `${searchCommon().getSearchPatternName(searchPattern)} - ペリずかん` },
     { property: 'og:url', content: useRuntimeConfig().public.url + useRoute().path },
     { property: 'og:site_name', content: 'ペリずかん' },
-    { property: 'og:description', content: 'そのポケモンが覚える通常技、スペシャル技を確認できます。' },
+    { property: 'og:description', content: '個体値を入力し、PLごとのCPの一覧を確認することができます。' },
     { property: 'og:image', content: editUtils().getUrl('pokego/peripper-eyes.png') }
   ]
 })
