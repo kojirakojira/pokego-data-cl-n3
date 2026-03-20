@@ -28,11 +28,6 @@ export interface RestoreCondition {
 }
 
 export default () => {
-  const route = useRoute()
-  const router = useRouter()
-
-  const searchPatternNames = useAppConfig().searchPatternNames as unknown as SearchPatternNames
-
   const rules = readonly({
     name: [
       (v: string) => (v || '').length <= 20 || 'ポケモンは20文字以内で入力してください。'
@@ -44,6 +39,7 @@ export default () => {
   })
 
   const restoreSearchScreen = (keys: Array<string>, dto: Record<string, any>): boolean => {
+    const route = useRoute()
     const navigation: string = dtoStore().getNavigation()
     const currentSi: ScreenInfo | null = dtoStore().currentScreenInfo()
     let restoreFlg = false
@@ -113,6 +109,7 @@ export default () => {
    * @returns
    */
   const restoreCurrentScreen = (keys: Array<string>): Record<string, any> | null => {
+    const route = useRoute()
     const currentSi: ScreenInfo | null = dtoStore().currentScreenInfo()
     // routeの取得
     const routeName: string = route.name as string
@@ -228,6 +225,7 @@ export default () => {
    */
   const getSearchPatternName = (searchPattern: string) => {
     let ret: string = ''
+    const searchPatternNames = useAppConfig().searchPatternNames as unknown as SearchPatternNames
     Object.entries(searchPatternNames).forEach(([, category]) => {
       Object.entries(category.patternNames).forEach(([k, pattern]) => {
         if (k === searchPattern) {
@@ -240,6 +238,7 @@ export default () => {
 
   const isToolPage = (searchPattern: string) => {
     let isTool = false
+    const searchPatternNames = useAppConfig().searchPatternNames as unknown as SearchPatternNames
     Object.entries(searchPatternNames).forEach(([, category]) => {
       Object.entries(category.patternNames).forEach(([k, pattern]) => {
         if (k === searchPattern && pattern.isTool) {
@@ -360,6 +359,7 @@ export default () => {
     searchParams: ResearchRequest
   ): void => {
     if (!pid) { return }
+    const router = useRouter()
     // 遷移後の画面のqueryを作成する
     const query = makeQuery(pid, searchParams)
 
@@ -463,7 +463,7 @@ export default () => {
   // }
 
   return {
-    searchPatternNames,
+    get searchPatternNames() { return useAppConfig().searchPatternNames as unknown as SearchPatternNames },
     rules,
     // mountQuery,
     restoreSearchScreen,
