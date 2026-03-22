@@ -45,7 +45,12 @@
         </v-row>
         <transition name="fade">
           <v-row v-show="showHiddenColumnsArea">
-            <v-col v-for="chkItem in disabledChkboxes" :key="`chkbox-${chkItem.label}`" class="py-0">
+            <v-col
+              v-for="chkItem in disabledChkboxes"
+              :key="`chkbox-${chkItem.label}`"
+              class="py-0"
+              :cols="cDtoItem.tableControl.radioStatus === 'original' ? 3 : undefined"
+            >
               <v-checkbox
                 v-model="cDtoItem.tableControl.chkboxSelected"
                 hide-details
@@ -109,6 +114,12 @@
           </v-col>
         </v-row>
       </v-container>
+      <div class="fixed-radio">
+        <v-radio-group v-model="cDtoItem.tableControl.radioStatus" inline hide-details>
+          <v-radio label="GO" color="primary" value="go" />
+          <v-radio label="原作" color="primary" value="original" />
+        </v-radio-group>
+      </div>
     </div>
     <div v-else>
       <Loading full-page />
@@ -125,7 +136,7 @@ import {
   type TableControl,
   get
 } from '~/components/interface/filterAll'
-import { GoPokedexAndCp } from '~/components/interface/api/dto'
+import { GppAndCp } from '~/components/interface/api/dto'
 
 const searchPattern = 'filterAll'
 // current dto item
@@ -177,11 +188,13 @@ const screenControlMethods = () => {
     tc.itemsPerPage = tableControl?.itemsPerPage || itemsPerPageOptions.value[0]
     // 現在のページ
     tc.currentPage = tableControl?.currentPage || 1
+    // ラジオボタンの復元
+    tc.radioStatus = tableControl?.radioStatus || tc.radioStatus
   }
 
   interface Item {
     index: number,
-    item: GoPokedexAndCp
+    item: GppAndCp
   }
   /**
    * v-data-tableの列をクリックしたときの処理
@@ -225,14 +238,38 @@ watch(() => cDtoItem.value.tableControl.currentPage, (newValue, oldValue) => {
 // hiddenColumnsAreaの表示・非表示
 const showHiddenColumnsArea = ref<boolean>(false)
 
-// 非表示にできる列（チェックボックスの値）
-const disabledChkboxes = ref<Array<{ label: string, value: string }>>([
+// 非表示にできる列（チェックボックスの値）の全候補
+const baseDisabledChkboxes = readonly<Array<{ label: string, value: string }>>([
   { label: 'タイプ', value: 'goPokedex.type1' },
   { label: 'こうげき', value: 'goPokedex.attack' },
   { label: 'ぼうぎょ', value: 'goPokedex.defense' },
   { label: 'HP', value: 'goPokedex.hp' },
-  { label: 'CP', value: 'cp' }
+  { label: 'CP', value: 'cp' },
+  { label: 'HP', value: 'pokedex.hp' },
+  { label: 'こうげき', value: 'pokedex.attack' },
+  { label: 'ぼうぎょ', value: 'pokedex.defense' },
+  { label: 'とくこう', value: 'pokedex.specialAttack' },
+  { label: 'とくぼう', value: 'pokedex.specialDefense' },
+  { label: 'すばやさ', value: 'pokedex.speed' }
 ])
+
+const disabledChkboxes = computed((): Array<{ label: string, value: string }> => {
+  const radioStatus = cDtoItem.value.tableControl.radioStatus
+  return baseDisabledChkboxes.filter((chk) => {
+    if (radioStatus === 'go') {
+      const gList = ['pokedex.hp', 'pokedex.attack', 'pokedex.defense', 'pokedex.specialAttack', 'pokedex.specialDefense', 'pokedex.speed']
+      if (gList.includes(chk.value)) {
+        return false
+      }
+    } else if (radioStatus === 'original') {
+      const oList = ['goPokedex.attack', 'goPokedex.defense', 'goPokedex.hp', 'cp']
+      if (oList.includes(chk.value)) {
+        return false
+      }
+    }
+    return true
+  })
+})
 
 /** 列が全部そろったv-data-tableのヘッダ */
 const baseHeaders = readonly<Array<any>>([
@@ -244,13 +281,51 @@ const baseHeaders = readonly<Array<any>>([
   { title: 'こうげき', key: 'goPokedex.attack' },
   { title: 'ぼうぎょ', key: 'goPokedex.defense' },
   { title: 'HP', key: 'goPokedex.hp' },
-  { title: 'CP', key: 'cp' }
+  { title: 'CP', key: 'cp' },
+  { title: 'HP', key: 'pokedex.hp' },
+  { title: 'こうげき', key: 'pokedex.attack' },
+  { title: 'ぼうぎょ', key: 'pokedex.defense' },
+  { title: 'とくこう', key: 'pokedex.specialAttack' },
+  { title: 'とくぼう', key: 'pokedex.specialDefense' },
+  { title: 'すばやさ', key: 'pokedex.speed' }
 ])
 
+/*
+ * ヘッダの表示制御（ラジオボタンに応じて表示項目を切り替える）
+ */
 const headers = computed((): Array<any> => {
-  const selectedArr: Array<string> = cDtoItem.value.tableControl.chkboxSelected
-  return baseHeaders.filter(col => !selectedArr.includes(col.key))
+  const tableControl = cDtoItem.value.tableControl
+  const selectedArr: Array<string> = tableControl.chkboxSelected
+  return baseHeaders.filter((col) => {
+    if (selectedArr.includes(col.key)) {
+      return false
+    }
+
+    if (tableControl.radioStatus === 'go') {
+      const gList = ['pokedex.hp', 'pokedex.attack', 'pokedex.defense', 'pokedex.specialAttack', 'pokedex.specialDefense', 'pokedex.speed']
+      if (gList.includes(col.key)) {
+        return false
+      }
+    } else if (tableControl.radioStatus === 'original') {
+      const oList = ['goPokedex.attack', 'goPokedex.defense', 'goPokedex.hp', 'cp']
+      if (oList.includes(col.key)) {
+        return false
+      }
+    }
+    return true
+  })
 })
+
+watch(
+  () => cDtoItem.value.tableControl.radioStatus,
+  (newValue) => {
+    const tc = cDtoItem.value.tableControl
+    const removeList = newValue === 'go'
+      ? ['pokedex.hp', 'pokedex.attack', 'pokedex.defense', 'pokedex.specialAttack', 'pokedex.specialDefense', 'pokedex.speed']
+      : ['goPokedex.attack', 'goPokedex.defense', 'goPokedex.hp', 'cp']
+    tc.sortByArr = tc.sortByArr.filter(sItem => !removeList.includes(sItem.key))
+  }
+)
 
 const itemsPerPageOptions = computed((): Array<number> => {
   const retArr: Array<number> = []
@@ -307,5 +382,20 @@ useHead({
 .column-disabled-area {
   max-width: 700px;
   border-radius: 20px;
+}
+
+.fixed-radio {
+  background-color: white;
+  padding: 5px 20px 5px 5px;
+  position: fixed;
+  bottom: 25px;
+  left: 25px;
+  z-index: 50;
+  border-radius: 25px;
+  border: thin solid;
+}
+
+.fixed-radio:hover {
+  border-color: blue;
 }
 </style>

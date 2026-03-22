@@ -36,22 +36,37 @@ export class GoPokedex {
   }
 }
 
-export interface Pokedex {
-  pokedexId: string,
-  name: string,
-  hp: number,
-  attack: number,
-  defense: number,
-  specialAttack: number,
-  specialDefense: number,
-  speed: number,
-  remarks: string,
-  type1: string,
-  type2: string | null | undefined,
-  gen: string,
-  image1: string | null | undefined,
-  image2: string | null | undefined,
+export class Pokedex {
+  pokedexId: string
+  name: string
+  hp: number
+  attack: number
+  defense: number
+  specialAttack: number
+  specialDefense: number
+  speed: number
+  remarks: string
+  type1: string
+  type2: string | null | undefined
+  gen: string
+  image1: string | null | undefined
+  image2: string | null | undefined
   implFlg: boolean
+
+  constructor () {
+    this.pokedexId = ''
+    this.name = ''
+    this.hp = 0
+    this.attack = 0
+    this.defense = 0
+    this.specialAttack = 0
+    this.specialDefense = 0
+    this.speed = 0
+    this.remarks = ''
+    this.type1 = ''
+    this.gen = ''
+    this.implFlg = false
+  }
 }
 
 export class ScpRank {
@@ -205,14 +220,16 @@ export class CpRank {
   }
 }
 
-export class GoPokedexAndCp {
+export class GppAndCp {
   no: number
   goPokedex: GoPokedex
+  pokedex: Pokedex
   cp: number
 
   constructor () {
     this.no = 0
     this.goPokedex = new GoPokedex()
+    this.pokedex = new Pokedex()
     this.cp = 0
   }
 }
@@ -556,8 +573,8 @@ export class PokemonFilterResult {
   message: string
   msgLevel: MsgLevel
   unique: boolean
-  gpAndCpList: Array<GoPokedexAndCp>
-  goPokedex: GoPokedexAndCp
+  gpAndCpList: Array<GppAndCp>
+  goPokedex: GppAndCp
   hit: boolean
   filteredItems: Array<DispFilterParam>
 
@@ -566,7 +583,7 @@ export class PokemonFilterResult {
     this.msgLevel = 'info'
     this.unique = false
     this.gpAndCpList = []
-    this.goPokedex = new GoPokedexAndCp()
+    this.goPokedex = new GppAndCp()
     this.hit = false
     this.filteredItems = []
   }

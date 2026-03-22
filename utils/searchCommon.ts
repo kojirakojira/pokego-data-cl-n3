@@ -74,7 +74,7 @@ export default () => {
    * @param ResultSearchParams ～ResultSearchParamsの型
    * @returns
    */
-  const restoreSearchParams = <T>(routeQuery: LocationQuery, ResultSearchParams: new () => T): T => {
+  const restoreSearchParams = <T> (routeQuery: LocationQuery, ResultSearchParams: new () => T): T => {
     const rsp: T = new ResultSearchParams()
     for (const k in rsp) {
       if (routeQuery[k]) {
@@ -463,7 +463,7 @@ export default () => {
   // }
 
   return {
-    get searchPatternNames() { return useAppConfig().searchPatternNames as unknown as SearchPatternNames },
+    get searchPatternNames () { return useAppConfig().searchPatternNames as unknown as SearchPatternNames },
     rules,
     // mountQuery,
     restoreSearchScreen,

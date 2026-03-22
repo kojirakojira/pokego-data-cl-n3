@@ -1,4 +1,4 @@
-import { GoPokedex, PokemonSearchResult, type GoPokedexAndCp } from './api/dto'
+import { GoPokedex, PokemonSearchResult, type GppAndCp } from './api/dto'
 import { ResearchRequest } from './api/request'
 import { ResearchResponse } from './api/response'
 
@@ -12,8 +12,8 @@ export class AfterEvoCpResponse extends ResearchResponse {
   ivh: number
   cp: number
   pl: string
-  afEvolCpList: Array<GoPokedexAndCp>
-  anotherFormList: Array<GoPokedexAndCp>
+  afEvolCpList: Array<GppAndCp>
+  anotherFormList: Array<GppAndCp>
 
   constructor () {
     super()

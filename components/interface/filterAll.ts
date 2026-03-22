@@ -46,7 +46,8 @@ export interface TableControl {
   chkboxSelected: Array<string>, // 列を非表示にするチェックボックス
   sortByArr: Array<SortItem>, // v-data-tableのソート中のItem
   itemsPerPage: number, // 現在の1ページ当たり表示件数
-  currentPage: number // 現在のページ
+  currentPage: number, // 現在のページ
+  radioStatus: string // ラジオボタンの状態表示
 }
 export class FilterAllResultDtoItem implements ResultDtoItem {
   searchParams: FilterAllResultSearchParams
@@ -61,7 +62,8 @@ export class FilterAllResultDtoItem implements ResultDtoItem {
       chkboxSelected: [],
       sortByArr: [],
       itemsPerPage: -1,
-      currentPage: 1
+      currentPage: 1,
+      radioStatus: 'go'
     }
   }
 }
