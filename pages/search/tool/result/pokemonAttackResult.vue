@@ -42,7 +42,7 @@
               メガ進化後のポケモンです。
               <nuxt-link
                 :to="{
-                  name: 'search-result-pokemonAttackResult',
+                  name: searchCommon().getRouteName('pokemonAttack', true),
                   query: { pid: cDtoItem.resData.preMegaGp.pokedexId } }"
               >
                 {{ `${editUtils().appendRemarks(cDtoItem.resData.preMegaGp.name, cDtoItem.resData.preMegaGp.remarks)}` }}

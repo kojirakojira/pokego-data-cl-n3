@@ -46,7 +46,7 @@
         :bf-af-aot-forms="cDtoItem.resData.bfAfAotForms"
         :race-map="cDtoItem.resData.raceMap"
         :evol-tree-annos="cDtoItem.resData.evolTreeAnnotations"
-        router-link="search-result-evolutionResult"
+        router-link="searchCommon().getRouteName('evolutionResult', true)"
         :grid="[
           { cols: 12, md: 7, lg: 7, xl: 7 },
           { cols: 12, md: 5, lg: 5, xl: 5 }
@@ -56,7 +56,7 @@
         :pid="cDtoItem.resData.pid"
         :prev-text-func="prevTextFunc"
         :next-text-func="nextTextFunc"
-        router-link="search-result-evolutionResult"
+        router-link="searchCommon().getRouteName('evolutionResult', true)"
       />
     </div>
     <div v-else>
@@ -114,9 +114,6 @@ const init = async () => {
   isLoading.value = !cDtoItem.value.resData
 }
 
-// created
-await init()
-
 // EvoInfoのref属性
 const evoInfoRef = ref()
 // 自画面遷移時
@@ -131,11 +128,14 @@ const prevTextFunc = (gp: GoPokedex): string =>
 const nextTextFunc = (gp: GoPokedex): string =>
   `${editUtils().appendRemarks(gp.name, gp.remarks)}の進化ツリー(図鑑№${editUtils().getPdxNo(gp.pokedexId)}) >`
 
+// created
+await init()
+
 // Header
 const thisPath = useRuntimeConfig().public.url + useRoute().path
 const metaObject = computed((): MetaObject => {
-  const pokeName = cDtoItem.value.resData.name || ''
-  const pokeImage = editUtils().getUrl(cDtoItem.value.resData.image2 || 'pokego/peripper-eyes.png')
+  const pokeName = cDtoItem.value.resData?.name || ''
+  const pokeImage = editUtils().getUrl(cDtoItem.value.resData?.image2 || 'pokego/peripper-eyes.png')
   return {
     title: `${pokeName}の進化ツリー`,
     meta: [

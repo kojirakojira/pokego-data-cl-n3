@@ -588,7 +588,7 @@
               :bf-af-aot-forms="cDtoItem.evoResData.bfAfAotForms"
               :race-map="cDtoItem.evoResData.raceMap"
               :evol-tree-annos="cDtoItem.evoResData.evolTreeAnnotations"
-              router-link="search-result-abundance"
+              :router-link="searchCommon().getRouteName('abundance', true)"
             />
             <div v-else>
               <Loading />
@@ -604,7 +604,7 @@
         :pid="cDtoItem.resData.goPokedex.pokedexId"
         :prev-text-func="commonMethods().prevTextFunc"
         :next-text-func="commonMethods().nextTextFunc"
-        router-link="search-result-abundance"
+        :router-link="searchCommon().getRouteName('abundance', true)"
         :prev-grid="{ cols: 12 }"
         :next-grid="{ cols: 12 }"
       />

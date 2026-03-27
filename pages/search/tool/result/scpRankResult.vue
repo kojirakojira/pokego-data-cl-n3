@@ -272,7 +272,7 @@ const screenControlMethods = () => {
    */
   const onClickRow = (_: PointerEvent, selected: Item) => {
     useRouter().push({
-      name: 'search-result-scpRankResult',
+      name: searchCommon().getRouteName('scpRank', true),
       query: {
         pid: selected.item.goPokedex.pokedexId,
         iv: cDtoItem.value.searchParams.iv

@@ -290,7 +290,7 @@ const screenControlMethods = () => {
    */
   const transitionResultPage = (pid: string, searchParams: GymRaidPinnacleRankSearchParams, resData?: GymRaidPinnacleRankResponse): void => {
     // result画面にresDataをセット
-    const pathName: string = 'search-result-gymRaidPinnacleRankResult'
+    const pathName: string = searchCommon().getRouteName('gymRaidPinnacleRank', true)
     const params: Record<string, any> = {}
     if (resData) { params.resData = resData }
     dtoUtils().prePushScreenInfo(dtoUtils().createScreenInfo(

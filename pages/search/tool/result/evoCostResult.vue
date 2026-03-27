@@ -47,7 +47,7 @@
                                 v-for="(ee, eeIdx) in pokeArr"
                                 :key="`${costTypeKey}-${detailKey}-${eeIdx}`"
                                 :evo-edge="ee"
-                                link="search-result-abundance"
+                                :link="searchCommon().getRouteName('abundance', true)"
                                 :class="$style.evo_edge"
                               />
                             </div>
@@ -85,10 +85,12 @@ dto.params = cDtoItem
 
 const isLoading = ref<boolean>(true)
 
+const route = useRoute()
+
 const init = async () => {
   // route.queryからsearchParamsを復元
   cDtoItem.value.searchParams = searchCommon()
-    .restoreSearchParams(useRoute().query, EvoCostResultSearchParams)
+    .restoreSearchParams(route.query, EvoCostResultSearchParams)
   // dtoStoreからresDataを復元
   const restoredParams: Record<string, any> | null = searchCommon().restoreCurrentScreen(['resData', 'openDic'])
   const rd: EvoCostResponse | null = restoredParams?.resData
@@ -134,13 +136,14 @@ const initOpenDic = (dtoOpenDic: Record<string, Array<string>> | null) => {
 await init()
 
 // Header
-const thisPath = useRuntimeConfig().public.url + useRoute().path
+const patternName = searchCommon().getSearchPatternName(searchPattern)
+const thisPath = useRuntimeConfig().public.url + route.path
 const metaObject = computed((): MetaObject => {
   return {
-    title: `${searchCommon().getSearchPatternName(searchPattern)}`,
+    title: `${patternName}`,
     meta: [
       { property: 'og:type', content: 'article' },
-      { property: 'og:title', content: `${searchCommon().getSearchPatternName(searchPattern)} - ペリずかん` },
+      { property: 'og:title', content: `${patternName} - ペリずかん` },
       { property: 'og:url', content: thisPath },
       { property: 'og:site_name', content: 'ペリずかん' },
       { property: 'og:description', content: '進化条件（必要なアメの個数、進化アイテム等）から、ポケモンを逆引きすることができます。' },
