@@ -205,6 +205,16 @@ export default () => {
     return value ? String(value) : ''
   }
 
+  /**
+   * リリース日を変換する。
+   *
+   * @param value
+   * @returns
+   */
+  const convertReleaseDate = (value: string): string => {
+    return value ? value.substring(0, 7).replace(/-/g, '/') : ''
+  }
+
   return {
     getPdxNo,
     appendRemarks,
@@ -214,6 +224,7 @@ export default () => {
     getPokemonImageUrl,
     toArrayFromDic,
     getValueFromDic,
-    toString
+    toString,
+    convertReleaseDate
   }
 }

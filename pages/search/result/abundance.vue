@@ -91,6 +91,14 @@
             </v-row>
             <v-row :class="$style.row">
               <v-col cols="5" :class="$style.title">
+                英語名
+              </v-col>
+              <v-col cols="7" :class="$style.content">
+                {{ cDtoItem.resData.goPokedex.nameEn }}
+              </v-col>
+            </v-row>
+            <v-row :class="$style.row">
+              <v-col cols="5" :class="$style.title">
                 タイプ
               </v-col>
               <v-col cols="7" :class="$style.content">
@@ -115,7 +123,7 @@
                 PokémonGO実装
               </v-col>
               <v-col cols="7" :class="$style.content">
-                <span v-if="cDtoItem.resData.goPokedex.implFlg">実装済</span>
+                <span v-if="cDtoItem.resData.goPokedex.implFlg">実装済({{ editUtils().convertReleaseDate(cDtoItem.resData.goPokedex.releaseDate) }})</span>
                 <span v-else class="text-red">未実装</span>
               </v-col>
             </v-row>

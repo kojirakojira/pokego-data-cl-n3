@@ -66,9 +66,9 @@
         <h4 class="mt-0 col-title">
           別のすがた
         </h4>
-        <v-container v-if="anotherForms.length" class="justify-center" style="display: grid;">
+        <v-container v-if="anotherForms.length" class="d-flex">
           <v-row :class="$style.another_form">
-            <v-col v-for="itemPid in anotherForms" :key="`aot-form-${itemPid}`" class="pa-0">
+            <v-col v-for="itemPid in anotherForms" :key="`aot-form-${itemPid}`" cols="auto" class="pa-0">
               <div :class="$style.block">
                 <SearchEvolutionPokemon
                   :go-pokedex="raceMap[itemPid].goPokedex"
@@ -85,9 +85,9 @@
         <h4 class="mt-0 col-title">
           同系統のポケモン
         </h4>
-        <v-container v-if="bfAfAotForms.length" class="justify-center" style="display: grid;">
+        <v-container v-if="bfAfAotForms.length" class="d-flex">
           <v-row :class="$style.bfaf_another_form">
-            <v-col v-for="itemPid in bfAfAotForms" :key="`aot-form-${itemPid}`" class="pa-0">
+            <v-col v-for="itemPid in bfAfAotForms" :key="`aot-form-${itemPid}`" cols="auto" class="pa-0">
               <div :class="$style.block">
                 <SearchEvolutionPokemon
                   :go-pokedex="raceMap[itemPid].goPokedex"
@@ -197,14 +197,16 @@ const eventMethods = () => {
   }
 }
 .another_form,.bfaf_another_form {
-  background-color: black;
   width: fit-content;
+  display: flex;
+  justify-content: center;
 
   .block {
     height: 60px;
   }
 }
 .block {
+  background-color: black;
   width: 160px;
   display: flex;
   position: relative;

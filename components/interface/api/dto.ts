@@ -6,6 +6,7 @@ import type { MsgLevel } from './response'
 export class GoPokedex {
   pokedexId: string
   name: string
+  nameEn: string
   attack: number
   defense: number
   hp: number
@@ -15,22 +16,29 @@ export class GoPokedex {
   gen: string
   image1: string | null | undefined
   image2: string | null | undefined
-  implFlg: boolean
   region: string
+  tooStrong: boolean
+  finEvo: boolean
+  releaseDate: string
+  implFlg: boolean
   dynamaxImplFlg: boolean
   gigantamaxImplFlg: boolean
 
   constructor () {
     this.pokedexId = ''
     this.name = ''
+    this.nameEn = ''
     this.attack = 0
     this.defense = 0
     this.hp = 0
     this.remarks = ''
     this.type1 = ''
     this.gen = ''
-    this.implFlg = false
     this.region = ''
+    this.tooStrong = false
+    this.finEvo = false
+    this.releaseDate = ''
+    this.implFlg = false
     this.dynamaxImplFlg = false
     this.gigantamaxImplFlg = false
   }
