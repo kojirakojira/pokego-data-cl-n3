@@ -86,31 +86,18 @@ const dto = ref<Record<string, any>>({
 onMounted(() => {
   // 最初にリロードされたときはafterEachは呼ばれない。手動で呼ぶ。
   const route = useRoute()
-  const pathName: string = route.name as string
-  if (pathName.startsWith('search')) {
-    const si: ScreenInfo = dtoUtils().createScreenInfoFromRoute(route, window.history)
-    dtoStore().afterEachAction(si)
-  }
+  const si: ScreenInfo = dtoUtils().createScreenInfoFromRoute(route, window.history)
+  dtoStore().afterEachAction(si)
 })
 
 useRouter().afterEach((to: RouteLocationNormalized) => {
-  const pathName: string = to.name as string
-  if (pathName.startsWith('search')) {
-    const si: ScreenInfo = dtoUtils().createScreenInfoFromRoute(to, window.history)
-    dtoStore().afterEachAction(si)
-  }
+  const si: ScreenInfo = dtoUtils().createScreenInfoFromRoute(to, window.history)
+  dtoStore().afterEachAction(si)
 })
 
-useRouter().beforeEach((
-  to: RouteLocationNormalized,
-  from: RouteLocationNormalized,
-  next: NavigationGuardNext) => {
-  const pathName: string = to.name as string
-  if (pathName.startsWith('search')) {
-    const si: ScreenInfo = dtoUtils().createScreenInfoForBeforeEach(from, dto)
-    dtoStore().beforeEachAction(si)
-  }
-
+useRouter().beforeEach((_1: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) => {
+  const si: ScreenInfo = dtoUtils().createScreenInfoForBeforeEach(from, dto)
+  dtoStore().beforeEachAction(si)
   next()
 })
 </script>

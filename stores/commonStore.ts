@@ -13,7 +13,7 @@ export const commonStore = defineStore(
 
     const getStaticUrl = () => {
       if (!commonValue.value.staticUrl) {
-        commonValue.value.staticUrl = useRuntimeConfig().public.staticUrl
+        commonValue.value.staticUrl = useRuntimeConfig().public.staticUrl as string
       }
       return commonValue.value.staticUrl
     }
