@@ -7,18 +7,25 @@
     maxlength="6"
     autocomplete="off"
     type="number"
-    @keyup.enter.exact="keyupEnter"
+    @keydown.enter.exact="onSubmit"
   />
 </template>
 
 <script setup lang="ts">
 const model = defineModel()
-withDefaults(
+const props = withDefaults(
   defineProps<{
     keyupEnter?: Function // Enterイベント（任意）
    }>(),
   { keyupEnter: () => {} }
 )
+const onSubmit = (e: Event) => {
+  if (e instanceof KeyboardEvent && e.isComposing) {
+    // 変換中の場合
+    return
+  }
+  props.keyupEnter()
+}
 </script>
 
 <style>

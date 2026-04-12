@@ -52,7 +52,7 @@
               dense
               autocomplete="off"
               type="number"
-              @keyup.enter.exact="clickSearchBtn"
+              @keydown.enter.exact="clickSearchBtn"
             />
           </v-col>
         </v-row>
@@ -63,7 +63,7 @@
               min-width="50%"
               color="success"
               :disabled="isSearchBtnClick"
-              @click="clickSearchBtn()"
+              @click="clickSearchBtn"
             >
               検索
             </v-btn>
@@ -107,7 +107,11 @@ searchCommon().restoreSearchScreen(['searchParams', 'pokemonSearchResult'], cDto
 /**
  * 検索ボタン押下時の処理
  */
-const clickSearchBtn = async () => {
+const clickSearchBtn = async (e: Event) => {
+  if (e instanceof KeyboardEvent && e.isComposing) {
+    // キーボード操作かつ変換中の場合
+    return
+  }
   isSearchBtnClick.value = true
   const msg = check(cDtoItem.value.searchParams)
   if (msg) {

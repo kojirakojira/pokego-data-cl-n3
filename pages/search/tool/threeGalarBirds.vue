@@ -39,7 +39,7 @@
               dense
               autocomplete="off"
               type="number"
-              @keyup.enter.exact="screenControlMethods().clickSearchBtn"
+              @keydown.enter.exact="screenControlMethods().clickSearchBtn"
             />
           </v-col>
         </v-row>
@@ -118,7 +118,11 @@ const screenControlMethods = () => {
     dtoTgbArr.push(...tgbArr)
   }
 
-  const clickSearchBtn = () => {
+  const clickSearchBtn = (e: Event) => {
+    if (e instanceof KeyboardEvent && e.isComposing) {
+      // キーボード操作かつ変換中の場合
+      return
+    }
     isSearchBtnClick.value = true
     const msg = check(cDtoItem.value.searchParams)
     if (msg) {

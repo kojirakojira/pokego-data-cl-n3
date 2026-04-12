@@ -40,7 +40,7 @@
                       class="mx-auto"
                       :append-inner-icon="item.pid ? 'mdi-check' : ''"
                       @update:model-value="textFieldMethods().onChangeText(idx)"
-                      @keyup.enter.exact="screenControlMethods().clickSearchBtn"
+                      @keydown.enter.exact="screenControlMethods().clickSearchBtn"
                     >
                       <template #append>
                         <v-btn
@@ -148,7 +148,11 @@ const screenControlMethods = () => {
   }
 
   /** 検索ボタン押下時の処理 */
-  const clickSearchBtn = async () => {
+  const clickSearchBtn = async (e: Event) => {
+    if (e instanceof KeyboardEvent && e.isComposing) {
+      // キーボード操作かつ変換中の場合
+      return
+    }
     isSearchBtnClick.value = true
     // パラメータcheck不要（全部サーバ側でやる）
     isLoading.value = true

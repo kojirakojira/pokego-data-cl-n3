@@ -12,7 +12,7 @@
     maxlength="20"
     autocomplete="off"
     @update:model-value="onChangeText()"
-    @keyup.enter.exact="keyupEnter"
+    @keydown.enter.exact="onSubmit"
   />
 </template>
 
@@ -42,4 +42,11 @@ onMounted(() => {
     document.getElementById(props.id)?.focus()
   }
 })
+const onSubmit = (e: Event) => {
+  if (e instanceof KeyboardEvent && e.isComposing) {
+    // 変換中の場合
+    return
+  }
+  props.keyupEnter()
+}
 </script>

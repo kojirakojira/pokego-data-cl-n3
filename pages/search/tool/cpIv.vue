@@ -58,7 +58,7 @@
               dense
               autocomplete="off"
               type="number"
-              @keyup.enter.exact="clickSearchBtn"
+              @keydown.enter.exact="clickSearchBtn"
             />
           </v-col>
         </v-row>
@@ -137,7 +137,11 @@ const restoredParams: Record<string, any> | null = searchCommon().restoreCurrent
 if (restoredParams && restoredParams.searchParams) { cDtoItem.value.searchParams = restoredParams.searchParams }
 if (restoredParams && restoredParams.pokemonSearchResult) { cDtoItem.value.pokemonSearchResult = restoredParams.pokemonSearchResult }
 
-const clickSearchBtn = async () => {
+const clickSearchBtn = async (e: Event) => {
+  if (e instanceof KeyboardEvent && e.isComposing) {
+    // キーボード操作かつ変換中の場合
+    return
+  }
   isSearchBtnClick.value = true
   const msg = check(cDtoItem.value.searchParams)
   if (msg) {
