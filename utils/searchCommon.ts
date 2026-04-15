@@ -89,7 +89,10 @@ export default () => {
             rsp[k] = routeQuery[k] as any
             break
           default:
-            if (Array.isArray(rsp[k])) {
+            if (!rsp[k]) {
+              // null、undefinedの場合
+              continue
+            } else if (Array.isArray(rsp[k])) {
               // push元、push先が両方配列の場合は展開してpush、push元が配列じゃない場合は1要素のみの配列にしてpush
               (rsp[k] as Array<any>).push(...(Array.isArray(routeQuery[k]) ? routeQuery[k] : [routeQuery[k]]))
             } else {

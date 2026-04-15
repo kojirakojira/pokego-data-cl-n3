@@ -13,6 +13,8 @@ export class ResearchRequest {
   negaGigantamax: boolean
   impled: boolean
   negaImpled: boolean
+  releaseDateStart: number
+  releaseDateEnd: number
   tooStrong: boolean
   negaTooStrong: boolean
   region: Array<string>
@@ -34,6 +36,8 @@ export class ResearchRequest {
     this.negaGigantamax = false
     this.impled = false
     this.negaImpled = false
+    this.releaseDateStart = 0
+    this.releaseDateEnd = 0
     this.tooStrong = false
     this.negaTooStrong = false
     this.region = []

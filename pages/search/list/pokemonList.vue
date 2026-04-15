@@ -110,6 +110,9 @@
                   style="margin-left:5px;"
                 />
               </template>
+              <template #[`item.goPokedex.releaseDate`]="{ item }">
+                {{ editUtils().convertReleaseDate(item.goPokedex.releaseDate) || '-' }}
+              </template>
             </v-data-table>
           </v-col>
         </v-row>
@@ -153,8 +156,10 @@ const screenControlMethods = () => {
     // route.queryからsearchParamsを復元
     cDtoItem.value.searchParams = searchCommon()
       .restoreSearchParams(useRoute().query, FilterAllResultSearchParams)
+    console.log(cDtoItem.value.searchParams)
     // dtoStoreからresDataを復元
     const restoredParams: Record<string, any> | null = searchCommon().restoreCurrentScreen(['resData', 'tableControl'])
+    console.log(restoredParams)
     const rd: FilterAllResponse | null = restoredParams?.resData
     const tableControl: TableControl | null = restoredParams?.tableControl
 
@@ -235,41 +240,6 @@ watch(() => cDtoItem.value.tableControl.currentPage, (newValue, oldValue) => {
     })
   }
 })
-// hiddenColumnsAreaの表示・非表示
-const showHiddenColumnsArea = ref<boolean>(false)
-
-// 非表示にできる列（チェックボックスの値）の全候補
-const baseDisabledChkboxes = readonly<Array<{ label: string, value: string }>>([
-  { label: 'タイプ', value: 'goPokedex.type1' },
-  { label: 'こうげき', value: 'goPokedex.attack' },
-  { label: 'ぼうぎょ', value: 'goPokedex.defense' },
-  { label: 'HP', value: 'goPokedex.hp' },
-  { label: 'CP', value: 'cp' },
-  { label: 'HP', value: 'pokedex.hp' },
-  { label: 'こうげき', value: 'pokedex.attack' },
-  { label: 'ぼうぎょ', value: 'pokedex.defense' },
-  { label: 'とくこう', value: 'pokedex.specialAttack' },
-  { label: 'とくぼう', value: 'pokedex.specialDefense' },
-  { label: 'すばやさ', value: 'pokedex.speed' }
-])
-
-const disabledChkboxes = computed((): Array<{ label: string, value: string }> => {
-  const radioStatus = cDtoItem.value.tableControl.radioStatus
-  return baseDisabledChkboxes.filter((chk) => {
-    if (radioStatus === 'go') {
-      const gList = ['pokedex.hp', 'pokedex.attack', 'pokedex.defense', 'pokedex.specialAttack', 'pokedex.specialDefense', 'pokedex.speed']
-      if (gList.includes(chk.value)) {
-        return false
-      }
-    } else if (radioStatus === 'original') {
-      const oList = ['goPokedex.attack', 'goPokedex.defense', 'goPokedex.hp', 'cp']
-      if (oList.includes(chk.value)) {
-        return false
-      }
-    }
-    return true
-  })
-})
 
 /** 列が全部そろったv-data-tableのヘッダ */
 const baseHeaders = readonly<Array<any>>([
@@ -282,6 +252,7 @@ const baseHeaders = readonly<Array<any>>([
   { title: 'ぼうぎょ', key: 'goPokedex.defense' },
   { title: 'HP', key: 'goPokedex.hp' },
   { title: 'CP', key: 'cp' },
+  { title: 'リリース', key: 'goPokedex.releaseDate' },
   { title: 'HP', key: 'pokedex.hp' },
   { title: 'こうげき', key: 'pokedex.attack' },
   { title: 'ぼうぎょ', key: 'pokedex.defense' },
@@ -289,6 +260,9 @@ const baseHeaders = readonly<Array<any>>([
   { title: 'とくぼう', key: 'pokedex.specialDefense' },
   { title: 'すばやさ', key: 'pokedex.speed' }
 ])
+
+const gList = ['goPokedex.attack', 'goPokedex.defense', 'goPokedex.hp', 'goPokedex.releaseDate', 'cp']
+const oList = ['pokedex.hp', 'pokedex.attack', 'pokedex.defense', 'pokedex.specialAttack', 'pokedex.specialDefense', 'pokedex.speed']
 
 /*
  * ヘッダの表示制御（ラジオボタンに応じて表示項目を切り替える）
@@ -302,13 +276,46 @@ const headers = computed((): Array<any> => {
     }
 
     if (tableControl.radioStatus === 'go') {
-      const gList = ['pokedex.hp', 'pokedex.attack', 'pokedex.defense', 'pokedex.specialAttack', 'pokedex.specialDefense', 'pokedex.speed']
-      if (gList.includes(col.key)) {
+      if (oList.includes(col.key)) {
         return false
       }
     } else if (tableControl.radioStatus === 'original') {
-      const oList = ['goPokedex.attack', 'goPokedex.defense', 'goPokedex.hp', 'cp']
-      if (oList.includes(col.key)) {
+      if (gList.includes(col.key)) {
+        return false
+      }
+    }
+    return true
+  })
+})
+// hiddenColumnsAreaの表示・非表示
+const showHiddenColumnsArea = ref<boolean>(false)
+
+// 非表示にできる列（チェックボックスの値）の全候補
+const baseDisabledChkboxes = readonly<Array<{ label: string, value: string }>>([
+  { label: 'タイプ', value: 'goPokedex.type1' },
+  { label: 'こうげき', value: 'goPokedex.attack' },
+  { label: 'ぼうぎょ', value: 'goPokedex.defense' },
+  { label: 'HP', value: 'goPokedex.hp' },
+  { label: 'CP', value: 'cp' },
+  { label: 'リリース', value: 'goPokedex.releaseDate' },
+  { label: 'HP', value: 'pokedex.hp' },
+  { label: 'こうげき', value: 'pokedex.attack' },
+  { label: 'ぼうぎょ', value: 'pokedex.defense' },
+  { label: 'とくこう', value: 'pokedex.specialAttack' },
+  { label: 'とくぼう', value: 'pokedex.specialDefense' },
+  { label: 'すばやさ', value: 'pokedex.speed' }
+])
+
+// 非表示にできるチェックボックスのリスト
+const disabledChkboxes = computed((): Array<{ label: string, value: string }> => {
+  const radioStatus = cDtoItem.value.tableControl.radioStatus
+  return baseDisabledChkboxes.filter((chk) => {
+    if (radioStatus === 'go') {
+      if (oList.includes(chk.value)) {
+        return false
+      }
+    } else if (radioStatus === 'original') {
+      if (gList.includes(chk.value)) {
         return false
       }
     }
@@ -322,7 +329,7 @@ watch(
     const tc = cDtoItem.value.tableControl
     const removeList = newValue === 'go'
       ? ['pokedex.hp', 'pokedex.attack', 'pokedex.defense', 'pokedex.specialAttack', 'pokedex.specialDefense', 'pokedex.speed']
-      : ['goPokedex.attack', 'goPokedex.defense', 'goPokedex.hp', 'cp']
+      : ['goPokedex.attack', 'goPokedex.defense', 'goPokedex.hp', 'goPokedex.releaseDate', 'cp']
     tc.sortByArr = tc.sortByArr.filter(sItem => !removeList.includes(sItem.key))
   }
 )
