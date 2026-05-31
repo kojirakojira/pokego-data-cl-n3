@@ -1,4 +1,4 @@
-import { CatchCp, Color, GoPokedex, GoPokedexAndCpPl } from './api/dto'
+import { CatchCp, Color, GoPokedex, GoPokedexAndCpPl, type Citation } from './api/dto'
 import { ResearchResponse } from './api/response'
 import { EvolutionResponse } from './evolution'
 import { GymRaidPokeMoveCombiResponse } from './gymRaidPokeMoveCombi'
@@ -37,6 +37,7 @@ export class AbundanceResponse extends ResearchResponse {
   megaMsg: string
   superLeagueSafeCpList: Array<GoPokedexAndCpPl>
   hyperLeagueSafeCpList: Array<GoPokedexAndCpPl>
+  citationList: Array<Citation>
 
   constructor () {
     super()
@@ -63,6 +64,7 @@ export class AbundanceResponse extends ResearchResponse {
     this.megaMsg = ''
     this.superLeagueSafeCpList = []
     this.hyperLeagueSafeCpList = []
+    this.citationList = []
   }
 }
 /**

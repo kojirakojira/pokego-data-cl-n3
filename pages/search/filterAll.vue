@@ -62,9 +62,7 @@ const screenControlMethods = () => {
     if (rd.success) {
       cDtoItem.value.resData = rd
       // 取得成功した場合
-      // TODO: ちゃんと書く
-      // const pathName: string = searchCommon().getRouteName(searchPattern, true)
-      const pathName: string = 'search-list-pokemonList'
+      const pathName: string = searchCommon().getRouteName(searchPattern, 'list')
       const params: Record<string, any> = {}
       if (rd) { params.resData = rd }
       dtoUtils().prePushScreenInfo(dtoUtils().createScreenInfo(

@@ -754,3 +754,9 @@ export interface MoveCombination {
   attackScore: number,
   shadow: boolean
 }
+
+export interface Citation {
+  author: string,
+  title: string,
+  url: string
+}

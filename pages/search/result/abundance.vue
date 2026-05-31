@@ -616,6 +616,13 @@
         :prev-grid="{ cols: 12 }"
         :next-grid="{ cols: 12 }"
       />
+      <v-container>
+        <v-row>
+          <v-col>
+            <MajorPartsCitationList :citations="cDtoItem.resData.citationList" />
+          </v-col>
+        </v-row>
+      </v-container>
     </div>
     <div v-else>
       <Loading />
@@ -717,6 +724,7 @@ const screenControlMethods = () => {
           }
         })
     }
+    console.log(cDtoItem.value)
   }
 
   const getCurrentResData = (pid: string): Record<string, ResearchResponse> | null => {

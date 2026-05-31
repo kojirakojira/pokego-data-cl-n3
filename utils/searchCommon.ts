@@ -255,13 +255,19 @@ export default () => {
   /**
    * 検索パターンのキー（例: "filterAll"）から、正しいNuxtルート名（例: "search-tool-filterAll"）を生成する
    */
-  const getRouteName = (searchPattern: string, isResultPage = false): string => {
+  const getRouteName = (searchPattern: string, isResultPage: boolean | 'result' | 'list' = false): string => {
     const isTool = isToolPage(searchPattern)
     const routePrefix = isTool ? 'tool-' : ''
-    const resultSuffix = isResultPage ? 'result-' : ''
+
+    if (isResultPage === 'list') {
+      const listName = searchPattern === 'filterAll' ? 'pokemonList' : searchPattern
+      return `search-${routePrefix}list-${listName}`
+    }
+
+    const resultSuffix = (isResultPage === true || isResultPage === 'result') ? 'result-' : ''
 
     // abundanceは例外としてpageSuffix(Result)を付けない
-    const pageSuffix = (isResultPage && searchPattern !== 'abundance') ? 'Result' : ''
+    const pageSuffix = ((isResultPage === true || isResultPage === 'result') && searchPattern !== 'abundance') ? 'Result' : ''
 
     return `search-${routePrefix}${resultSuffix}${searchPattern}${pageSuffix}`
   }
