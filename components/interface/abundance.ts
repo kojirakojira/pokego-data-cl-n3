@@ -4,6 +4,7 @@ import { EvolutionResponse } from './evolution'
 import { GymRaidPokeMoveCombiResponse } from './gymRaidPokeMoveCombi'
 import { PokemonAttackResponse, type TableControl } from './pokemonAttack'
 import { RaceResponse } from './race'
+import { RaceDiffFrequencyResponse } from './raceDiffFrequency'
 import { ScpRankMaxMinResponse } from './scpRankMaxMin'
 import { TypeScoreResponse } from './typeScore'
 
@@ -99,6 +100,7 @@ export class AbundanceResultDtoItem implements ResultDtoItem {
   typeScoreResData: TypeScoreResponse
   pokemonAttackResData: PokemonAttackResponse
   gymRaidPokeMoveCombiResData: GymRaidPokeMoveCombiResponse
+  raceDiffFrequencyResData: RaceDiffFrequencyResponse
   // 画面制御用
   pokemonAttackTableControl: TableControl
 
@@ -111,6 +113,7 @@ export class AbundanceResultDtoItem implements ResultDtoItem {
     this.typeScoreResData = new TypeScoreResponse()
     this.pokemonAttackResData = new PokemonAttackResponse()
     this.gymRaidPokeMoveCombiResData = new GymRaidPokeMoveCombiResponse()
+    this.raceDiffFrequencyResData = new RaceDiffFrequencyResponse()
 
     this.pokemonAttackTableControl = {
       radioStatus: 'gymRaid'
@@ -120,7 +123,7 @@ export class AbundanceResultDtoItem implements ResultDtoItem {
 
 export type AbundanceResData = 'resData' | 'raceResData'
   | 'scpRankMaxMinResData' | 'evoResData' | 'typeScoreResData' | 'pokemonAttackResData'
-  | 'gymRaidPokeMoveCombiResData'
+  | 'gymRaidPokeMoveCombiResData' | 'raceDiffFrequencyResData'
 /**
  * APIアクセス用get関数
  */

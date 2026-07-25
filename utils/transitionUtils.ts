@@ -73,6 +73,19 @@ export default () => {
     })
   }
 
+  const raceDiffResult = (pids: Array<string>) => {
+    const query: Record<string, string> = {}
+    pids.forEach((pid, i) => {
+      if (i < 6) {
+        query[`pid${i + 1}`] = pid
+      }
+    })
+    useRouter().push({
+      name: searchCommon().getRouteName('raceDiff', true),
+      query
+    })
+  }
+
   const afterEvoScpRank = (params: TransitionParamForGeneral, iv?: string, cp?: string) => {
     const searchParams: AfterEvoScpRankSearchParams = new AfterEvoScpRankSearchParams()
     searchParams.pid = params.pokedexId
@@ -169,6 +182,7 @@ export default () => {
     filterAll,
     raceResult,
     raceDiff,
+    raceDiffResult,
     afterEvoScpRank,
     scpRank,
     scpRankList,

@@ -335,6 +335,26 @@
                 </p>
               </v-col>
             </v-row>
+            <template v-if="cDtoItem.raceDiffFrequencyResData && cDtoItem.raceDiffFrequencyResData.raceDiffElemArr && cDtoItem.raceDiffFrequencyResData.raceDiffElemArr.length > 0">
+              <v-row>
+                <v-col><h4>よく比較されるポケモン</h4></v-col>
+              </v-row>
+              <v-row :class="$style.race">
+                <v-col>
+                  <GraphRaceDiffGoRadarDiffGraph
+                    :race-arr="raceDiffRaceArr"
+                    :count="cDtoItem.raceDiffFrequencyResData.goTotalCount"
+                  />
+                </v-col>
+              </v-row>
+              <v-row class="my-0">
+                <v-col class="text-right">
+                  <p class="link" @click="transitionUtils().raceDiffResult(createRaceDiffIdArr(cDtoItem.raceDiffFrequencyResData.raceDiffElemArr))">
+                    詳細を見る >>
+                  </p>
+                </v-col>
+              </v-row>
+            </template>
           </v-container>
           <div v-else>
             <Loading />
@@ -643,14 +663,16 @@ import type { ResearchResponse } from '~/components/interface/api/response'
 import { EvolutionResultSearchParams, type EvolutionResponse } from '~/components/interface/evolution'
 import { RaceResultSearchParams, type RaceResponse } from '~/components/interface/race'
 import { TypeScoreResultSearchParams, type TypeScoreResponse } from '~/components/interface/typeScore'
-import { type GoPokedex, RaceGoRank, GoPokedexAndCpPl, ScpRank } from '~/components/interface/api/dto'
+import { type GoPokedex, RaceGoRank, GoPokedexAndCpPl, ScpRank, Race, RaceDiffElem } from '~/components/interface/api/dto'
 import { ScpRankMaxMinResponse, ScpRankMaxMinSearchParams } from '~/components/interface/scpRankMaxMin'
 import { PokemonAttackResultSearchParams, type PokemonAttackResponse } from '~/components/interface/pokemonAttack'
 import { GymRaidPokeMoveCombiSearchParams, type GymRaidPokeMoveCombiResponse } from '~/components/interface/gymRaidPokeMoveCombi'
+import { RaceDiffFrequencyResponse, RaceDiffFrequencyResultSearchParams } from '~/components/interface/raceDiffFrequency'
 const MajorPartsH2Common = defineAsyncComponent(() => import('~/components/majorParts/H2Common.vue'))
 const IconAwakeningIconMegaIcon = defineAsyncComponent(() => import('~/components/icon/awakeningIcon/MegaIcon.vue'))
 const IconAwakeningIconDynamaxIcon = defineAsyncComponent(() => import('~/components/icon/awakeningIcon/DynamaxIcon.vue'))
 const GraphRaceGoRadarGraph = defineAsyncComponent(() => import('~/components/graph/race/GoRadarGraph.vue'))
+const GraphRaceDiffGoRadarDiffGraph = defineAsyncComponent(() => import('~/components/graph/raceDiff/GoRadarDiffGraph.vue'))
 const SearchTypeComments = defineAsyncComponent(() => import('~/components/search/type/TypeComments.vue'))
 const SearchInputHelpMsg = defineAsyncComponent(() => import('~/components/search/input/HelpMsg.vue'))
 const MajorPartsPrevNextPokemon = defineAsyncComponent(() => import('~/components/majorParts/PrevNextPokemon.vue'))
@@ -685,6 +707,8 @@ const screenControlMethods = () => {
       const typeScoreReq = new TypeScoreResultSearchParams()
       const pokemonAttackReq = new PokemonAttackResultSearchParams()
       const gymRaidPokeMoveCombiReq = new GymRaidPokeMoveCombiSearchParams()
+      const raceDiffFrequencyReq = new RaceDiffFrequencyResultSearchParams()
+
       // すべてのリクエストにpokedexIdを設定する
       abundanceReq.pid =
       raceReq.pid =
@@ -692,7 +716,8 @@ const screenControlMethods = () => {
       evoReq.pid =
       typeScoreReq.pid =
       pokemonAttackReq.pid =
-      gymRaidPokeMoveCombiReq.pid = cDtoItem.value.searchParams.pid
+      gymRaidPokeMoveCombiReq.pid =
+      raceDiffFrequencyReq.pid = cDtoItem.value.searchParams.pid
 
       // 閲覧数をカウントしない
       raceReq.enableCount = true
@@ -701,6 +726,7 @@ const screenControlMethods = () => {
       typeScoreReq.enableCount = true
       pokemonAttackReq.enableCount = true
       gymRaidPokeMoveCombiReq.enableCount = true
+      raceDiffFrequencyReq.enableCount = true
 
       // 表示件数設定
       gymRaidPokeMoveCombiReq.limit = 20
@@ -713,7 +739,8 @@ const screenControlMethods = () => {
         get('/api/evolution', cDtoItem.value, evoReq, 'evoResData'),
         get('/api/typeScore', cDtoItem.value, typeScoreReq, 'typeScoreResData'),
         get('/api/pokemonAttack', cDtoItem.value, pokemonAttackReq, 'pokemonAttackResData'),
-        get('/api/gymRaidPokeMoveCombi', cDtoItem.value, gymRaidPokeMoveCombiReq, 'gymRaidPokeMoveCombiResData')
+        get('/api/gymRaidPokeMoveCombi', cDtoItem.value, gymRaidPokeMoveCombiReq, 'gymRaidPokeMoveCombiResData'),
+        get('/api/raceDiffFrequency', cDtoItem.value, raceDiffFrequencyReq, 'raceDiffFrequencyResData')
       ])
         .then((rdArr) => {
           for (const rd of rdArr) {
@@ -735,7 +762,8 @@ const screenControlMethods = () => {
       'evoResData',
       'typeScoreResData',
       'pokemonAttackResData',
-      'gymRaidPokeMoveCombiResData'
+      'gymRaidPokeMoveCombiResData',
+      'raceDiffFrequencyResData'
     ]
     const resDataDic: Record<string, ResearchResponse> | null =
       searchCommon().restoreCurrentScreen(resDataNameArr) as Record<string, ResearchResponse>
@@ -759,6 +787,7 @@ const screenControlMethods = () => {
     cDtoItem.value.typeScoreResData = resDataDic.typeScoreResData as TypeScoreResponse
     cDtoItem.value.pokemonAttackResData = resDataDic.pokemonAttackResData as PokemonAttackResponse
     cDtoItem.value.gymRaidPokeMoveCombiResData = resDataDic.gymRaidPokeMoveCombiResData as GymRaidPokeMoveCombiResponse
+    cDtoItem.value.raceDiffFrequencyResData = resDataDic.raceDiffFrequencyResData as RaceDiffFrequencyResponse
   }
 
   interface DispAttack {
@@ -837,6 +866,17 @@ const raceArr = computed((): Array<RaceValue> => {
     { title: 'ぼうぎょ', value: goPokedex.defense, color: { r: 0, g: 255, b: 0 } }
   ]
 })
+
+/**
+ * raceDiffFrequency
+ */
+const raceDiffRaceArr = computed((): Array<Race> => {
+  return cDtoItem.value.raceDiffFrequencyResData.raceDiffElemArr
+    .map(rde => rde.race)
+})
+const createRaceDiffIdArr = (raceDiffElemArr: RaceDiffElem[]) => {
+  return raceDiffElemArr.map(rde => rde.race.goPokedex.pokedexId)
+}
 
 /**
  * scpRank
@@ -1018,8 +1058,7 @@ useHead(metaObject)
 
 <style lang="scss" module>
 .race {
-  border: medium solid maroon;
-  // border-color: red blue blue red;
+  border: medium solid grey;
 }
 .evolution {
   border: medium solid green;
