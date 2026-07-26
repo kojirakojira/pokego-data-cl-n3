@@ -19,7 +19,7 @@
           <v-icon size="x-small">
             mdi-filter-menu
           </v-icon>
-          <span class="caption">絞り込む</span>
+          <span class="caption">{{ filteringBtnLabel }}</span>
         </v-btn>
         <SearchInputHelpMsg v-if="helpMessage">
           {{ helpMessage }}
@@ -77,9 +77,10 @@ withDefaults(
   defineProps<{
     showArea: boolean,
     isSearchBtnClick?: boolean,
-    helpMessage?: string
+    helpMessage?: string,
+    filteringBtnLabel?: string
    }>(),
-  { isSearchBtnClick: false, helpMessage: '' })
+  { isSearchBtnClick: false, helpMessage: '', filteringBtnLabel: '絞り込む' })
 
 const clear = () => {
   searchParams.value = new ResearchRequest()

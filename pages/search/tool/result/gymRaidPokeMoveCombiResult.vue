@@ -26,7 +26,9 @@
                       ポケモン
                     </v-col>
                     <v-col cols="7" md="6" lg="6" xl="6" class="pa-1">
-                      {{ editUtils().appendRemarks(cDtoItem.resData.name, cDtoItem.resData.remarks) }}
+                      <span class="cursor-pointer" @click="transitionUtils().abundance(cDtoItem.resData.pokedexId)">
+                        {{ editUtils().appendRemarks(cDtoItem.resData.name, cDtoItem.resData.remarks) }}
+                      </span>
                     </v-col>
                   </v-row>
                 </v-container>

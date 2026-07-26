@@ -25,6 +25,7 @@
         v-model="cDtoItem.searchParams"
         :show-area="showFilterArea"
         :is-search-btn-click="isSearchBtnClick"
+        filtering-btn-label="母数の絞り込み"
         help-message="「種族値検索」では、種族値の高さをグラフで確認できます。グラフは順位を基準とするため、絞り込みをすると母数を変動させられます。"
         @show-area="showFilterArea = !showFilterArea"
         @click="clickSearchBtn()"
@@ -59,11 +60,11 @@
 
 <script setup lang="ts">
 import {
+  check,
+  get,
   RaceSearchDtoItem,
   type RaceResponse,
-  type RaceSearchParams,
-  get,
-  check
+  type RaceSearchParams
 } from '~/components/interface/race'
 
 const searchPattern = 'race'
