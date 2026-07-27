@@ -48,7 +48,7 @@
         :bf-af-aot-forms="cDtoItem.resData.bfAfAotForms"
         :race-map="cDtoItem.resData.raceMap"
         :evol-tree-annos="cDtoItem.resData.evolTreeAnnotations"
-        router-link="searchCommon().getRouteName('evolutionResult', true)"
+        :router-link="searchCommon().getRouteName(searchPattern, true)"
         :grid="[
           { cols: 12, md: 7, lg: 7, xl: 7 },
           { cols: 12, md: 5, lg: 5, xl: 5 }
@@ -58,7 +58,7 @@
         :pid="cDtoItem.resData.pid"
         :prev-text-func="prevTextFunc"
         :next-text-func="nextTextFunc"
-        router-link="searchCommon().getRouteName('evolutionResult', true)"
+        :router-link="searchCommon().getRouteName(searchPattern, true)"
       />
     </div>
     <div v-else>

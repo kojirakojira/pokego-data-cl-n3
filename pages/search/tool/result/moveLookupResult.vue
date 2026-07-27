@@ -738,7 +738,7 @@ const screenControlMethods = () => {
       const mid = cDtoItem.value.resData.moveId
       cDtoItem.value.searchParams.mid = mid
       useRouter().replace({
-        name: searchCommon().getRouteName('moveLookupResult', true),
+        name: searchCommon().getRouteName(searchPattern, true),
         query: { mid }
       })
     }
