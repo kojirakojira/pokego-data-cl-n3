@@ -137,7 +137,7 @@ const searchPattern = 'xType'
 
 // current dto item
 const cDtoItem = ref<XTypeResultDtoItem>(new XTypeResultDtoItem())
-const dto: any = useAttrs().dto
+const dto = useAttrs().dto as PageDto
 dto.params = cDtoItem
 
 const isLoading = ref<boolean>(true)
@@ -222,6 +222,7 @@ await init()
 
 // Header
 const thisPath = useRuntimeConfig().public.url + useRoute().path
+const staticUrl = commonStore().getStaticUrl()
 const metaObject = computed((): MetaObject => {
   const ogpOwn1 = toJpn(cDtoItem.value.resData.own1) || ''
   const ogpOwn2 = toJpn(cDtoItem.value.resData.own2) || ''
@@ -237,7 +238,7 @@ const metaObject = computed((): MetaObject => {
       { property: 'og:url', content: thisPath },
       { property: 'og:site_name', content: 'ペリずかん' },
       { property: 'og:description', content: 'じぶんのポケモン、あいてのポケモンのタイプのうち1つをXと仮定し、何のタイプであれば有利になるかを求めることができます。' },
-      { property: 'og:image', content: editUtils().getUrl('pokego/peripper-eyes.png') }
+      { property: 'og:image', content: `${staticUrl}/public/${'pokego/peripper-eyes.png'}` }
     ]
   }
 })

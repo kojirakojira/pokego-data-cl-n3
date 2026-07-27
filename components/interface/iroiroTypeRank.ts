@@ -1,4 +1,4 @@
-import { type IroiroTypeRankElement } from './api/dto'
+import type { IroiroTypeRankElement } from './api/dto'
 import { Response } from './api/response'
 
 /**
@@ -69,7 +69,7 @@ export class IroiroTypeRankResultDtoItem implements ResultDtoItem {
  */
 export const get = async (
   searchParams: IroiroTypeRankResultSearchParams
-): Promise<IroiroTypeRankResponse | void> => {
+): Promise<IroiroTypeRankResponse | undefined> => {
   const res = await fetchCommon('/api/iroiroTypeRank', 'GET', {
     query: searchParams
   })

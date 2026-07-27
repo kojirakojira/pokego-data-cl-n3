@@ -120,7 +120,7 @@
 </template>
 
 <script setup lang="ts">
-import { PokemonSearchResult, type MultiSearchResult, GoPokedex } from '~/components/interface/api/dto'
+import type { PokemonSearchResult, MultiSearchResult, GoPokedex } from '~/components/interface/api/dto'
 import {
   RaceDiffSearchDtoItem,
   type RaceDiffResponse,
@@ -135,7 +135,7 @@ const searchPattern = 'raceDiff'
  */
 // current dto item
 const cDtoItem = ref<RaceDiffSearchDtoItem>(new RaceDiffSearchDtoItem())
-const dto: any = useAttrs().dto
+const dto = useAttrs().dto as PageDto
 dto.params = cDtoItem
 const isLoading = ref<boolean>(false)
 const isSearchBtnClick = ref<boolean>(false)

@@ -97,7 +97,7 @@ import {
 const searchPattern = 'iroiroTypeRank'
 // current dto item
 const cDtoItem = ref<IroiroTypeRankResultDtoItem>(new IroiroTypeRankResultDtoItem())
-const dto: any = useAttrs().dto
+const dto = useAttrs().dto as PageDto
 dto.params = cDtoItem
 
 const isLoading = ref<boolean>(true)
@@ -164,6 +164,7 @@ await screenControlMethods().init()
  */
 const patternName = searchCommon().getSearchPatternName(searchPattern)
 const thisPath = useRuntimeConfig().public.url + useRoute().path
+const staticUrl = commonStore().getStaticUrl()
 const metaObject = computed((): MetaObject => {
   return {
     title: patternName,
@@ -173,7 +174,7 @@ const metaObject = computed((): MetaObject => {
       { property: 'og:url', content: thisPath },
       { property: 'og:site_name', content: 'ペリずかん' },
       { property: 'og:description', content: 'タイプについての色々なランキングを確認することができます。' },
-      { property: 'og:image', content: editUtils().getUrl('pokego/peripper-eyes.png') }
+      { property: 'og:image', content: `${staticUrl}/public/${'pokego/peripper-eyes.png'}` }
     ]
   }
 })

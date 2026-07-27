@@ -100,7 +100,7 @@ export class TypeScoreResultDtoItem implements ResultDtoItem {
  */
 export const createRequestQuery = (
   searchParams: TypeScoreSearchParams | TypeScoreResultSearchParams
-): TypeScoreSearchParams | TypeScoreResultSearchParams | void => {
+): TypeScoreSearchParams | TypeScoreResultSearchParams => {
   let requestQuery: TypeScoreSearchParams | TypeScoreResultSearchParams
   if (searchParams.isPoke) {
     // ポケモンでの検索
@@ -125,7 +125,7 @@ export const createRequestQuery = (
  */
 export const get = async (
   searchParams: TypeScoreSearchParams | TypeScoreResultSearchParams
-): Promise<TypeScoreResponse | void> => {
+): Promise<TypeScoreResponse | undefined> => {
   const res = await fetchCommon('/api/typeScore', 'GET', {
     query: searchParams
   })

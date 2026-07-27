@@ -1,4 +1,4 @@
-import { PokemonSearchResult, type PlCp } from './api/dto'
+import type { PokemonSearchResult, PlCp } from './api/dto'
 import { ResearchRequest } from './api/request'
 import { ResearchResponse } from './api/response'
 
@@ -76,7 +76,7 @@ export class PlListResultDtoItem implements ResultDtoItem {
  */
 export const get = async (
   searchParams: PlListSearchParams | PlListResultSearchParams
-): Promise<PlListResponse | void> => {
+): Promise<PlListResponse | undefined> => {
   const query: Record<string, any> = {
     iva: searchParams.iv.substring(0, 2),
     ivd: searchParams.iv.substring(2, 4),

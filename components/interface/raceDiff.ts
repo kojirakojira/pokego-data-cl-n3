@@ -1,4 +1,4 @@
-import { RaceDiffElem, MultiSearchResult, type PidAndName } from './api/dto'
+import { type RaceDiffElem, MultiSearchResult, type PidAndName } from './api/dto'
 import { Response } from './api/response'
 
 /**

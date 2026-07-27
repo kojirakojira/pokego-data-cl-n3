@@ -84,7 +84,7 @@ export const dtoStore = defineStore(
       // 現在のwindow.historyの要素数を退避させる
       lenState.value = window.history.length
 
-      console.log(JSON.parse(JSON.stringify(history))) // eslint-disable-line no-console
+      console.log(JSON.parse(JSON.stringify(history)))
     }
 
     /**
@@ -96,10 +96,10 @@ export const dtoStore = defineStore(
       let idx = indexOf(positionState.value)
       if (idx < 0) {
         // 例外的な挙動をした場合
-        console.log('例外的な挙動ここから') // eslint-disable-line no-console
-        console.log(idx) // eslint-disable-line no-console
-        console.log(positionState.value) // eslint-disable-line no-console
-        console.log('例外的な挙動ここまで') // eslint-disable-line no-console
+        console.log('例外的な挙動ここから')
+        console.log(idx)
+        console.log(positionState.value)
+        console.log('例外的な挙動ここまで')
         clearHistory()
         return
       }

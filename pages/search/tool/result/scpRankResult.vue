@@ -116,7 +116,7 @@
                 {{ editUtils().getPdxNo(item.goPokedex.pokedexId) }}
               </template>
               <template #[`item.goPokedex.image1`]="{ item }">
-                <v-avatar :image="editUtils().getPokemonImageUrl(item.goPokedex.image1)" />
+                <v-avatar :image="`${staticUrl}/public/${(item.goPokedex.image1) || 'no-image.png'}`" />
               </template>
               <template #[`item.goPokedex.name`]="{ item }">
                 <div style="min-width:120px;">
@@ -153,7 +153,7 @@
                 {{ editUtils().getPdxNo(item.goPokedex.pokedexId) }}
               </template>
               <template #[`item.goPokedex.image1`]="{ item }">
-                <v-avatar :image="editUtils().getPokemonImageUrl(item.goPokedex.image1)" />
+                <v-avatar :image="`${staticUrl}/public/${(item.goPokedex.image1) || 'no-image.png'}`" />
               </template>
               <template #[`item.goPokedex.name`]="{ item }">
                 <div style="min-width:120px;">
@@ -207,7 +207,7 @@ const searchPattern = 'scpRank'
 
 // current dto item
 const cDtoItem = ref<ScpRankResultDtoItem>(new ScpRankResultDtoItem())
-const dto: any = useAttrs().dto
+const dto = useAttrs().dto as PageDto
 dto.params = cDtoItem
 
 const isLoading = ref<boolean>(true)
@@ -299,9 +299,10 @@ watch(() => useRoute().fullPath, async () => {
 
 // Header
 const thisPath = useRuntimeConfig().public.url + useRoute().path
+const staticUrl = commonStore().getStaticUrl()
 const metaObject = computed((): MetaObject => {
   const pokeName = cDtoItem.value.resData.name || ''
-  const pokeImage = editUtils().getUrl(cDtoItem.value.resData.image2 || 'pokego/peripper-eyes.png')
+  const pokeImage = `${staticUrl}/public/${cDtoItem.value.resData.image2 || 'pokego/peripper-eyes.png'}`
   return {
     title: `${pokeName}のPvP順位`,
     meta: [

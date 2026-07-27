@@ -86,7 +86,7 @@ const clear = () => {
   searchParams.value = new ResearchRequest()
 }
 
-const emit = defineEmits<{(e: 'showArea'): void, (e: 'click'): void}>()
+const emit = defineEmits<{(e: 'showArea' | 'click'): void}>()
 </script>
 
 <style lang="scss">

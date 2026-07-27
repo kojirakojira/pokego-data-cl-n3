@@ -52,7 +52,7 @@
 <script setup lang="ts">
 // import { useTheme } from 'vuetify'
 import '@/assets/styles/spinners.css'
-import { type RouteLocationNormalized, type NavigationGuardNext } from 'vue-router'
+import type { RouteLocationNormalized, NavigationGuardNext } from 'vue-router'
 import { dtoStore, type ScreenInfo } from '~/stores/dtoStore'
 import { commonStore } from '~/stores/commonStore'
 // const theme = useTheme()
@@ -79,7 +79,7 @@ constantStore().init(await constantUtils().getConstants())
 /**
  * DTO機能
  */
-const dto = ref<Record<string, any>>({
+const dto = ref<PageDto>({
   params: {}
 })
 

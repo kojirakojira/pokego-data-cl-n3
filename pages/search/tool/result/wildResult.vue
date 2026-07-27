@@ -91,7 +91,7 @@ import {
 const searchPattern = 'wild'
 // current dto item
 const cDtoItem = ref<WildResultDtoItem>(new WildResultDtoItem())
-const dto: any = useAttrs().dto
+const dto = useAttrs().dto as PageDto
 dto.params = cDtoItem
 
 const isLoading = ref<boolean>(true)
@@ -130,9 +130,10 @@ await init()
 
 // Header
 const thisPath = useRuntimeConfig().public.url + useRoute().path
+const staticUrl = commonStore().getStaticUrl()
 const metaObject = computed((): MetaObject => {
   const pokeName = cDtoItem.value.resData.name || ''
-  const pokeImage = editUtils().getUrl(cDtoItem.value.resData.image2 || 'pokego/peripper-eyes.png')
+  const pokeImage = `${staticUrl}/public/${cDtoItem.value.resData.image2 || 'pokego/peripper-eyes.png'}`
   return {
     title: `${pokeName}の野生CP`,
     meta: [

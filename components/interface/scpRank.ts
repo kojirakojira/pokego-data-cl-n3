@@ -1,4 +1,4 @@
-import { PokemonSearchResult, ScpRankAllInOne } from './api/dto'
+import { type PokemonSearchResult, ScpRankAllInOne } from './api/dto'
 import { ResearchRequest } from './api/request'
 import { ResearchResponse } from './api/response'
 
@@ -74,7 +74,7 @@ export class ScpRankResultDtoItem implements ResultDtoItem {
  */
 export const get = async (
   searchParams: ScpRankSearchParams | ScpRankResultSearchParams
-): Promise<ScpRankResponse | void> => {
+): Promise<ScpRankResponse | undefined> => {
   const query: Record<string, any> = {
     iva: searchParams.iv.substring(0, 2),
     ivd: searchParams.iv.substring(2, 4),

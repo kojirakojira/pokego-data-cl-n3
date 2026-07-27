@@ -43,33 +43,38 @@
 
 <script setup lang="ts">
 import type { Grid } from '../interface/common/layout'
-import { type GoPokedex } from '~/components/interface/api/dto'
+import type { GoPokedex } from '~/components/interface/api/dto'
+
+interface PrevNextPokemonResponse {
+  prev: GoPokedex | null | undefined
+  next: GoPokedex | null | undefined
+}
 
 const props = withDefaults(
   defineProps<{
     pid: string, // 図鑑ID
-    prevTextFunc: Function,
-    nextTextFunc: Function,
+    prevTextFunc: (gp: GoPokedex) => string,
+    nextTextFunc: (gp: GoPokedex) => string,
     routerLink: string,
-    queryFunc?: Function,
+    queryFunc?: (gp: GoPokedex) => Record<string, any>,
     nextGrid?: Grid,
     prevGrid?: Grid
    }>(),
   {
-    queryFunc: (gp: GoPokedex | null | undefined) => { return { pid: gp?.pokedexId } },
+    queryFunc: (gp: GoPokedex) => { return { pid: gp.pokedexId } },
     nextGrid: () => { return { cols: 12, sm: 6, md: 6, lg: 6, xl: 6 } },
     prevGrid: () => { return { cols: 12, sm: 6, md: 6, lg: 6, xl: 6 } }
   }
 )
-const prev = ref<string>('')
-const next = ref<string>('')
+const prev = ref<GoPokedex | null | undefined>(undefined)
+const next = ref<GoPokedex | null | undefined>(undefined)
 const isLoading = ref<boolean>(true)
 
 const get = async () => {
   const res = await fetchCommon('/api/prevNextPokemon', 'GET', {
     query: { pid: props.pid }
   })
-  const rd: Record<string, any> | null = res.data
+  const rd: PrevNextPokemonResponse = res.data
   return rd
 }
 const refresh = async () => {

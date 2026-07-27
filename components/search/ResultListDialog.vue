@@ -58,7 +58,7 @@ withDefaults(
   { headerBackgroundColor: 'info' }
 )
 
-const emit = defineEmits<{ // eslint-disable-line func-call-spacing
+const emit = defineEmits<{
   (e: 'selected', pokedexId: string): void
   (e: 'close'): void
   }>()

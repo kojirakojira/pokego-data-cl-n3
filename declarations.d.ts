@@ -7,6 +7,25 @@ import type {
   } from 'vue'
   
   declare module '@vue/runtime-core' {
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     interface ComponentCustomProperties extends _ComponentCustomProperties {}
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     interface ComponentCustomOptions extends _ComponentCustomOptions {}
   }
+declare global {
+  interface PageDto {
+    params?: any
+    searchParams?: any
+    resData?: any
+    [key: string]: any
+  }
+  
+  interface DataTableHeader {
+    title: string
+    key: string
+    align?: 'start' | 'center' | 'end'
+    sortable?: boolean
+    width?: string | number
+    fixed?: boolean
+  }
+}

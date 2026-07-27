@@ -17,13 +17,13 @@
 </template>
 
 <script setup lang="ts">
-const modelName = defineModel('name')
-const modelMid = defineModel('mid')
+const modelName = defineModel<string>('name')
+const modelMid = defineModel<string>('mid')
 const props = withDefaults(
   defineProps<{
     id?: string,
     label?: string, // ラベル（任意）
-    keyupEnter?: Function, // Enterイベント（任意）
+    keyupEnter?: (e?: Event) => void, // Enterイベント（任意）
     autoFocus?: boolean
    }>(),
   {

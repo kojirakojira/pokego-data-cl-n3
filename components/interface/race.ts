@@ -1,4 +1,4 @@
-import { Race, PokemonStatisticsInfo, type DispFilterParam, PokemonSearchResult } from './api/dto'
+import { Race, PokemonStatisticsInfo, type DispFilterParam, type PokemonSearchResult } from './api/dto'
 import { ResearchRequest } from './api/request'
 import { ResearchResponse } from './api/response'
 
@@ -88,7 +88,7 @@ export class RaceResultDtoItem implements ResultDtoItem {
 export const get = async (
   searchParams: RaceSearchParams | RaceResultSearchParams,
   statsRequired?: boolean
-): Promise<RaceResponse | void> => {
+): Promise<RaceResponse | undefined> => {
   const query: RaceSearchParams = { ...searchParams } as RaceSearchParams
   if (statsRequired !== undefined && statsRequired !== null) {
     // 引数が設定されている場合、または明示的にはnullが指定されていない場合

@@ -195,7 +195,7 @@ import {
 const searchPattern = 'filterAllMove'
 // current dto item
 const cDtoItem = ref<FilterAllMoveResultDtoItem>(new FilterAllMoveResultDtoItem())
-const dto: any = useAttrs().dto
+const dto = useAttrs().dto as PageDto
 dto.params = cDtoItem
 
 const isLoading = ref<boolean>(true)
@@ -225,7 +225,7 @@ const moveDispTypeName = computed(() => {
  * table制御用機能
  */
 /** 列が全部そろったv-data-tableのヘッダ */
-const faBaseHeaders = readonly<Array<any>>([
+const faBaseHeaders = readonly<Array<DataTableHeader>>([
   { title: 'No', key: 'no' },
   { title: '技名', key: 'name' },
   { title: 'タイプ', key: 'type' },
@@ -241,7 +241,7 @@ const faBaseHeaders = readonly<Array<any>>([
   { title: 'DPT', key: 'pvp.dpt' },
   { title: 'EPT', key: 'pvp.ept' }
 ])
-const caBaseHeaders = readonly<Array<any>>([
+const caBaseHeaders = readonly<Array<DataTableHeader>>([
   { title: 'No', key: 'no', sortable: false },
   { title: '技名', key: 'name' },
   { title: 'タイプ', key: 'type' },
@@ -257,7 +257,7 @@ const caBaseHeaders = readonly<Array<any>>([
   { title: 'バフ確率', key: 'pvp.buff.activationChance' }
 ])
 
-const faHeaders = computed((): Array<any> => {
+const faHeaders = computed((): Array<DataTableHeader> => {
   return faBaseHeaders.filter((col) => {
     if (col.key.indexOf('.') < 1) {
       return true
@@ -266,7 +266,7 @@ const faHeaders = computed((): Array<any> => {
   })
 })
 
-const caHeaders = computed((): Array<any> => {
+const caHeaders = computed((): Array<DataTableHeader> => {
   return caBaseHeaders.filter((col) => {
     if (col.key.indexOf('.') < 1) {
       return true
@@ -405,6 +405,7 @@ await screenControlMethods().init()
  */
 const patternName = searchCommon().getSearchPatternName(searchPattern)
 const thisPath = useRuntimeConfig().public.url + useRoute().path
+const staticUrl = commonStore().getStaticUrl()
 const metaObject = computed((): MetaObject => {
   return {
     title: patternName,
@@ -414,7 +415,7 @@ const metaObject = computed((): MetaObject => {
       { property: 'og:url', content: thisPath },
       { property: 'og:site_name', content: 'ペリずかん' },
       { property: 'og:description', content: 'ポケモンGOにおける、すべての通常技・スペシャル技の一覧です。' },
-      { property: 'og:image', content: editUtils().getUrl('pokego/peripper-eyes.png') }
+      { property: 'og:image', content: `${staticUrl}/public/${'pokego/peripper-eyes.png'}` }
     ]
   }
 })

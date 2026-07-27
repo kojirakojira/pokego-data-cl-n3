@@ -98,7 +98,7 @@ export class MoveLookupResultDtoItem implements ResultDtoItem {
  */
 export const get = async (
   searchParams: MoveLookupSearchParams | MoveLookupResultSearchParams
-): Promise<MoveLookupResponse | void> => {
+): Promise<MoveLookupResponse | undefined> => {
   const res = await fetchCommon('/api/moveLookup', 'GET', {
     query: searchParams
   })
@@ -107,11 +107,10 @@ export const get = async (
     throw createError({ statusCode: 500, message: 'An error occurred.', fatal: true })
   }
   // 個別機能由来のメッセージ
-  let success = searchCommon().resErrHandle(
+  const success = searchCommon().resErrHandle(
     rd.message,
     rd.msgLevel)
   if (!success) {
-    success = false
     return
   }
 
@@ -121,7 +120,7 @@ export const get = async (
       rd.moveSearchResult.message,
       rd.moveSearchResult.msgLevel)
     if (!searchSuccess) {
-      success = false
+      return
     }
   }
   return rd

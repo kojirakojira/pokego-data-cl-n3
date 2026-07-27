@@ -82,7 +82,7 @@
 
 <script setup lang="ts">
 const cDtoItem = ref<Record<string, any>>({})
-const dto: any = useAttrs().dto
+const dto = useAttrs().dto as PageDto
 dto.params = cDtoItem
 
 const isLoading = ref<boolean>(true)

@@ -59,7 +59,7 @@ import {
 const searchPattern = 'gymRaidPokeMoveCombi'
 // current dto item
 const cDtoItem = ref<GymRaidPokeMoveCombiSearchDtoItem>(new GymRaidPokeMoveCombiSearchDtoItem())
-const dto: any = useAttrs().dto
+const dto = useAttrs().dto as PageDto
 dto.params = cDtoItem
 
 const isLoading = ref<boolean>(false)

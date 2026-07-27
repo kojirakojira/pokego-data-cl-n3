@@ -1,4 +1,4 @@
-import { GoPokedex, VersatilityIv } from './api/dto'
+import type { GoPokedex, VersatilityIv } from './api/dto'
 import { ResearchRequest } from './api/request'
 import { ResearchResponse } from './api/response'
 
@@ -90,7 +90,7 @@ export const getList = async (): Promise<Array<GoPokedex>> => {
  */
 export const get = async (
   searchParams: ThreeGalarBirdsSearchParams | ThreeGalarBirdsResultSearchParams
-): Promise<ThreeGalarBirdsResponse | void> => {
+): Promise<ThreeGalarBirdsResponse | undefined> => {
   const res = await fetchCommon('/api/threeGalarBirds', 'GET', {
     query: searchParams
   })

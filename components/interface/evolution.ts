@@ -1,4 +1,4 @@
-import { PokemonSearchResult, type Hierarchy, type Race } from './api/dto'
+import type { PokemonSearchResult, Hierarchy, Race } from './api/dto'
 import { ResearchRequest } from './api/request'
 import { ResearchResponse } from './api/response'
 
@@ -77,7 +77,7 @@ export class EvolutionResultDtoItem implements ResultDtoItem {
  */
 export const get = async (
   searchParams: EvolutionSearchParams | EvolutionResultSearchParams
-): Promise<EvolutionResponse | void> => {
+): Promise<EvolutionResponse | undefined> => {
   const res = await fetchCommon('/api/evolution', 'GET', {
     query: searchParams
   })

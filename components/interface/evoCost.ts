@@ -1,4 +1,4 @@
-import { type EvolutionEdge } from './api/dto'
+import type { EvolutionEdge } from './api/dto'
 import { Response } from './api/response'
 
 /**
@@ -65,7 +65,7 @@ export class EvoCostResultDtoItem implements ResultDtoItem {
  */
 export const get = async (
   searchParams: EvoCostResultSearchParams
-): Promise<EvoCostResponse | void> => {
+): Promise<EvoCostResponse | undefined> => {
   const res = await fetchCommon('/api/evoCost', 'GET', {
     query: searchParams
   })

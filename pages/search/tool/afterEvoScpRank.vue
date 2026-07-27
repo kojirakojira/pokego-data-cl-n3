@@ -93,7 +93,7 @@ import {
   AfterEvoScpRankSearchDtoItem,
   type
   AfterEvoScpRankResponse,
-  AfterEvoScpRankSearchParams,
+  type AfterEvoScpRankSearchParams,
   get,
   check
 } from '~/components/interface/afterEvoScpRank'
@@ -102,7 +102,7 @@ const searchPattern = 'afterEvoScpRank'
 
 // current dto item
 const cDtoItem = ref<AfterEvoScpRankSearchDtoItem>(new AfterEvoScpRankSearchDtoItem())
-const dto: any = useAttrs().dto
+const dto = useAttrs().dto as PageDto
 dto.params = cDtoItem
 
 const isLoading = ref<boolean>(false)
@@ -114,7 +114,7 @@ searchCommon().restoreSearchScreen(['searchParams', 'pokemonSearchResult'], cDto
 /**
  * 検索ボタン押下時の処理
  */
-const clickSearchBtn = async (e: Event) => {
+const clickSearchBtn = async (e?: Event) => {
   if (e instanceof KeyboardEvent && e.isComposing) {
     // キーボード操作かつ変換中の場合
     return

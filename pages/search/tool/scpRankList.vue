@@ -81,7 +81,7 @@ const searchPattern = 'scpRankList'
 
 // current dto item
 const cDtoItem = ref<ScpRankListSearchDtoItem>(new ScpRankListSearchDtoItem())
-const dto: any = useAttrs().dto
+const dto = useAttrs().dto as PageDto
 dto.params = cDtoItem
 
 const leagueArr = readonly<Array<Record<string, string>>>([

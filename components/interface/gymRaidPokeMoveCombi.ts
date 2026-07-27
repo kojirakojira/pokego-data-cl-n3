@@ -1,4 +1,4 @@
-import { GoPokedex, PokemonSearchResult, type MoveCombination } from './api/dto'
+import { GoPokedex, type PokemonSearchResult, type MoveCombination } from './api/dto'
 import { ResearchRequest } from './api/request'
 import { ResearchResponse } from './api/response'
 
@@ -72,7 +72,7 @@ export class GymRaidPokeMoveCombiResultDtoItem implements ResultDtoItem {
 export const get = async (
   searchParams: GymRaidPokeMoveCombiSearchParams | GymRaidPokeMoveCombiResultSearchParams,
   limit?: number
-): Promise<GymRaidPokeMoveCombiResponse | void> => {
+): Promise<GymRaidPokeMoveCombiResponse | undefined> => {
   const dic: Record<string, any> = { ...searchParams }
   if (limit) {
     dic.limit = limit

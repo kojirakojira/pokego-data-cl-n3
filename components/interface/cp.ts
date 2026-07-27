@@ -1,4 +1,4 @@
-import { GoPokedex, PokemonSearchResult } from './api/dto'
+import { GoPokedex, type PokemonSearchResult } from './api/dto'
 import { ResearchRequest } from './api/request'
 import { ResearchResponse } from './api/response'
 
@@ -84,7 +84,7 @@ export class CpResultDtoItem implements ResultDtoItem {
  */
 export const get = async (
   searchParams: CpSearchParams | CpResultSearchParams
-): Promise<CpResponse | void> => {
+): Promise<CpResponse | undefined> => {
   const query: Record<string, any> = {
     iva: searchParams.iv.substring(0, 2),
     ivd: searchParams.iv.substring(2, 4),

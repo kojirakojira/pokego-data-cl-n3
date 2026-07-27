@@ -1,4 +1,4 @@
-import { GoPokedex, PokemonSearchResult, type GppAndCp } from './api/dto'
+import { GoPokedex, type PokemonSearchResult, type GppAndCp } from './api/dto'
 import { ResearchRequest } from './api/request'
 import { ResearchResponse } from './api/response'
 
@@ -88,7 +88,7 @@ export class AfterEvoCpResultDtoItem implements ResultDtoItem {
  */
 export const get = async (
   searchParams: AfterEvoCpSearchParams | AfterEvoCpResultSearchParams
-): Promise<AfterEvoCpResponse | void> => {
+): Promise<AfterEvoCpResponse | undefined> => {
   const query: Record<string, any> = {
     iva: searchParams.iv.substring(0, 2),
     ivd: searchParams.iv.substring(2, 4),

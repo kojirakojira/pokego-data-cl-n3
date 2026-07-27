@@ -12,10 +12,10 @@
 </template>
 
 <script setup lang="ts">
-const model = defineModel()
+const model = defineModel<string | number>()
 const props = withDefaults(
   defineProps<{
-    keyupEnter?: Function // Enterイベント（任意）
+    keyupEnter?: (e?: Event) => void // Enterイベント（任意）
    }>(),
   { keyupEnter: () => {} }
 )

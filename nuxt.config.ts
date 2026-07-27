@@ -1,12 +1,12 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
-console.log(`APP_ENV=${process.env.APP_ENV}`) // eslint-disable-line no-console
+console.log(`APP_ENV=${process.env.APP_ENV}`)
 
 const defineNuxtConfig = async () => {
   let envVars: Record<string, string> = {}
   if (process.env.APP_ENV) {
     envVars = await import(`./env/${process.env.APP_ENV}`)
   }
-  console.log(`envVars=${JSON.stringify(envVars)}`) // eslint-disable-line no-console
+  console.log(`envVars=${JSON.stringify(envVars)}`)
   return {
     // devtools: { enabled: true },
     runtimeConfig: envVars,
@@ -14,7 +14,7 @@ const defineNuxtConfig = async () => {
       port: process.env.PORT || 3000
     },
     modules: [
-      '@nuxtjs/eslint-module',
+      '@nuxt/eslint',
       '@pinia/nuxt',
       'pinia-plugin-persistedstate/nuxt',
       'vuetify-nuxt-module',

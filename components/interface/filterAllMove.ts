@@ -94,7 +94,7 @@ export class FilterAllMoveResultDtoItem implements ResultDtoItem {
  */
 export const get = async (
   searchParams: FilterAllMoveResultSearchParams
-): Promise<FilterAllMoveResponse | void> => {
+): Promise<FilterAllMoveResponse | undefined> => {
   const res = await fetchCommon(
     '/api/filterAllMove' + searchCommon().spreadArray(searchParams),
     'GET'

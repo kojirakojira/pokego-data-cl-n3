@@ -132,6 +132,7 @@
 
 <script setup lang="ts">
 import { useTheme } from 'vuetify'
+import type { GppAndCp } from '~/components/interface/api/dto'
 import {
   type FilterAllResponse,
   FilterAllResultDtoItem,
@@ -139,12 +140,11 @@ import {
   type TableControl,
   get
 } from '~/components/interface/filterAll'
-import { GppAndCp } from '~/components/interface/api/dto'
 
 const searchPattern = 'filterAll'
 // current dto item
 const cDtoItem = ref<FilterAllResultDtoItem>(new FilterAllResultDtoItem())
-const dto: any = useAttrs().dto
+const dto = useAttrs().dto as PageDto
 dto.params = cDtoItem
 
 const isLoading = ref<boolean>(true)
@@ -156,10 +156,8 @@ const screenControlMethods = () => {
     // route.queryからsearchParamsを復元
     cDtoItem.value.searchParams = searchCommon()
       .restoreSearchParams(useRoute().query, FilterAllResultSearchParams)
-    console.log(cDtoItem.value.searchParams)
     // dtoStoreからresDataを復元
     const restoredParams: Record<string, any> | null = searchCommon().restoreCurrentScreen(['resData', 'tableControl'])
-    console.log(restoredParams)
     const rd: FilterAllResponse | null = restoredParams?.resData
     const tableControl: TableControl | null = restoredParams?.tableControl
 
@@ -242,7 +240,7 @@ watch(() => cDtoItem.value.tableControl.currentPage, (newValue, oldValue) => {
 })
 
 /** 列が全部そろったv-data-tableのヘッダ */
-const baseHeaders = readonly<Array<any>>([
+const baseHeaders = readonly<Array<DataTableHeader>>([
   { title: 'No', key: 'no', align: 'center', sortable: false },
   { title: '図鑑No', key: 'goPokedex.pokedexId', align: 'center' },
   { title: '', key: 'goPokedex.image1', sortable: false, width: '52px' },
@@ -267,7 +265,7 @@ const oList = ['pokedex.hp', 'pokedex.attack', 'pokedex.defense', 'pokedex.speci
 /*
  * ヘッダの表示制御（ラジオボタンに応じて表示項目を切り替える）
  */
-const headers = computed((): Array<any> => {
+const headers = computed((): Array<DataTableHeader> => {
   const tableControl = cDtoItem.value.tableControl
   const selectedArr: Array<string> = tableControl.chkboxSelected
   return baseHeaders.filter((col) => {

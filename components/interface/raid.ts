@@ -1,4 +1,4 @@
-import { CatchCp, GoPokedex, PokemonSearchResult } from './api/dto'
+import { CatchCp, GoPokedex, type PokemonSearchResult } from './api/dto'
 import { ResearchRequest } from './api/request'
 import { ResearchResponse } from './api/response'
 
@@ -71,7 +71,7 @@ export class RaidResultDtoItem implements ResultDtoItem {
  */
 export const get = async (
   searchParams: RaidSearchParams | RaidResultSearchParams
-): Promise<RaidResponse | void> => {
+): Promise<RaidResponse | undefined> => {
   const res = await fetchCommon('/api/raid', 'GET', {
     query: searchParams
   })

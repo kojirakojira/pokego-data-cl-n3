@@ -15,7 +15,6 @@ export default defineNuxtPlugin(() => {
         Object.entries(category.patternNames).forEach(([key, pattern]) => {
           const expectedRouteName = `search-${pattern.isTool ? 'tool-' : ''}${key}`
           if (!availableRoutes.some(r => r.name === expectedRouteName)) {
-            // eslint-disable-next-line no-console
             console.warn(`[Dev Warning] Route not found: '${expectedRouteName}' (defined in app.config.ts searchPatternNames.${key})`)
           }
         })

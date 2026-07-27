@@ -6,6 +6,7 @@ import type { Response, ResearchResponse, MsgLevel, NotValidResponse } from '~/c
 import type { ResearchRequest } from '~/components/interface/api/request'
 import type { SearchPatternNames } from '~/app.config'
 
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface ResData extends Record<string, any> { }
 /**
  * 検索系の画面(pageがsearch配下の画面)でdtoStoreに値を追加するときは、
@@ -38,7 +39,7 @@ export default () => {
     ]
   })
 
-  const restoreSearchScreen = (keys: Array<string>, dto: Record<string, any>): boolean => {
+  const restoreSearchScreen = (keys: Array<string>, dto: PageDto & { searchParams?: Record<string, any> }): boolean => {
     const route = useRoute()
     const navigation: string = dtoStore().getNavigation()
     const currentSi: ScreenInfo | null = dtoStore().currentScreenInfo()
@@ -46,12 +47,14 @@ export default () => {
     if (navigation === 'reload') {
       // リロードの場合
       if (keys.includes('searchParams')) {
-        const spKeys = Object.keys(dto.searchParams) // searchParamsに定義したキー
-        for (const [k, v] of Object.entries(route.query)) {
-          if (spKeys.includes(k)) {
-            // searchParamsに定義したキーしか復元しない。
-            dto.searchParams[k] = v
-            restoreFlg = true
+        if (dto.searchParams) {
+          const spKeys = Object.keys(dto.searchParams) // searchParamsに定義したキー
+          for (const [k, v] of Object.entries(route.query)) {
+            if (spKeys.includes(k)) {
+              // searchParamsに定義したキーしか復元しない。
+              dto.searchParams[k] = v
+              restoreFlg = true
+            }
           }
         }
       }
@@ -80,13 +83,13 @@ export default () => {
       if (routeQuery[k]) {
         switch (typeof rsp[k]) {
           case 'boolean':
-            rsp[k] = (routeQuery[k] === 'true') as any
+            rsp[k] = (routeQuery[k] === 'true') as any as T[Extract<keyof T, string>]
             break
           case 'number':
-            rsp[k] = Number(routeQuery[k]) as any
+            rsp[k] = Number(routeQuery[k]) as any as T[Extract<keyof T, string>]
             break
           case 'string':
-            rsp[k] = routeQuery[k] as any
+            rsp[k] = routeQuery[k] as any as T[Extract<keyof T, string>]
             break
           default:
             if (!rsp[k]) {
@@ -228,7 +231,7 @@ export default () => {
    */
   const getSearchPatternName = (searchPattern: string) => {
     let ret: string = ''
-    const searchPatternNames = useAppConfig().searchPatternNames as unknown as SearchPatternNames
+    const searchPatternNames = useAppConfig().searchPatternNames as any as SearchPatternNames
     Object.entries(searchPatternNames).forEach(([, category]) => {
       Object.entries(category.patternNames).forEach(([k, pattern]) => {
         if (k === searchPattern) {
@@ -241,7 +244,7 @@ export default () => {
 
   const isToolPage = (searchPattern: string) => {
     let isTool = false
-    const searchPatternNames = useAppConfig().searchPatternNames as unknown as SearchPatternNames
+    const searchPatternNames = useAppConfig().searchPatternNames as any as SearchPatternNames
     Object.entries(searchPatternNames).forEach(([, category]) => {
       Object.entries(category.patternNames).forEach(([k, pattern]) => {
         if (k === searchPattern && pattern.isTool) {
@@ -386,9 +389,9 @@ export default () => {
    *  →遷移前の画面のクエリからnameを削除。pidを追加して返却する。
    * ②：makeQuery(Record<string, any>)
    */
-  const makeQuery = (arg1: string | null | undefined | Object, searchParams?: Record<string, any>) => {
+  const makeQuery = (arg1: string | null | undefined | Record<string, any>, searchParams?: Record<string, any>) => {
     let pid: string | null | undefined = null
-    let queryParams: Record<string, any> = {}
+    let queryParams: Record<string, any>
     if (arg1 && typeof arg1 !== 'string') {
       queryParams = arg1
     } else if (searchParams) {
@@ -407,7 +410,7 @@ export default () => {
         // queryパラメータにキーが重複している場合は、配列を表現している。
         if (Array.isArray(query[k])) {
           // 既に配列に入っている場合
-          query[k].push(v)
+          (query[k] as Array<any>).push(v)
         } else {
           // 配列でない場合は配列を作成して追加する。
           const tmpV = query[k]
@@ -472,7 +475,7 @@ export default () => {
   // }
 
   return {
-    get searchPatternNames () { return useAppConfig().searchPatternNames as unknown as SearchPatternNames },
+    get searchPatternNames () { return useAppConfig().searchPatternNames as any as SearchPatternNames },
     rules,
     // mountQuery,
     restoreSearchScreen,

@@ -63,7 +63,7 @@
 </template>
 
 <script setup lang="ts">
-import { GoPokedex } from '~/components/interface/api/dto'
+import type { GoPokedex } from '~/components/interface/api/dto'
 import {
   type DynamaxImplPokemonResponse,
   get
@@ -75,7 +75,7 @@ import {
 const searchPattern = 'dynamax'
 // current dto item
 const cDtoItem = ref<DynamaxSearchDtoItem>(new DynamaxSearchDtoItem())
-const dto: any = useAttrs().dto
+const dto = useAttrs().dto as PageDto
 dto.params = cDtoItem
 
 const isLoading = ref<boolean>(true)

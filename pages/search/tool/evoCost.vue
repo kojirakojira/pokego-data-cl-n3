@@ -48,7 +48,7 @@ import {
 const searchPattern = 'evoCost'
 // current dto item
 const cDtoItem = ref<EvoCostSearchDtoItem>(new EvoCostSearchDtoItem())
-const dto: any = useAttrs().dto
+const dto = useAttrs().dto as PageDto
 dto.params = cDtoItem
 
 const isLoading = ref<boolean>(false)

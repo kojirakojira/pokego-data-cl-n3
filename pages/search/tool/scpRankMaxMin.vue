@@ -60,7 +60,7 @@ const searchPattern = 'scpRankMaxMin'
 
 // current dto item
 const cDtoItem = ref<ScpRankMaxMinSearchDtoItem>(new ScpRankMaxMinSearchDtoItem())
-const dto: any = useAttrs().dto
+const dto = useAttrs().dto as PageDto
 dto.params = cDtoItem
 
 const isLoading = ref<boolean>(false)

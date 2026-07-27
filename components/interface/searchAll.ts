@@ -51,7 +51,7 @@ export class SearchAllSearchDtoItem implements SearchDtoItem {
 /**
  * APIアクセス用get関数
  */
-export const get = async (searchParams: SearchAllSearchParams): Promise<SearchAllResponse | void> => {
+export const get = async (searchParams: SearchAllSearchParams): Promise<SearchAllResponse | undefined> => {
   const res = await fetchCommon('/api/searchAll', 'GET', {
     query: searchParams
   })

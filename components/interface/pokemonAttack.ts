@@ -1,4 +1,4 @@
-import { GoPokedex, PokemonSearchResult, type DispPokemonChargedAttack, type DispPokemonFastAttack } from './api/dto'
+import { GoPokedex, type PokemonSearchResult, type DispPokemonChargedAttack, type DispPokemonFastAttack } from './api/dto'
 import { ResearchRequest } from './api/request'
 import { ResearchResponse } from './api/response'
 
@@ -80,7 +80,7 @@ export class PokemonAttackResultDtoItem implements ResultDtoItem {
  */
 export const get = async (
   searchParams: PokemonAttackSearchParams | PokemonAttackResultSearchParams
-): Promise<PokemonAttackResponse | void> => {
+): Promise<PokemonAttackResponse | undefined> => {
   const res = await fetchCommon('/api/pokemonAttack', 'GET', {
     query: searchParams
   })

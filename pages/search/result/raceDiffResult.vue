@@ -189,7 +189,7 @@
 <script setup lang="ts">
 import type { MetaObject } from 'nuxt/schema'
 import { useDisplay } from 'vuetify'
-import { GoPokedex, Race, RaceGoRank, RaceOriRank, type Pokedex } from '~/components/interface/api/dto'
+import { type GoPokedex, type Race, RaceGoRank, RaceOriRank, type Pokedex } from '~/components/interface/api/dto'
 import {
   type RaceDiffResponse,
   RaceDiffResultDtoItem,
@@ -205,7 +205,7 @@ const searchPattern = 'raceDiff'
  */
 // current dto item
 const cDtoItem = ref<RaceDiffResultDtoItem>(new RaceDiffResultDtoItem())
-const dto: any = useAttrs().dto
+const dto = useAttrs().dto as PageDto
 dto.params = cDtoItem
 
 const isLoading = ref<boolean>(true)
@@ -390,6 +390,7 @@ await screenControlMethods().init()
  */
 const patternName = searchCommon().getSearchPatternName(searchPattern)
 const thisPath = useRuntimeConfig().public.url + useRoute().path
+const staticUrl = commonStore().getStaticUrl()
 const metaObject = computed((): MetaObject => {
   return {
     title: `${patternName}`,
@@ -399,7 +400,7 @@ const metaObject = computed((): MetaObject => {
       { property: 'og:url', content: thisPath },
       { property: 'og:site_name', content: 'ペリずかん' },
       { property: 'og:description', content: 'ポケモンの種族値を比較し、どっちのポケモンが強いか調べることができます。' },
-      { property: 'og:image', content: editUtils().getUrl('pokego/peripper-eyes.png') }
+      { property: 'og:image', content: `${staticUrl}/public/${'pokego/peripper-eyes.png'}` }
     ]
   }
 })

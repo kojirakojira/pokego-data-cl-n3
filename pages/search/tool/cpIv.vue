@@ -124,7 +124,7 @@ import {
 const searchPattern = 'cpIv'
 // current dto item
 const cDtoItem = ref<CpIvSearchDtoItem>(new CpIvSearchDtoItem())
-const dto: any = useAttrs().dto
+const dto = useAttrs().dto as PageDto
 dto.params = cDtoItem
 
 const isLoading = ref<boolean>(false)

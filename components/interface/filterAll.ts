@@ -73,7 +73,7 @@ export class FilterAllResultDtoItem implements ResultDtoItem {
  */
 export const get = async (
   searchParams: FilterAllSearchParams | FilterAllResultSearchParams
-): Promise<FilterAllResponse | void> => {
+): Promise<FilterAllResponse | undefined> => {
   const res = await fetchCommon(
     '/api/filterAll' + searchCommon().spreadArray(searchParams),
     'GET'

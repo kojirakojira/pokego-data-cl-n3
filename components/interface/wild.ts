@@ -1,4 +1,4 @@
-import { CatchCp, PokemonSearchResult } from './api/dto'
+import { CatchCp, type PokemonSearchResult } from './api/dto'
 import { ResearchRequest } from './api/request'
 import { ResearchResponse } from './api/response'
 
@@ -66,7 +66,7 @@ export class WildResultDtoItem implements ResultDtoItem {
  */
 export const get = async (
   searchParams: WildSearchParams | WildResultSearchParams
-): Promise<WildResponse | void> => {
+): Promise<WildResponse | undefined> => {
   const res = await fetchCommon('/api/wild', 'GET', {
     query: searchParams
   })

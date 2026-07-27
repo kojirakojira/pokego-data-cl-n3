@@ -28,7 +28,7 @@
 </template>
 
 <script setup lang="ts">
-import { type DispFilterParam } from '~/components/interface/api/dto'
+import type { DispFilterParam } from '~/components/interface/api/dto'
 
 withDefaults(
   defineProps<{

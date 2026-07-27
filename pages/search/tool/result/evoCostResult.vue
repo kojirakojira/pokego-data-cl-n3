@@ -80,7 +80,7 @@ import {
 const searchPattern = 'evoCost'
 // current dto item
 const cDtoItem = ref<EvoCostResultDtoItem>(new EvoCostResultDtoItem())
-const dto: any = useAttrs().dto
+const dto = useAttrs().dto as PageDto
 dto.params = cDtoItem
 
 const isLoading = ref<boolean>(true)
@@ -138,6 +138,7 @@ await init()
 // Header
 const patternName = searchCommon().getSearchPatternName(searchPattern)
 const thisPath = useRuntimeConfig().public.url + route.path
+const staticUrl = commonStore().getStaticUrl()
 const metaObject = computed((): MetaObject => {
   return {
     title: `${patternName}`,
@@ -147,7 +148,7 @@ const metaObject = computed((): MetaObject => {
       { property: 'og:url', content: thisPath },
       { property: 'og:site_name', content: 'ペリずかん' },
       { property: 'og:description', content: '進化条件（必要なアメの個数、進化アイテム等）から、ポケモンを逆引きすることができます。' },
-      { property: 'og:image', content: editUtils().getUrl('pokego/peripper-eyes.png') }
+      { property: 'og:image', content: `${staticUrl}/public/${'pokego/peripper-eyes.png'}` }
     ]
   }
 })

@@ -16,7 +16,7 @@ import { TypeColorUtils } from '~/utils/editUtils'
 
 const props = withDefaults(
   defineProps<{
-    pokedex: Pokedex | null,
+    pokedex?: Pokedex | null,
     raceOriRank: RaceOriRank,
     count: number
   }>(),

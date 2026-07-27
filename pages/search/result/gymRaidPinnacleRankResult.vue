@@ -144,7 +144,7 @@
                 {{ editUtils().getPdxNo(item.goPokedex.pokedexId) }}
               </template>
               <template #[`item.goPokedex.image1`]="{ item }">
-                <v-avatar :image="editUtils().getPokemonImageUrl(item.goPokedex.image1)" />
+                <v-avatar :image="`${staticUrl}/public/${(item.goPokedex.image1) || 'no-image.png'}`" />
               </template>
               <template #[`item.goPokedex.name`]="{ item }">
                 <div style="min-width: 140px;">
@@ -203,7 +203,7 @@ import {
 const searchPattern = 'gymRaidPinnacleRank'
 // current dto item
 const cDtoItem = ref<GymRaidPinnacleRankResultDtoItem>(new GymRaidPinnacleRankResultDtoItem())
-const dto: any = useAttrs().dto
+const dto = useAttrs().dto as PageDto
 dto.params = cDtoItem
 
 const isLoading = ref<boolean>(true)
@@ -336,6 +336,7 @@ await screenControlMethods().init()
 
 // Header
 const thisPath = useRuntimeConfig().public.url + useRoute().path
+const staticUrl = commonStore().getStaticUrl()
 const metaObject = computed((): MetaObject => {
   const type1 = constantAccessor.getTypeJpn(cDtoItem.value.searchParams.oppType1)
   const type2 = cDtoItem.value.searchParams.oppType2

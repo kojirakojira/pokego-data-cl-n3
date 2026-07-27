@@ -81,7 +81,7 @@ import {
 const searchPattern = 'cpRank'
 // current dto item
 const cDtoItem = ref<CpRankSearchDtoItem>(new CpRankSearchDtoItem())
-const dto: any = useAttrs().dto
+const dto = useAttrs().dto as PageDto
 dto.params = cDtoItem
 
 const isLoading = ref<boolean>(false)

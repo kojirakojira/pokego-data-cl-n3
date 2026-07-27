@@ -1,4 +1,4 @@
-import { type XTypeElement } from './api/dto'
+import type { XTypeElement } from './api/dto'
 import { ResearchResponse } from './api/response'
 
 /**
@@ -89,7 +89,7 @@ export class XTypeResultDtoItem implements ResultDtoItem {
  */
 export const get = async (
   searchParams: XTypeSearchParams | XTypeResultSearchParams
-): Promise<XTypeResponse | void> => {
+): Promise<XTypeResponse | undefined> => {
   const res = await fetchCommon('/api/xType', 'GET', {
     query: searchParams
   })

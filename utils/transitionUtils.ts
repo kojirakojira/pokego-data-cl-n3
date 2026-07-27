@@ -31,7 +31,7 @@ export default () => {
   const filterAll = (params: TransitionParamForFilterAll) => {
     const searchParams: FilterAllSearchParams = new FilterAllSearchParams()
     for (const [k, v] of Object.entries(params)) {
-      (searchParams as any)[k] = v
+      (searchParams as Record<string, any>)[k] = v
     }
     const pathName = searchCommon().getRouteName('filterAll')
     dtoUtils().prePushScreenInfo(dtoUtils().createScreenInfo(

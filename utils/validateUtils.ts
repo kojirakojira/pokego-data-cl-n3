@@ -93,7 +93,7 @@ export default () => {
     const getFuncName = (v: string): string => {
       return `check${v.charAt(0).toUpperCase() + v.slice(1)}`
     }
-    const checkFuncDic: Record<string, Function> = {
+    const checkFuncDic: Record<string, (e: CheckPattern) => string> = {
       checkRequired,
       checkRequiredArray,
       checkIv,

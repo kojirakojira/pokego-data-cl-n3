@@ -1,4 +1,4 @@
-import { CatchCp, GoPokedex, PokemonSearchResult } from './api/dto'
+import { CatchCp, GoPokedex, type PokemonSearchResult } from './api/dto'
 import { ResearchRequest } from './api/request'
 import { ResearchResponse } from './api/response'
 
@@ -70,7 +70,7 @@ export class RocketResultDtoItem implements ResultDtoItem {
  */
 export const get = async (
   searchParams: RocketSearchParams | RocketResultSearchParams
-): Promise<RocketResponse | void> => {
+): Promise<RocketResponse | undefined> => {
   const res = await fetchCommon('/api/rocket', 'GET', {
     query: searchParams
   })

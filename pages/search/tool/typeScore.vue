@@ -101,7 +101,7 @@
 
 <script setup lang="ts">
 import {
-  TypeScoreSearchParams,
+  type TypeScoreSearchParams,
   type TypeScoreResponse,
   TypeScoreSearchDtoItem,
   get,
@@ -113,7 +113,7 @@ const searchPattern = 'typeScore'
 
 // current dto item
 const cDtoItem = ref<TypeScoreSearchDtoItem>(new TypeScoreSearchDtoItem())
-const dto: any = useAttrs().dto
+const dto = useAttrs().dto as PageDto
 dto.params = cDtoItem
 
 const isLoading = ref<boolean>(false)

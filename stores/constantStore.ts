@@ -58,13 +58,13 @@ export const constantStore = defineStore(
       clear()
 
       // それぞれセットしていく
-      setType(Object.entries(constants.typeList).map((arr: Array<any>) => arr[1]))
-      setRegion(Object.entries(constants.regionMap).map(([k, v]: Array<any>) => { return { k, v } }))
-      setGen(Object.entries(constants.genMap).map(([k, v]: Array<any>) => { return { k, v } }))
-      setFilterItems(Object.entries(constants.filterItemMap).map(([k, v]: Array<any>) => { return { k, v } }))
-      setPl(Object.entries(constants.plList).map((arr: Array<any>) => arr[1]))
-      setSituation(Object.entries(constants.situationMap).map(([k, v]: Array<any>) => { return { k, v } }))
-      setWeather(Object.entries(constants.weatherMap).map(([k, v]: Array<any>) => { return { k, v } }))
+      setType(Object.entries(constants.typeList).map((arr: [string, any]) => arr[1] as TypeInfo))
+      setRegion(Object.entries(constants.regionMap).map(([k, v]: [string, string]) => { return { k, v } }))
+      setGen(Object.entries(constants.genMap).map(([k, v]: [string, string]) => { return { k, v } }))
+      setFilterItems(Object.entries(constants.filterItemMap).map(([k, v]: [string, string]) => { return { k, v } }))
+      setPl(Object.entries(constants.plList).map((arr: [string, any]) => String(arr[1])))
+      setSituation(Object.entries(constants.situationMap).map(([k, v]: [string, string]) => { return { k, v } }))
+      setWeather(Object.entries(constants.weatherMap).map(([k, v]: [string, string]) => { return { k, v } }))
     }
 
     return {

@@ -27,7 +27,7 @@
           <v-col>
             <div style="margin: 0 auto; max-width: 200px;">
               <v-img
-                :src="editUtils().getPokemonImageUrl(cDtoItem.resData.image2)"
+                :src="`${staticUrl}/public/${(cDtoItem.resData.image2) || 'no-image.png'}`"
                 rounded
                 max-width="200px"
                 aspect-ratio="1"
@@ -654,20 +654,20 @@
 import type { MetaObject } from 'nuxt/schema'
 import { ConstantAccessor, TypeColorUtils } from '#imports'
 import {
-  type AbundanceResponse,
   AbundanceResultDtoItem,
   AbundanceResultSearchParams,
-  get
+  get,
+  type AbundanceResponse
 } from '~/components/interface/abundance'
+import { type GoPokedexAndCpPl, type Race, type RaceDiffElem, RaceGoRank, type ScpRank, type GoPokedex } from '~/components/interface/api/dto'
 import type { ResearchResponse } from '~/components/interface/api/response'
 import { EvolutionResultSearchParams, type EvolutionResponse } from '~/components/interface/evolution'
-import { RaceResultSearchParams, type RaceResponse } from '~/components/interface/race'
-import { TypeScoreResultSearchParams, type TypeScoreResponse } from '~/components/interface/typeScore'
-import { type GoPokedex, RaceGoRank, GoPokedexAndCpPl, ScpRank, Race, RaceDiffElem } from '~/components/interface/api/dto'
-import { ScpRankMaxMinResponse, ScpRankMaxMinSearchParams } from '~/components/interface/scpRankMaxMin'
-import { PokemonAttackResultSearchParams, type PokemonAttackResponse } from '~/components/interface/pokemonAttack'
 import { GymRaidPokeMoveCombiSearchParams, type GymRaidPokeMoveCombiResponse } from '~/components/interface/gymRaidPokeMoveCombi'
-import { RaceDiffFrequencyResponse, RaceDiffFrequencyResultSearchParams } from '~/components/interface/raceDiffFrequency'
+import { PokemonAttackResultSearchParams, type PokemonAttackResponse } from '~/components/interface/pokemonAttack'
+import { RaceResultSearchParams, type RaceResponse } from '~/components/interface/race'
+import { type RaceDiffFrequencyResponse, RaceDiffFrequencyResultSearchParams } from '~/components/interface/raceDiffFrequency'
+import { type ScpRankMaxMinResponse, ScpRankMaxMinSearchParams } from '~/components/interface/scpRankMaxMin'
+import { TypeScoreResultSearchParams, type TypeScoreResponse } from '~/components/interface/typeScore'
 const MajorPartsH2Common = defineAsyncComponent(() => import('~/components/majorParts/H2Common.vue'))
 const IconAwakeningIconMegaIcon = defineAsyncComponent(() => import('~/components/icon/awakeningIcon/MegaIcon.vue'))
 const IconAwakeningIconDynamaxIcon = defineAsyncComponent(() => import('~/components/icon/awakeningIcon/DynamaxIcon.vue'))
@@ -679,7 +679,7 @@ const MajorPartsPrevNextPokemon = defineAsyncComponent(() => import('~/component
 
 // current dto item
 const cDtoItem = ref<AbundanceResultDtoItem>(new AbundanceResultDtoItem())
-const dto: any = useAttrs().dto
+const dto = useAttrs().dto as PageDto
 dto.params = cDtoItem
 
 const screenControlMethods = () => {
@@ -751,7 +751,6 @@ const screenControlMethods = () => {
           }
         })
     }
-    console.log(cDtoItem.value)
   }
 
   const getCurrentResData = (pid: string): Record<string, ResearchResponse> | null => {
@@ -1039,8 +1038,11 @@ const commonMethods = () => {
 
 // Header
 const thisPath = useRuntimeConfig().public.url + useRoute().path
+const staticUrl = commonStore().getStaticUrl()
 const metaObject = computed((): MetaObject => {
   const pokeName = cDtoItem.value.resData.name || ''
+  const imagePath = cDtoItem.value.resData.image2 || 'no-image.png'
+  const pokeImage = `${staticUrl}/public/${imagePath}`
   return {
     title: `【ポケモンGO】${pokeName}のCP、種族値、技 - ペリずかん`,
     meta: [
@@ -1049,7 +1051,7 @@ const metaObject = computed((): MetaObject => {
       { property: 'og:url', content: thisPath },
       { property: 'og:site_name', content: 'ペリずかん' },
       { property: 'og:description', content: `${pokeName}の情報を確認できます。` },
-      { property: 'og:image', content: editUtils().getPokemonImageUrl(cDtoItem.value.resData.image2) }
+      { property: 'og:image', content: pokeImage }
     ]
   }
 })

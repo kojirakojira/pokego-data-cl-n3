@@ -1,4 +1,4 @@
-import { CatchCp, Color, GoPokedex, GoPokedexAndCpPl, type Citation } from './api/dto'
+import { CatchCp, Color, GoPokedex, type GoPokedexAndCpPl, type Citation } from './api/dto'
 import { ResearchResponse } from './api/response'
 import { EvolutionResponse } from './evolution'
 import { GymRaidPokeMoveCombiResponse } from './gymRaidPokeMoveCombi'
@@ -139,7 +139,7 @@ export const get = async (
   if (searchCommon().handleApiMessage(rd)) {
     // success
     // AbundanceResultDtoItemにセットする。
-    dtoItem[resDataNm] = rd as any
+    (dtoItem as any)[resDataNm] = rd
   }
   return rd
 }

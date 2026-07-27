@@ -1,5 +1,5 @@
 import type { SortItem } from 'vuetify/lib/components/VDataTable/composables/sort'
-import { PokemonSearchResult, type PokemonAttackCombination } from './api/dto'
+import type { PokemonSearchResult, PokemonAttackCombination } from './api/dto'
 import { ResearchResponse } from './api/response'
 
 /**
@@ -127,7 +127,7 @@ export class GymRaidPinnacleRankResultDtoItem implements ResultDtoItem {
  */
 export const get = async (
   searchParams: GymRaidPinnacleRankSearchParams | GymRaidPinnacleRankResultSearchParams
-): Promise<GymRaidPinnacleRankResponse | void> => {
+): Promise<GymRaidPinnacleRankResponse | undefined> => {
   const query: Record<string, any> = { ...searchParams }
   // タイプ2が設定されていない場合はnullに置き換える
   query.oppType2 = searchParams.oppType2 || null

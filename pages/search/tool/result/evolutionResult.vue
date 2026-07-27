@@ -73,18 +73,18 @@
 <script setup lang="ts">
 import type { MetaObject } from 'nuxt/schema'
 import {
-  EvolutionResponse,
+  type EvolutionResponse,
   EvolutionResultDtoItem,
   EvolutionResultSearchParams,
   get
 } from '~/components/interface/evolution'
-import { type GoPokedex } from '~/components/interface/api/dto'
+import type { GoPokedex } from '~/components/interface/api/dto'
 const MajorPartsPrevNextPokemon = defineAsyncComponent(() => import('~/components/majorParts/PrevNextPokemon.vue'))
 
 const searchPattern = 'evolution'
 // current dto item
 const cDtoItem = ref<EvolutionResultDtoItem>(new EvolutionResultDtoItem())
-const dto: any = useAttrs().dto
+const dto = useAttrs().dto as PageDto
 dto.params = cDtoItem
 
 const isLoading = ref<boolean>(true)
@@ -135,9 +135,10 @@ await init()
 
 // Header
 const thisPath = useRuntimeConfig().public.url + useRoute().path
+const staticUrl = commonStore().getStaticUrl()
 const metaObject = computed((): MetaObject => {
   const pokeName = cDtoItem.value.resData?.name || ''
-  const pokeImage = editUtils().getUrl(cDtoItem.value.resData?.image2 || 'pokego/peripper-eyes.png')
+  const pokeImage = `${staticUrl}/public/${cDtoItem.value.resData?.image2 || 'pokego/peripper-eyes.png'}`
   return {
     title: `${pokeName}の進化ツリー`,
     meta: [

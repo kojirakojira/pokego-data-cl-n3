@@ -58,7 +58,7 @@ import {
 const searchPattern = 'unimplPokemon'
 // current dto item
 const cDtoItem = ref<UnimplPokemonResultDtoItem>(new UnimplPokemonResultDtoItem())
-const dto: any = useAttrs().dto
+const dto = useAttrs().dto as PageDto
 dto.params = cDtoItem
 
 const isLoading = ref<boolean>(false)

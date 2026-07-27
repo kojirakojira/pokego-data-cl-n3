@@ -59,7 +59,7 @@ import {
 const searchPattern = 'frTask'
 // current dto item
 const cDtoItem = ref<FrTaskSearchDtoItem>(new FrTaskSearchDtoItem())
-const dto: any = useAttrs().dto
+const dto = useAttrs().dto as PageDto
 dto.params = cDtoItem
 
 const isLoading = ref<boolean>(false)

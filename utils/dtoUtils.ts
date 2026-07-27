@@ -1,5 +1,5 @@
-import { type RouteLocationNormalized } from 'vue-router'
-import { type ScreenInfo } from '~/stores/dtoStore'
+import type { RouteLocationNormalized } from 'vue-router'
+import type { ScreenInfo } from '~/stores/dtoStore'
 import { dtoStore } from '~/stores/dtoStore'
 
 export default () => {
@@ -21,7 +21,7 @@ export default () => {
 
   const createScreenInfoForBeforeEach = (
     from: RouteLocationNormalized,
-    dto: Ref<Record<string, any>>): ScreenInfo => {
+    dto: Ref<PageDto>): ScreenInfo => {
     if (!from.name) {
       throw createError({ statusCode: 500, message: 'ページの指定に誤りがあります。', fatal: true })
     }

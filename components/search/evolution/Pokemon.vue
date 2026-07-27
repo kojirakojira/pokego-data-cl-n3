@@ -2,7 +2,7 @@
   <div
     :class="$style.pokemon"
     :style="link || clickAction ? 'cursor: pointer;' : 'pointer-events: none;'"
-    @click="clickAction()"
+    @click="clickAction ? clickAction() : null"
   >
     <div :class="$style.node" />
     <div :class="$style.pokemon_name">
@@ -23,10 +23,10 @@ const props = withDefaults(
   defineProps<{
     goPokedex: GoPokedex,
     link?: boolean,
-    clickAction?: Function,
+    clickAction?: ((e?: Event) => void) | null,
     marker?: boolean
    }>(),
-  { link: false, clickAction: () => {}, marker: false }
+  { link: false, clickAction: null, marker: false }
 )
 
 const constant: ConstantValue = constantUtils().get()

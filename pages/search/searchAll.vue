@@ -53,7 +53,7 @@ import {
   type SearchAllResponse,
   check,
   get,
-  SearchAllSearchParams
+  type SearchAllSearchParams
 } from '~/components/interface/searchAll'
 
 const searchPattern = 'searchAll'
@@ -62,7 +62,7 @@ const searchPattern = 'searchAll'
  */
 // current dto item
 const cDtoItem = ref<SearchAllSearchDtoItem>(new SearchAllSearchDtoItem())
-const dto: any = useAttrs().dto
+const dto = useAttrs().dto as PageDto
 dto.params = cDtoItem
 
 const isLoading = ref<boolean>(false)

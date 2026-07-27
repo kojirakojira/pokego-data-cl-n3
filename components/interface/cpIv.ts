@@ -1,4 +1,4 @@
-import { PokemonSearchResult, VersatilityIv } from './api/dto'
+import type { PokemonSearchResult, VersatilityIv } from './api/dto'
 import { ResearchRequest } from './api/request'
 import { ResearchResponse } from './api/response'
 
@@ -84,7 +84,7 @@ export class CpIvResultDtoItem implements ResultDtoItem {
  */
 export const get = async (
   searchParams: CpIvSearchParams | CpIvResultSearchParams
-): Promise<CpIvResponse | void> => {
+): Promise<CpIvResponse | undefined> => {
   const res = await fetchCommon('/api/cpIv', 'GET', {
     query: searchParams
   })

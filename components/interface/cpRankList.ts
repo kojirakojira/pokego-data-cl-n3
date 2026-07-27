@@ -1,4 +1,4 @@
-import { CpRank, GoPokedex, PokemonSearchResult } from './api/dto'
+import { type CpRank, GoPokedex, type PokemonSearchResult } from './api/dto'
 import { ResearchRequest } from './api/request'
 import { ResearchResponse } from './api/response'
 
@@ -68,7 +68,7 @@ export class CpRankListResultDtoItem implements ResultDtoItem {
  */
 export const get = async (
   searchParams: CpRankListSearchParams | CpRankListResultSearchParams
-): Promise<CpRankListResponse | void> => {
+): Promise<CpRankListResponse | undefined> => {
   const res = await fetchCommon('/api/cpRankList', 'GET', {
     query: searchParams
   })

@@ -1,4 +1,4 @@
-import { PokemonSearchResult, ScpRank } from './api/dto'
+import { type PokemonSearchResult, ScpRank } from './api/dto'
 import { ResearchRequest } from './api/request'
 import { ResearchResponse } from './api/response'
 
@@ -76,7 +76,7 @@ export class ScpRankMaxMinResultDtoItem implements ResultDtoItem {
  */
 export const get = async (
   searchParams: ScpRankMaxMinSearchParams | ScpRankMaxMinResultSearchParams
-): Promise<ScpRankMaxMinResponse | void> => {
+): Promise<ScpRankMaxMinResponse | undefined> => {
   const res = await fetchCommon('/api/scpRankMaxMin', 'GET', {
     query: searchParams
   })

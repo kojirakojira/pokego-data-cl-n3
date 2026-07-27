@@ -2,7 +2,7 @@
   <div
     :class="$style.evo_cost_pokemon"
     :style="link || clickAction ? 'cursor: pointer;' : 'pointer-events: none;'"
-    @click="clickAction()"
+    @click="clickAction ? clickAction() : null"
   >
     <v-avatar size="36" style="float:left">
       <v-img :src="editUtils().getPokemonImageUrl(goPokedex.image1)" />
@@ -23,9 +23,9 @@ withDefaults(
   defineProps<{
     goPokedex: GoPokedex,
     link?: boolean,
-    clickAction?: Function
+    clickAction?: ((e?: Event) => void) | null,
    }>(),
-  { link: false, clickAction: () => {} }
+  { link: false, clickAction: null }
 )
 </script>
 

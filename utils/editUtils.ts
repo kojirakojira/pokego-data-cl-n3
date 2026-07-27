@@ -166,10 +166,10 @@ export default () => {
    * @param dic
    * @returns
    */
-  const toArrayFromDic = (dic: Record<any, any>): Array<any> => {
-    const arr : Array<any> = []
+  const toArrayFromDic = <T>(dic: Record<string | number, T>): Array<T> => {
+    const arr : Array<T> = []
     for (const [, v] of Object.entries(dic)) {
-      arr.push(v)
+      arr.push(v as T)
     }
     return arr
   }
@@ -192,7 +192,11 @@ export default () => {
         return dic[keyArr[0]]
       } else {
         const startElem: string = keyArr.shift() as string
-        return digDic(keyArr, dic[startElem])
+        const nextDic = dic[startElem]
+        if (typeof nextDic === 'object' && nextDic !== null) {
+          return digDic(keyArr, nextDic as Record<string, any>)
+        }
+        return undefined
       }
     }
     return digDic(keyArr, dic)

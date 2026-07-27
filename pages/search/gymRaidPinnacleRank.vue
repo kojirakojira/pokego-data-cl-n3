@@ -196,13 +196,13 @@ import {
   type GymRaidPinnacleRankResponse,
   get,
   check,
-  GymRaidPinnacleRankSearchParams
+  type GymRaidPinnacleRankSearchParams
 } from '~/components/interface/gymRaidPinnacleRank'
 
 const searchPattern = 'gymRaidPinnacleRank'
 // current dto item
 const cDtoItem = ref<GymRaidPinnacleRankSearchDtoItem>(new GymRaidPinnacleRankSearchDtoItem())
-const dto: any = useAttrs().dto
+const dto = useAttrs().dto as PageDto
 dto.params = cDtoItem
 
 const isLoading = ref<boolean>(false)

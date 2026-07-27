@@ -409,7 +409,7 @@
 </template>
 
 <script setup lang="ts">
-import { ResearchRequest } from '~/components/interface/api/request'
+import type { ResearchRequest } from '~/components/interface/api/request'
 import { ConstantAccessor } from '~/utils/constantUtils'
 
 // --- Props, Emits, Models ---

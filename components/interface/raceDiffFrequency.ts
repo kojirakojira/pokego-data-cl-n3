@@ -1,4 +1,4 @@
-import { PokemonSearchResult, RaceDiffElem } from './api/dto'
+import type { PokemonSearchResult, RaceDiffElem } from './api/dto'
 import { ResearchRequest } from './api/request'
 import { ResearchResponse } from './api/response'
 
@@ -70,7 +70,7 @@ export class RaceDiffFrequencyResultDtoItem implements ResultDtoItem {
  */
 export const get = async (
   searchParams: RaceDiffFrequencySearchParams | RaceDiffFrequencyResultSearchParams
-): Promise<RaceDiffFrequencyResponse | void> => {
+): Promise<RaceDiffFrequencyResponse | undefined> => {
   const query: RaceDiffFrequencySearchParams = { ...searchParams } as RaceDiffFrequencySearchParams
   const res = await fetchCommon('/api/raceDiffFrequency', 'GET', {
     query

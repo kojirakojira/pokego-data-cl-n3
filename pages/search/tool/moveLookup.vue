@@ -86,7 +86,7 @@ import {
 const searchPattern = 'moveLookup'
 // current dto item
 const cDtoItem = ref<MoveLookupSearchDtoItem>(new MoveLookupSearchDtoItem())
-const dto: any = useAttrs().dto
+const dto = useAttrs().dto as PageDto
 dto.params = cDtoItem
 
 const isLoading = ref<boolean>(false)

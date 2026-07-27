@@ -1,4 +1,4 @@
-import { type SimpPokemon } from './api/dto'
+import type { SimpPokemon } from './api/dto'
 import { ResearchResponse } from './api/response'
 
 /**

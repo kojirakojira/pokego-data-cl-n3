@@ -26,21 +26,11 @@ const props = withDefaults(
   {})
 
 const iconSelector = computed(() => {
-  switch (props.type) {
-    case 'Dynamax':
-      return DynamaxSvg
-    case 'Gigantamax':
-      return GigantamaxSvg
-  }
+  return props.type === 'Gigantamax' ? GigantamaxSvg : DynamaxSvg
 })
 
 const colorSelector = computed(() => {
-  switch (props.type) {
-    case 'Dynamax':
-      return '#cb2f85'
-    case 'Gigantamax':
-      return '#992366'
-  }
+  return props.type === 'Gigantamax' ? '#992366' : '#cb2f85'
 })
 </script>
 
