@@ -37,12 +37,15 @@
     "vuetify": "^3.12.11"
   },
   "devDependencies": {
-    "@nuxt/devtools": "^1.7.0",
+    "@nuxt/devtools": "^3.3.1",
     "@nuxt/eslint": "^1.16.0",
     "eslint": "^10.8.0",
-    "vuetify-nuxt-module": "^0.18.7"
+    "vuetify-nuxt-module": "^1.0.0-rc.3"
   },
   "rules": {
     "vue/multi-word-component-names": "off"
+  },
+  "overrides": {
+    "brace-expansion": "^5.0.8"
   }
 }
